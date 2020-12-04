@@ -1,12 +1,41 @@
-\Chapter{Koncepció}
+\Chapter{Az OpenCL szabvány bemutatása}
 
-\Section{A fejezet célja}
+\Section{Az OpenCL szabvány eredete}
 
-Ez a fejezet még nem a saját eredményekkel foglalkozik, hanem bemutatja, mi a problémakör, milyen módszerekkel, milyeneredményeket sikerült elérni eddig másoknak.
+A jelenlegi világban több platform is képes párhuzamosságra, ilyenek például a CPU, GPU, DSP, vagy FPGA processzor, és egyebek, és ezekre mind létezik specifikus párhuzamos programozási módszer, mint az OpenMP, mpi, hibrid módszerek, specifikus könyvtárak, de ezek csak az adott platformon működnek, egy MPI program nem futtatható egy videókártyán. Ezért volt szükség egy heterogén platformra, ami áthidalja a különböző platformokat és egy egységes programozói felületet biztosít. 
 
-A hivatkozások jelentős része ehhez a fejezethez szokott kötődni.
-(Egy hivatkozás például így néz ki \cite{coombs1987markup}.)
-Itt lehet bemutatni a hasonló alkalmazásokat.
+\vspace{\baselineskip}
+
+(openCL origin image)
+
+\vspace{\baselineskip}
+
+A legnagyobb gyártók így összefogtak a közös cél érdekében, többek között az AMD, Nvidia, Intel, arm, IBM, Apple, Samsung, és megálmodtak egy jogdíjmentes,hordozható, nyílt szabványt. Ennek a szabványnak a létrehozása céljából pedig létrehozták a Khronos csoportot, ami azóta sok más nyílt szabványt is létrehozott, mint például a Vulkan, vagy az OpenGL. 2009 október 6.án kiadták az OpenCL 1.0 -át és azóta is folyamatosan fejlesztik, 2020 szeptember 30.adikán az OpenCL 3.0 megérkezett.
+
+Az új szabvány mögött egy nagy ötlet állt, hogy lecserélik a hagyományos ciklusokat úgynevezett kernelekre, amikből példányokat hozunk létre, munka elemeket, és ezek a munkaelemek egymással párhuzamosan futnak.
+
+\vspace{\baselineskip}
+
+(loop vs kernel image)
+
+\vspace{\baselineskip}
+
+ A kerneleknek szükségük van egy N dimenziós tartományra ahol a munkájukat végzik, az OpenCL  ezt is specifikálja, ez az NDRange. Egy kernel futtatásakor maximum 3 dimenziót specifikálunk, valamint az adott dimenzió problémáinak, eseteinek számát, méretét, ezt globális méretnek nevezzük. Az adott tartományban minden pontot megfeleltetünk egy munka elemmel, amiket munkacsoportokra osztunk. A munkaelemek egy munkacsoporton belül tudnak egymással kommunikálni, és osztozkodhatnak a lokális memórián. Meg lehet adni hogy hány elem legyen egy munkacsoportban, de ezt akár az OpenCl is meg tudja tenni helyettünk. Miután megvan a probléma tartomány és a  kernel, nincs más tennivaló mint minden elemre lefuttatni a kernel egy példányát.
+\vspace{\baselineskip}
+
+(example image)
+
+\vspace{\baselineskip}
+
+Az OpenCL specifikáció 4 nagy egységre bontja az architektúrát, ezek a következők:
+\begin{itemize}
+\item \textbf{Platform Modell} A modell leírja, hogy milyen legyen a platform amin fut az OpenCL. A modell egy házigazdából áll, ami össze van kötve egy vagy több OpenCL eszközhöz. Az OpenCL eszköz több CU-ra, számítási egységre van felosztva, amik még tovább vannak osztva PE-kre, processzelő elemekre. A számítási feladatok ezekben az elemekben valósulnak meg. 
+\item \textbf{Végrehajtás modell} Ez a modell két elkülönülő egységet definiál, a kerneleket, amik az OpenCL eszközökön hajtódnak végre, és a házigazda programot, ami a házigazdán hajtódik végre. A tényleges munkára a kerneleken kerül sor. A kernel egy a házigazda által precízen menedzselt környezetben, kontextusban fut, aminek részei az eszközök, kernel objektumok, program objektumok, és memória objektumok. Ezen kívül a modell leírja azt is, hogy a házigazda hogyan irányítja, utasítja az eszközöket a feladataik végrehajtására.
+\item \textbf{Memória modell} Itt definiálnak memória területeket,  memória objektum típusokat, absztrakt memória hierarchiát, megosztott virtuális memóriát.Leírják hogy az OpenCL által használt memória viselkedését, hogy az OpenCL program különböző egységei mely memóriaterületekhez férnek hozzá.
+\item \textbf{Programozási modell} Az egyidejűségi modell hogyan vonatkoztatható a fizikai hardverre.
+
+\end{itemize}
+
 
 \Section{Tartalom és felépítés}
 
