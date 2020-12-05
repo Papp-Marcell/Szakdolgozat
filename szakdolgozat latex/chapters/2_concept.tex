@@ -29,12 +29,45 @@ Az új szabvány mögött egy nagy ötlet állt, hogy lecserélik a hagyományos
 
 Az OpenCL specifikáció 4 nagy egységre bontja az architektúrát, ezek a következők:
 \begin{itemize}
-\item \textbf{Platform Modell} A modell leírja, hogy milyen legyen a platform amin fut az OpenCL. A modell egy házigazdából áll, ami össze van kötve egy vagy több OpenCL eszközhöz. Az OpenCL eszköz több CU-ra, számítási egységre van felosztva, amik még tovább vannak osztva PE-kre, processzelő elemekre. A számítási feladatok ezekben az elemekben valósulnak meg. 
-\item \textbf{Végrehajtás modell} Ez a modell két elkülönülő egységet definiál, a kerneleket, amik az OpenCL eszközökön hajtódnak végre, és a házigazda programot, ami a házigazdán hajtódik végre. A tényleges munkára a kerneleken kerül sor. A kernel egy a házigazda által precízen menedzselt környezetben, kontextusban fut, aminek részei az eszközök, kernel objektumok, program objektumok, és memória objektumok. Ezen kívül a modell leírja azt is, hogy a házigazda hogyan irányítja, utasítja az eszközöket a feladataik végrehajtására.
+\item \textbf{Platform Modell} A modell leírja, hogy milyen legyen a platform amin fut az OpenCL. 
+\item \textbf{Végrehajtás modell} Ez a modell két elkülönülő egységet definiál, a kerneleket, amik az OpenCL eszközökön hajtódnak végre, és a házigazda programot, ami a házigazdán hajtódik végre. Ezen kívül a modell leírja azt is, hogy a házigazda hogyan irányítja, utasítja az eszközöket a feladataik végrehajtására.
 \item \textbf{Memória modell} Itt definiálnak memória területeket,  memória objektum típusokat, absztrakt memória hierarchiát, megosztott virtuális memóriát.Leírják hogy az OpenCL által használt memória viselkedését, hogy az OpenCL program különböző egységei mely memóriaterületekhez férnek hozzá.
 \item \textbf{Programozási modell} Az egyidejűségi modell hogyan vonatkoztatható a fizikai hardverre.
 
 \end{itemize}
+
+\Section{Platform Modell}
+A platform modell egy házigazdából áll, ami össze van kötve egy vagy több OpenCL eszközhöz. Az OpenCL eszköz több CU-ra, számítási egységre van felosztva, amik még tovább vannak osztva PE-kre, processzelő elemekre. A számítási feladatok ezekben az elemekben valósulnak meg. A házigazda parancsokat küld az eszközöknek amik mindent megtesznek hogy végrehajtsák őket, az adatokat a memórián keresztül kapják meg. 
+
+Fejlesztők a belső programokat létrehozhatják C nyelven írt OpenCL forrás stringként, SPIR-V közbülső nyelvi programként, vagy bináris objektumokként, az OpenCL platform biztosít egy fordítót ami lefordítja ezeket futtatható program objektummá. Ez a fordító lehet online, ami a házigazda program futása alatt működik az alapértelmezett API-k használatával, vagy offline, ami a házigazda programon kívül működik platform specifikus módszerekkel.
+
+Az OpenCL 2 féle platform profilt definiál, teljes profilt, és beépített profilt. A teljes profilban lennie kell online fordítónak, a beépített profilban viszont nem kötelező.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1.0]{images/platform_modell.jpg}
+\caption{Platform modell.}
+\label{fig:platform_modell}
+\end{figure}
+
+\Section{Végrehajtás modell}
+A tényleges munkára a kerneleken kerül sor. A kernel egy a házigazda által precízen menedzselt környezetben, kontextusban fut, aminek részei az eszközök, kernel objektumok, program objektumok, és memória objektumok. Az eszközök 1 vagy több OpenCL platform által megvilágított eszköz, kernel objektumok igazából OpenCL metódusok, amik az OpenCL eszközökön futnak, program objektumok, a program forrás és futtatható állomány amik implementálják a kernelt, a memória objektumok pedig az OpenCL eszközök és a házigazda által látható változók, amiken a kernel példányai dolgoznak.
+
+A házigazda egy eszközzel egy parancs soron keresztül kommunikál, minden eszköznek saját parancs sora van. Egy ilyen parancs 3 kategóriába eshet:
+\begin{itemize}
+\item\textbf{Kernel sorba állító parancs} Mint a neve is sugallja, besorol egy kernelt egy eszközhöz végrehajtásra.
+\item\textbf{Memória parancs} Adatátvitel a házigazda és az eszköz memória között, vagy memória hozzárendelés.
+\item\textbf{Szinkronizációs parancs} Explicit szinkronizációs pontok amik meghatároznak egy sorrendiséget.
+\end{itemize}
+Minden parancs 6 állapoton megy át:
+\begin{enumerate}
+\item\textbf{Besorolt} A parancs be van sorolva egy parancs sorba.
+\item\textbf{Benyújtott} A parancs el van távolítva a parancs sorból, és be van adva eg eszköznek végrehajtás céljából.
+\item\textbf{Felkészült} A parancs végrehajtásához szükséges összes előfeltétel teljesült, a parancs ütemezve van végrehajtásra.
+\item\textbf{Futó} A parancs végrehajtása elkezdődött.
+\item\textbf{Befejezett} A parancs végrehajtása befejeződött.
+\item\textbf{Elkészült} A parancs és a gyerek parancsai mind befejeződtek, és a velük kapcsolatos esemény objektum állapota .
+\end{enumerate}
 
 
 \Section{Tartalom és felépítés}
