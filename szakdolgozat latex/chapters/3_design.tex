@@ -1,14 +1,11 @@
 \Chapter{Tervezés}
 
-Itt kezdődik a dolgozat lényegi része, úgy értve, hogy a saját munka bemutatása.
-Jellemzően ebben szerepelni szoktak blokkdiagramok, a program struktúrájával foglalkozó leírások.
-Ehhez célszerű UML ábrákat (például osztály- és szekvenciadiagramokat) használni.
+\Section{Koncepció}
+Mint látni lehet a Multi2Sim-nél, a szimuláció lehetséges megoldása a problémának, viszont roppant bonyolult és erőforrásigényes. Ebben a dolgozatban megpróbálunk egy sokkal egyszerűbb, kevésbé pontos megoldást kínálni ami remélhetőleg sokkal szemléltetőbb. 
 
-Amennyiben a dolgozat inkább kutatás jellegű, úgy itt lehet konkretizálni a kutatási módszertant, a kutatás tervezett lépéseit, az indoklást, hogy mit, miért és miért pont úgy érdemes csinálni, ahogyan az a későbbiekben majd részletezésre kerül.
+Mivel a hardveres futás szimuláció kicsit bonyolult, ezért azt elvetve marad a futó program elemzése. Erre lehetőséget biztosít a GDB, egy GNU project debugger, de ennek a precizitása kétséges, illetve csak a házigazda program futásának elemzésére alkalmas. A másik vizsgálandó megoldás a forráskód elemzése.
 
-Ebben a fejezetben az implementáció nem kell, hogy túl nagy szerepet kapjon.
-Ez még csak a tervezési fázis.
-(Nyilván ha olyan a téma, hogy magának az implementációnak a módjával foglalkozik, adott formális nyelvet mutat be, úgy a kódpéldákat már innen sem lehet kihagyni.)
+ Az OpenCl működésének ismeretével lehetséges lehet olyan alkalmazást létrehozni, ami a forráskódban felismeri az OpenCL elemeit, és helyesen megtippeli hogy azok mit csinálnának. Így felépíthető lenne egy modell az adott OpenCL program működéséről amit már csak megjeleníteni szökséges. 
 
 \Section{Táblázatok}
 
