@@ -17,8 +17,21 @@ Triviális elemeknek tekinthetők a platform, memóriák felszabadítása, kerne
 \Section{Teendők a kernellel}
 Igazából a kernelben található konkrét műveletek elemzési, vizualizációs szempontokból elhanyagolhatók. Ami ott fontos és ajánlott vele foglalkozni, azok a szinkronizációs függvények, például egy sorompót érdemes lehet grafikusan megjeleníteni.
 
-\Section{Munka elemek]
+\Section{Munka elemek}
 Egy fontosabb részlete az elemzésnek a munka elemek számának megállapítása. Ideális esetben megvan határozva a munkacsoport elemeinek száma, és ez kiolvasható a forráskódból. Ha ez nincs meghatározva, meg kell tippelnünk a számukat az OpenCL specifikáció alapján. Ezután rá tudunk jönni a munkacsoportok számára az NDRange és a kernel input alapján.
+
+\Section{Program felépítése}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{images/UML.jpg}
+\caption{INITIAL UML osztálydiagram}
+\label{fig:uml}
+\end{figure}
+
+A program működése a következő:
+
+Beolvassuk a forrásokat, lehetőleg valamilyen grafikus felületen át, majd feldolgozzuk először a házigazda forrásfájlt. Megkeressük benne az OpenCl függvényeket, és szükségszerűen modelleket rendelünk melléjük, például a \texttt{clCreateKernel} metódust észlelve létrehozunk egy Kernel objektumot. Ha ezzel készen vagyunk összeállítjuk őket egy teljes modellé, amit exportálunk a frontend felé.
 
 \Section{Táblázatok}
 
