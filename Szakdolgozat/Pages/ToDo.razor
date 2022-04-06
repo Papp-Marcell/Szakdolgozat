@@ -1,0 +1,36 @@
+﻿@page "/todo"
+@inject Models.MyFile myFile;
+<h3>ToDo</h3>
+
+<ul>
+    @foreach (var todo in todos)
+    {
+       <li>
+           @todo.Title
+           <input type="checkbox" @bind=todo.IsDone/>
+       </li> 
+    }
+
+</ul>
+
+<input placeholder="Something todo" @bind="newTodo" />
+<button @onclick="AddTodo">Add todo</button>
+
+@if (!string.IsNullOrEmpty(myFile.Name))
+{
+    <p>@myFile.MyStreamReader</p>
+}
+
+@code {
+    private List<TodoItem> todos = new();
+    private string? newTodo;
+    private void AddTodo()
+    {  
+        if (!string.IsNullOrWhiteSpace(newTodo))
+        {
+            todos.Add(new TodoItem { Title = newTodo });
+            newTodo = string.Empty;
+        }
+        
+    }
+}

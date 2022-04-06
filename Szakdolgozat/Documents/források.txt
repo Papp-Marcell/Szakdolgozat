@@ -1,0 +1,15 @@
+https://www.khronos.org/registry/OpenCL/
+
+https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html#_the_opencl_architecture
+
+https://www.khronos.org/opencl/
+
+https://www.khronos.org/conformance/adopters/conformant-companies
+
+http://smai.emath.fr/cemracs/cemracs16/images/FDesprez.pdf
+
+https://github.com/rsnemmen/OpenCL-examples
+
+https://www.sciencedirect.com/book/9780128014141/heterogeneous-computing-with-opencl-2-0
+
+http://asu-cs.donntu.org/sites/default/files/images/doc/opencl.programming.guide.pdf

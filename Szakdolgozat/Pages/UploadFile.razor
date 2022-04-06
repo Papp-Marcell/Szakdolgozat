@@ -1,0 +1,20 @@
+﻿@inject Models.MyFile myFile;
+
+<InputFile OnChange="@LoadFiles"/>
+
+@if (!string.IsNullOrEmpty(myFile.Name))
+{
+    <p>@myFile.Name</p>
+}
+
+@code {
+
+
+
+    private async void LoadFiles(InputFileChangeEventArgs e)
+    {
+        myFile.Name = e.File.Name;
+        myFile.MyStreamReader = await new StreamReader(e.File.OpenReadStream()).ReadToEndAsync();
+
+    }
+}
