@@ -17,8 +17,12 @@
 <button @onclick="AddTodo">Add todo</button>
 
 @if (!string.IsNullOrEmpty(myFile.Name))
-{
-    <p>@myFile.MyStreamReader</p>
+{   <br />
+    <button @onclick="ChangeColor">ChangeColor</button>
+    @foreach (var item in myFile.Lines)
+    {
+        <p style="background-color:@item.color">@item.line</p>
+    }
 }
 
 @code {
@@ -31,6 +35,11 @@
             todos.Add(new TodoItem { Title = newTodo });
             newTodo = string.Empty;
         }
-        
+
+    }
+
+    private void ChangeColor()
+    {
+        myFile.Lines[1].color = "blue";
     }
 }

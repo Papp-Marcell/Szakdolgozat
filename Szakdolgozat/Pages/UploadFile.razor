@@ -14,7 +14,12 @@
     private async void LoadFiles(InputFileChangeEventArgs e)
     {
         myFile.Name = e.File.Name;
-        myFile.MyStreamReader = await new StreamReader(e.File.OpenReadStream()).ReadToEndAsync();
-
+        //myFile.MyStreamReader = await new StreamReader(e.File.OpenReadStream()).ReadToEndAsync();
+        StreamReader sr = new StreamReader(e.File.OpenReadStream());
+        string? line;
+        while ((line = await sr.ReadLineAsync()) != null)
+        {
+            myFile.Lines.Add(new Models.MyLine(line));
+        }
     }
 }
