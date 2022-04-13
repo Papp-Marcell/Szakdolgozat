@@ -1,0 +1,76 @@
+﻿@page "/architecture"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas
+@using Blazor.Extensions.Canvas.Canvas2D
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+@inject IJSRuntime jsRuntime
+@inject Models.MyFile myFile
+@inject Services.HardwareService HWS
+
+<h3>Architecture</h3>
+
+<div @ref="divCanvas" @onload="Draw">
+
+    <BECanvas Width="1000" Height="500" @ref="myCanvas"></BECanvas>
+
+</div>
+
+
+
+@code {
+
+    ElementReference divCanvas;
+    Blazor.Extensions.BECanvasComponent myCanvas;
+    Canvas2DContext currentCanvasContext;
+
+    async Task Draw(){
+        UInt64 memory = (UInt64)HWS.Memory["Capacity"];
+        memory = memory / 1000000000;
+        UInt32 vram = (UInt32)HWS.GPU["AdapterRam"];
+        vram = vram / 1000000000;
+        string cpuName = (string)HWS.CPU["Name"];
+        string gpuName = (string)HWS.GPU["Name"];
+        uint cpuThreads = (uint)HWS.CPU["NumberOfLogicalProcessors"];
+        await jsRuntime.InvokeAsync<string>("test");        
+        currentCanvasContext = await myCanvas.CreateCanvas2DAsync();
+
+        await currentCanvasContext.SetFillStyleAsync("blue");
+        await currentCanvasContext.FillRectAsync(0, 0, 150, 500);
+
+        await currentCanvasContext.SetFontAsync("18px Calibri");
+        await currentCanvasContext.SetFillStyleAsync("red");
+        await currentCanvasContext.FillTextAsync($"Memory {memory} GB", 10, 250);
+
+        await drawComputeDevice(200, 0,cpuName,cpuThreads.ToString(),"grey");
+        await drawComputeDevice(200, 150,gpuName,"??","green");
+
+
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        Draw();   
+    }
+
+    private async Task drawComputeDevice(int startX,int startY,string name,string threads,string color)
+    {
+        await currentCanvasContext.SetFillStyleAsync(color);
+        await currentCanvasContext.FillRectAsync(startX, startY, 800, 100);
+        await currentCanvasContext.SetFillStyleAsync("red");
+        await currentCanvasContext.FillTextAsync($"Compute Device: {name}", startX+10, startY+20);
+        await currentCanvasContext.SetStrokeStyleAsync("black");
+        await currentCanvasContext.StrokeRectAsync(startX+5, startY+25, 250, 70);
+        await currentCanvasContext.FillTextAsync($"Compute Units: {threads}", startX+15, startY+45);
+        await currentCanvasContext.StrokeRectAsync(startX+10, startY+50, 200, 40);
+        await currentCanvasContext.FillTextAsync($"Work Items: X", startX+20, startY+65);
+        await currentCanvasContext.StrokeRectAsync(startX + 300, startY + 25, 200, 35);
+        await currentCanvasContext.FillTextAsync($"Local Memory", startX+305, startY+45);
+        await currentCanvasContext.StrokeRectAsync(startX + 510, startY + 25, 200, 70);
+        await currentCanvasContext.FillTextAsync($"Global Memory", startX+515, startY+60);
+    }
+
+    
+    
+    
+
+}

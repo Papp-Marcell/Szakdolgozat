@@ -12,6 +12,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<MyFile>();
 builder.Services.AddSingleton<MenuService>();
+builder.Services.AddSingleton<HardwareService>();
 
 var app = builder.Build();
 
