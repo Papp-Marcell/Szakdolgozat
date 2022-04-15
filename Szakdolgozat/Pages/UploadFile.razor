@@ -1,5 +1,6 @@
 ﻿@inject Models.MyFile myFile;
 @inject Services.MenuService menuService;
+@inject Services.Analysis Analyzer;
 
 <InputFile OnChange="@LoadFiles"/>
 
@@ -22,7 +23,9 @@
         {
             myFile.Lines.Add(new Models.MyLine(line));
         }
+        myFile.RemoveEmptyLines();
         menuService.NotifyChanged();
+        Analyzer.Analyze(myFile);
 
     }
 }

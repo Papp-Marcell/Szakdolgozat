@@ -1,0 +1,56 @@
+﻿@page "/code"
+@inject Models.MyFile myFile
+@inject Services.Analysis Analyzer;
+
+<h3>Code</h3>
+
+<div>
+    Count: @myFile.Lines.Count
+    <table>
+        <tr>
+            <th>CU</th>
+            @for(int k = 0; k < 3; k++)
+            {
+                <td>@k</td>
+            }
+        </tr>
+    @for(int i = 0; i < Analyzer.myElements.Count; i++)
+    {
+            int ii = i;
+            <tr>
+                <td>@i</td>
+                @for(int j = 0; j < 3; j++)
+                {
+                    <td>
+                        
+                        <button @onclick="() =>ChangeColor(ii)">i:@i</button>
+                    </td>
+                }
+
+        </tr>
+    }
+    </table>
+</div>
+@foreach (var item in myFile.Lines)
+{
+        <p style="background-color:@item.color">@item.line</p>
+}
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+
+    private void ChangeColor(int i)
+    {
+        foreach(var item in myFile.Lines)
+        {
+            item.color = "white";
+        }
+        myFile.Lines[i].color = "lime";
+    }
+
+}

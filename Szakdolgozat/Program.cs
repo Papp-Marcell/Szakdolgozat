@@ -13,6 +13,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<MyFile>();
 builder.Services.AddSingleton<MenuService>();
 builder.Services.AddSingleton<HardwareService>();
+builder.Services.AddSingleton<Analysis>();
 
 var app = builder.Build();
 
