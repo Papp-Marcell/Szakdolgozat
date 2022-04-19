@@ -17,13 +17,13 @@
     {
             int ii = i;
             <tr>
-                <td>@i+1</td>
+                <td>@(i+1)</td>
                 @for(int j = 0; j < Analyzer.CUs+1; j++)
                 {
                         <td style="min-width:50px">
                             @if (j==Analyzer.myElements[ii].ComputeUnit | (j!=0 & -1==Analyzer.myElements[ii].ComputeUnit))
                             {
-                                <button title=@Analyzer.myElements[ii].Name @onclick="() =>ChangeColor(Analyzer.myElements[ii].Index)">@i+1</button>
+                                <button title=@Analyzer.myElements[ii].Name @onclick="() =>ChangeColor(Analyzer.myElements[ii].Index)">@(i+1)</button>
                             }
                         </td>
                 }

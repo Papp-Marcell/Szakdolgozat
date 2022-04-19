@@ -20,7 +20,7 @@ namespace Szakdolgozat.Services
             }
             else
             {
-                CUs = (int)(uint)hardwareService.CPU["NumberOfLogicalProcessors"];
+                CUs = (int)hardwareService.CPUthreads;
             }
             SearchAdd("cl_mem", "OpenCL Memory Allocation", 0,"clSet");
             SearchAdd("clGetPlatformIDs", "Platform binding", 0);

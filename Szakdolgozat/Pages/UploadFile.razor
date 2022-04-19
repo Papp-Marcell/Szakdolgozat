@@ -1,6 +1,7 @@
 ﻿@inject Models.MyFile myFile;
 @inject Services.MenuService menuService;
 @inject Services.Analysis Analyzer;
+@inject Services.HardwareService HWS;
 
 <InputFile OnChange="@LoadFiles"/>
 
@@ -25,6 +26,7 @@
         }
         myFile.RemoveEmptyLines();
         menuService.NotifyChanged();
+        HWS.Initialize();
         Analyzer.Analyze(myFile);
 
     }
