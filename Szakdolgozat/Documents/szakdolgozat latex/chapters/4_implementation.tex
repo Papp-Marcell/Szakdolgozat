@@ -1,5 +1,36 @@
 \Chapter{Megvalósítás}
 
+%majd kép innen: https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0#blazor-webassembly
+
+\Section{ASP.NET Core Blazor}
+A megvalósításra felhasznált technológia végül a ASP.NET Core Blazor lett, ami egy .Net keretrendszer komplex, interaktív webalkalmazások létrehozására. Lényege, hogy a weboldalhoz  JavaScript helyett C# kódot írhassunk. Kicsit pontosabban, szinte minden frontend logikához C# kód a megoldás HTML elemek elrendezésétől a weboldal navigálásán át fájlok feltöltéséig.
+
+Jelenleg 2 verziója támogatott, Blazor Server ahol egy szerver alkalmazásban fut a kód, és Blazor WebAssembly, ahol közvetlenül a böngészőben. Ebben a projektben a Blazor Server-t választottam a nagyobb támogatottsága miatt.
+
+\Section{Razor komponensek}
+Blazor alkalmazások jelentős részben Razor komponensekből épülnek fel. Egy komponens az UI egy önálló része, ami tartalmazhat feldolgozó logikát hogy dinamikusan viselkedhessen. Komponenseket lehet többször felhasználni, egymásba ágyazni, vagy Razor oldalakban felhasználni (egy komponens akár önmagában is lehet Razor oldal). Egy Razor komponens tartalmaz HTML elemeket és @ jellel ellátott C# kifejezéseket, amik lehetnek direktívák, logikák, vagy akár komplex kód részek is.
+
+\Section{Routing, SignalR, and Dependency Injection}
+Routing, azaz útvonal választás az a folyamat, ahogy a szerver a bejövő HTTP kéréseket az alkalmazás végrehajtható végpontjaihoz párosítja. Az ASP.Net ezt szinte automatikusan teszi meg, a megfelelő kérést a megfelelő Razor oldalra irányítja, miután megadjuk neki a kellő feltérképezési beállítást. 
+
+Viszont nem minden interakció eredményez HTTP kérést, a legtöbb kommunikáció a weboldal és a szerver között SignalR segítségével történik. A SignalR egy nyílt forrású könyvtár ami lehetővé teszi a valós idejű kommunikációt a szerver és a weboldal között. Ha a UI egy interaktív elemét "megpiszkájuk", a weboldal SignalR-en át átküldi az esemény(eke)t a szervernek, a szerver végrehajtja a kérést, majd szintén SignalR-en keresztül visszaküldi a UI frissítéseket.
+
+A Dependency Injection egy szoftverdizájnbeli minta, aminek lényege, hogy megfordítja az irányítást elemek és függőségeik között. ASP.NET-ben ez annyit jelent, hogy az osztályok vagy komponensek ahelyett hogy önmaguk hoznák létre vagy konstruktorukban kapják meg a függőségeiket, egy úgynevezett DI konténer hozza őket létre. 3 féle módon lehet a függőségeket kezelni:
+\begin{itemize}
+\item\textbf{Transient Object} Minden esetben új és egyedi objektumot hoz létre.
+\item\textbf{Scoped Object} Egy kérésen belül ugyanazt az objektumot biztosítja.
+\item\textbf{Singleton Object} Minden esetben ugyanaz a (meglévő) objektum.
+\end{itemize}
+Ez az alkalmazás főleg Singleton-okat használ szolgáltatások biztosítására és közös adatok elérésére. Mivel végig egy felhasználó dolgozik egy munkamenetben, nincs szükség limitálni a függőségek élettartamát és elérhetőségét.
+
+\Section{Hardware Service}
+A .NET Core hivatalosan egy multiplatform alkalmazás, de sajnos még vannak olyan részei amik jelenleg még csak a Windows-t támogatják. A Hardware elemzésére a hivatalosan támogatott módszer a WMI (Windows Management Instrumentation) használata, nevéből adódóan jelenleg csak Windows-on elérhető, ezért más operációs rendszerek esetében az alkalmazás hamis, kitalált adatokkal dolgozik, amíg a Microsoft ki nem terjeszti a támogatását Linuxra és társaira.
+
+
+
+
+
+
 Ez a fejezet mutatja be a megvalósítás lépéseit.
 Itt lehet az esetlegesen előforduló technikai nehézségeket említeni.
 Be lehet már mutatni a program elkészült részeit.
