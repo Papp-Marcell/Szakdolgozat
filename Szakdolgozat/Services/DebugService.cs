@@ -9,7 +9,7 @@ namespace Szakdolgozat.Services
     {
         private InstructionHandler instructionHandler = new InstructionHandler();
         private AssemblyName assemblyName = new AssemblyName("assembly");
-        private Type? debug;
+        private Type? debugType;
         private object? debugObject;
         public void InitializeDebug(List<Instruction> instructions)
         {
@@ -25,11 +25,11 @@ namespace Szakdolgozat.Services
             foreach (Instruction instruction in instructions){
                 instructionHandler.ExecuteInstruction(instruction, typeBuilder);
             }
-            debug = typeBuilder.CreateType();
-            debugObject = Activator.CreateInstance(debug);
+            debugType = typeBuilder.CreateType();
+            debugObject = Activator.CreateInstance(debugType);
             foreach(Instruction instruction in instructions)
             {
-                instructionHandler.ExecuteInstruction(instruction);
+                instructionHandler.ExecuteInstruction(instruction,debugObject);
             }
         }
     }

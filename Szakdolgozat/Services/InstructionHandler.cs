@@ -26,12 +26,12 @@ namespace Szakdolgozat.Services
             }
         }
 
-        public void ExecuteInstruction(Instruction instruction)
+        public void ExecuteInstruction(Instruction instruction,Object _object)
         {
             switch (instruction.instrucionType)
             {
                 case InstructionType.DECLARE_ARRAY:
-                    CreateArray(instruction.var1, instruction.var2, instruction.var3);
+                    CreateArray(instruction.var1, instruction.var2, instruction.var3,_object);
                     break;
 
 
@@ -54,15 +54,18 @@ namespace Szakdolgozat.Services
             }
         }
 
-        private void CreateArray(string name, string type, string size)
+        private void CreateArray(string name, string type, string size,object _object)
         {
+            FieldInfo fieldInfo;
             switch (type)
             {
                 case "string":
-
+                    fieldInfo = _object.GetType().GetField(name);
+                    fieldInfo.SetValue(_object, new string[Int32.Parse(size)]);
                     break;
                 default:
-
+                    fieldInfo = _object.GetType().GetField(name);
+                    fieldInfo.SetValue(_object, new double[Int32.Parse(size)]);
                     break;
             }
         }
