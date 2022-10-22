@@ -12,7 +12,7 @@
 
         private void CreateMockInstructionList()
         {
-            _instructions.Add(new Instruction(InstructionType.DECLARE, "n", "int", null, null, null,null));
+            _instructions.Add(new Instruction(InstructionType.DECLARE, "n", "int", null, null,10000,null));
             _instructions.Add(new Instruction(InstructionType.DECLARE_ARRAY,"h_a","double","n",null,null,null));
             _instructions.Add(new Instruction(InstructionType.DECLARE_ARRAY, "h_b", "double", "n", null, null,null));
             _instructions.Add(new Instruction(InstructionType.DECLARE_ARRAY, "h_c", "double", "n", null, null, null));
@@ -26,7 +26,7 @@
             _instructions.Add(new Instruction(InstructionType.BIOP_TO_ARRAY, "h_a","temp1","temp1",null, null, null,"*","i"));
             _instructions.Add(new Instruction(InstructionType.BIOP_TO_ARRAY, "h_b", "temp2", "temp2", null, null, null, "*", "i"));
             _instructions.Add(new Instruction(InstructionType.UOP, "i", null, null, null, 1, null, "+"));
-            _instructions.Add(new Instruction(InstructionType.JUMP, null, null, null, -7, null, null));
+            _instructions.Add(new Instruction(InstructionType.JUMP, null, null, null,-7, null, null));
             
             //paralell
             _instructions.Add(new Instruction(InstructionType.COPY, "i", null, null, null, 0, null));
