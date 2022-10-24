@@ -1,0 +1,25 @@
+﻿@page "/simulation"
+@inject Models.MyFile myFile
+@inject Services.DebugService debugService;
+
+<h3>Simulation</h3>
+
+<div class="row">
+    <div class="column">
+        <h4>Results</h4>
+        @for(int i =0; i < debugService.resultList.Count; i++)
+        {
+            <p> @debugService.resultList[i]</p>
+        }
+    </div>
+    <div class="column">
+        <h4>Data</h4>
+            <p> Steps : @debugService.stepCount </p>
+            <p> Memory Used : @debugService.memory bytes</p>
+            <p> Run Time : @debugService.elapsedTime (hh:mm:ss:ms)</p>
+    </div>
+</div>
+
+@code {
+    
+}

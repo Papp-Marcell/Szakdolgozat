@@ -1,7 +1,9 @@
 ﻿@inject Models.MyFile myFile;
+@inject Models.MockInstructionList mockInstructionList;
 @inject Services.MenuService menuService;
 @inject Services.Analysis Analyzer;
 @inject Services.HardwareService HWS;
+@inject Services.DebugService debugService;
 
 <InputFile OnChange="@LoadFiles"/>
 
@@ -28,6 +30,8 @@
         menuService.NotifyChanged();
         HWS.Initialize();
         Analyzer.Analyze(myFile);
+        mockInstructionList.CreateMockInstructionList();
+        debugService.InitializeDebug(mockInstructionList._instructions);
 
     }
 }
