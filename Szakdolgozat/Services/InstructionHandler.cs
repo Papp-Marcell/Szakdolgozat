@@ -35,7 +35,10 @@ namespace Szakdolgozat.Services
                 case InstructionType.DECLARE:
                     resultString = AssignValue(instruction.var1, instruction.var2,instruction.var3,instruction.value1, _object, ref memory);
                     counter++;
-                    resultList.Add($"At step {counter} : {resultString}");
+                    if (resultString != null)
+                    {
+                        resultList.Add($"At step {counter} : {resultString}");
+                    }
                     break;
                 case InstructionType.JUMP:
                     i += instruction.index.Value;
@@ -132,7 +135,7 @@ namespace Szakdolgozat.Services
             int sizeInt;
             if(!Int32.TryParse(size,out sizeInt))
             {
-                sizeInt=(int)_object.GetType().GetField(size).GetValue(_object);
+                sizeInt=Convert.ToInt32(_object.GetType().GetField(size).GetValue(_object));
             }
             FieldInfo fieldInfo;
             switch (type)
@@ -265,7 +268,7 @@ namespace Szakdolgozat.Services
                 arrayIndex = (int)index.Value;
             }
             else { 
-                arrayIndex = (int)_object.GetType().GetField(indexVar).GetValue(_object); 
+                arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object)); 
             }
             object value = _object.GetType().GetField(name).GetValue(_object);
             if (value.GetType() == typeof(string))
@@ -286,7 +289,7 @@ namespace Szakdolgozat.Services
             }
             else
             {
-                arrayIndex = (int)_object.GetType().GetField(indexVar).GetValue(_object);
+                arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
             }
             object value = _object.GetType().GetField(name).GetValue(_object);
            
@@ -315,7 +318,7 @@ namespace Szakdolgozat.Services
             }
             else
             {
-                arrayIndex = (int)_object.GetType().GetField(indexVar).GetValue(_object);
+                arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
             }
             object _arrayFrom = _object.GetType().GetField(arrayFrom).GetValue(_object);
             if (_arrayFrom.GetType() == typeof(string[]))
@@ -336,7 +339,7 @@ namespace Szakdolgozat.Services
             }
             else
             {
-                arrayIndex = (int)_object.GetType().GetField(indexVar).GetValue(_object);
+                arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
             }
             object _arrayFrom = _object.GetType().GetField(arrayFrom).GetValue(_object);
 
@@ -365,7 +368,7 @@ namespace Szakdolgozat.Services
             }
             else
             {
-                arrayIndex = (int)_object.GetType().GetField(indexVar).GetValue(_object);
+                arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
             }
             object value = ((IList<double>)_object.GetType().GetField(arrayFrom).GetValue(_object))[arrayIndex];
 

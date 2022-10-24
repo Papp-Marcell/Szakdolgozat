@@ -8,7 +8,7 @@
             this.var1 = var1;
             this.var2 = var2;
             this.var3 = var3;
-            this.var3 = var4;
+            this.var4 = var4;
             this.index = index;
             this.value1 = value1;
             this.value2 = value2;
