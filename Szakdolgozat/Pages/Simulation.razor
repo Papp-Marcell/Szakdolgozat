@@ -38,6 +38,7 @@
 
 @code {
 
+    private string? manualURL;
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,7 +52,7 @@
         await JS.InvokeVoidAsync("setImage", "image", dotnetImageStream);
     }
 
-    private string? manualURL;
+    
     private void SaveSetImage()
     {
         debugService.AST.Save("wwwroot/AST.png");

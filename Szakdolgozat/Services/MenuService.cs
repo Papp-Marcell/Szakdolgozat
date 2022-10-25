@@ -1,5 +1,6 @@
 ﻿namespace Szakdolgozat.Services
 {
+    //An event based class to make the sidebar refresh on change
     public class MenuService
     {
         public event EventHandler<EventArgs> OnChanged;

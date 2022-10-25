@@ -1,5 +1,6 @@
 ﻿namespace Szakdolgozat.Models
 {
+    //A class to store data related to the selected file
     public class MyFile
     {
 

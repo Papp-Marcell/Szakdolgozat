@@ -2,6 +2,7 @@
 {
     public class Instruction
     {
+        //A class that stores an instruction type and several variables, this is an intermediate representation of C code
         public Instruction(InstructionType instrucionType, string? var1, string? var2, string? var3, int? index, double? value1,double? value2,string? op=null,string? var4=null)
         {
             this.instrucionType = instrucionType;

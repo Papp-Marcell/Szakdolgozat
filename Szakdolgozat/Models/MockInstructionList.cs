@@ -1,6 +1,7 @@
 ﻿namespace Szakdolgozat.Models
 
 {
+    //generating instructions from a txt file is too complicated, so we create a mock list of instructions
     public class MockInstructionList
     {
         public List<Instruction>? _instructions;

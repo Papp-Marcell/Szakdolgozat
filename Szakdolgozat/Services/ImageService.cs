@@ -3,6 +3,7 @@
 
 namespace Szakdolgozat.Services
 {
+    //Creates Images, Linear Syntax Trees.
     public class ImageService
     {
 

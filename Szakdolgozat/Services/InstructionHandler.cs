@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 
 namespace Szakdolgozat.Services
 {
+    //Handles and or simulates instrucions
     public class InstructionHandler
     {
         private ImageService imageService = new ImageService();

@@ -1,5 +1,6 @@
 ﻿namespace Szakdolgozat.Models
 {
+    //enum list for Instruction Types
     public enum InstructionType
     {
         COPY,

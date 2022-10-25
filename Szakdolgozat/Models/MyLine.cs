@@ -1,5 +1,6 @@
 ﻿namespace Szakdolgozat.Models
 {
+    //Stores information about text lines
     public class MyLine
     {
         public MyLine(string line)

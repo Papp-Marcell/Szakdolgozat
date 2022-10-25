@@ -6,6 +6,8 @@ using Szakdolgozat.Models;
 
 namespace Szakdolgozat.Services
 {
+
+    //Handles everything related to the mock Instruction List including simulation and Creating a Syntax Tree
     public class DebugService
     {
         private InstructionHandler instructionHandler = new InstructionHandler();
@@ -21,7 +23,7 @@ namespace Szakdolgozat.Services
         public Bitmap? AST;
 
 
-
+        //Creates a new object to simply store variables and arrays related to the simulation
         public void InitializeDebug(List<Instruction> instructions)
         {
             stepCount = 0;
@@ -35,18 +37,20 @@ namespace Szakdolgozat.Services
                 TypeAttributes.Public);
             timer.Start();
 
+            //Initializes the types
             foreach (Instruction instruction in instructions){
                 instructionHandler.ExecuteDeclaration(instruction, typeBuilder,ref stepCount);
             }
             debug = typeBuilder.CreateType();
             debugObject = Activator.CreateInstance(debug);
 
-
+            
             Simulate(instructions);
             GetAST(instructions);
-            nothing();
         }
 
+        //Loops through the Instruction List, creates actual variables, simulates operations, 
+        //measures step count, minimum memory required, and runtime.
         public void Simulate(List<Instruction> instructions)
         {
             
@@ -60,11 +64,14 @@ namespace Szakdolgozat.Services
             ts.Hours, ts.Minutes, ts.Seconds,ts.Milliseconds / 10);
         }
 
+
+        //Creates a Syntax Tree
         public void GetAST(List<Instruction> instructions)
         {
             AST = ImageService.StartBitmap();
             for (int i = 0; i < instructions.Count;i++)
             {
+                //AST needs to be explicitly reference or resize wont work
                 instructionHandler.DrawInstruction(instructions[i],i,ref AST);
             }
             for (int i = 0; i < instructions.Count;i++)
@@ -73,10 +80,7 @@ namespace Szakdolgozat.Services
             }
 
         }
-        public void nothing()
-        {
 
-        }
 
     }
 }

@@ -3,6 +3,7 @@ using Szakdolgozat.Services;
 
 namespace Szakdolgozat.Services
 {
+    //Searches for OpenCL elements and adds them to a List for the Code page
     public class Analysis
     {
         MyFile myFile;

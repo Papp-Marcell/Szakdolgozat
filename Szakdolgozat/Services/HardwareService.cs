@@ -11,7 +11,7 @@ namespace Szakdolgozat.Services
         public string GPUname { get; set; }
         public UInt32 GPUram { get; set; }
         
-
+        //Gets Hardware Information on Windows, not available on Linux so it uses mock data.
         public void Initialize()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
