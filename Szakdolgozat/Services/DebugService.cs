@@ -65,7 +65,7 @@ namespace Szakdolgozat.Services
             AST = ImageService.StartBitmap();
             for (int i = 0; i < instructions.Count;i++)
             {
-                instructionHandler.DrawInstruction(instructions[i],i,AST);
+                instructionHandler.DrawInstruction(instructions[i],i,ref AST);
             }
             for (int i = 0; i < instructions.Count;i++)
             {

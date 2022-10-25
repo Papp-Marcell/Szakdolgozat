@@ -16,14 +16,13 @@ namespace Szakdolgozat.Services
             return new Bitmap(200, 100, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
         }
 
-        public Bitmap ResizeBitmap(Bitmap bitmap,int width, int height)
+        public Bitmap ResizeBitmap(Bitmap bitmap,int width)
         {
-            Bitmap result = new Bitmap(bitmap.Width+width, bitmap.Height+height);
-            using (Graphics g = Graphics.FromImage(result))
-            {
-                g.DrawImage(bitmap, 0, 0, bitmap.Width + width, bitmap.Height + height);
-            }
+            Bitmap result = new Bitmap((bitmap.Width+width), bitmap.Height);
+            Graphics g = Graphics.FromImage(result);
+            g.DrawImage(bitmap, 0, 0);
             bitmap = result;
+            
             return result;
         }
         public void DrawRectangleText(Bitmap bitmap,String text,bool jump)
@@ -34,7 +33,7 @@ namespace Szakdolgozat.Services
                 pen = Pens.Red;
             }
             Graphics graphics = Graphics.FromImage(bitmap);
-            using (Font font = new Font("Arial", 12, FontStyle.Regular, GraphicsUnit.Point))
+            using (Font font = new Font("Arial", 10, FontStyle.Regular, GraphicsUnit.Point))
             {
                 Rectangle rectangle = new Rectangle(bitmap.Width-160,bitmap.Height-80, 120, 60);
                 graphics.DrawString(text,font,Brushes.Black,rectangle);
@@ -48,20 +47,21 @@ namespace Szakdolgozat.Services
             graphics.DrawLine(Pens.Black, bitmap.Width - 180, 120, bitmap.Width - 160, 100);
             graphics.DrawLine(Pens.Black, bitmap.Width - 180, 80, bitmap.Width - 160, 100);
         }
-        public void AddNextInstruction(Bitmap bitmap, String text, bool jump)
+        public Bitmap AddNextInstruction(ref Bitmap bitmap, String text, bool jump)
         {
             if (bitmap.Width > 220)
             {
                 
                 DrawRectangleText(bitmap, text, jump);
                 DrawStraightArrow(bitmap);
-                bitmap = ResizeBitmap(bitmap, 200, 100);
             }
             else
             {
                 DrawRectangleText(bitmap, text, jump);
-                bitmap = ResizeBitmap(bitmap, 200, 100);
+
             }
+            bitmap = ResizeBitmap(bitmap, 200);
+            return bitmap;
         }
 
         public void ForwardJump(Bitmap bitmap, int from, int to)
