@@ -4,3 +4,11 @@
 table, th, td {
     border: 1px solid black;
 }
+
+.bigdiv{
+    max-height:1200px;
+}
+.codetext{
+    max-height:1200px;
+    overflow-y:scroll;
+}
