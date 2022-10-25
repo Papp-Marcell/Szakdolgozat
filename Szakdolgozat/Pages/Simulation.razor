@@ -2,10 +2,14 @@
 @inject Models.MyFile myFile
 @inject Services.DebugService debugService;
 @inject Services.ImageService imageService;
+@inject Services.InstructionParser instructionParser;
 @inject IJSRuntime JS
 
 <h3>Simulation</h3>
 
+
+<input @bind="inputInstructionList"/>
+<button @onclick="SimulateCustom"> Simulate Custom Instruction List </button>
 
 <div class="row">
     <div class="column">
@@ -39,6 +43,9 @@
 @code {
 
     private string? manualURL;
+    private string? inputInstructionList;
+    //Browser wont reload Image because of cache, so a new image (uri) is made
+    private int imageIndex = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,11 +59,21 @@
         await JS.InvokeVoidAsync("setImage", "image", dotnetImageStream);
     }
 
-    
-    private void SaveSetImage()
+
+    private void SaveSetImage(string index="")
     {
-        debugService.AST.Save("wwwroot/AST.png");
-        manualURL = "AST.png";
+        debugService.AST.Save($"wwwroot/AST{index}.png");
+        manualURL = $"AST{index}.png";
+    }
+
+    private void SimulateCustom()
+    {
+        debugService.resultList.Clear();
+        debugService.AST = null;
+        debugService.InitializeDebug(instructionParser.ParseInstructons(inputInstructionList)._instructions);
+        SaveSetImage(imageIndex.ToString());
+        StateHasChanged();
+        imageIndex++;
     }
 
 }

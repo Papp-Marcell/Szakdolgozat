@@ -17,6 +17,7 @@ builder.Services.AddSingleton<HardwareService>();
 builder.Services.AddSingleton<Analysis>();
 builder.Services.AddSingleton<DebugService>();
 builder.Services.AddSingleton<ImageService>();
+builder.Services.AddSingleton<InstructionParser>();
 
 var app = builder.Build();
 

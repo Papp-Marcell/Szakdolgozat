@@ -26,6 +26,8 @@ namespace Szakdolgozat.Services
         //Creates a new object to simply store variables and arrays related to the simulation
         public void InitializeDebug(List<Instruction> instructions)
         {
+            timer.Reset();
+            memory = 0;
             stepCount = 0;
             AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
                     assemblyName,

@@ -1,0 +1,1 @@
+(InstructionType.DECLARE,n,int,null,null,10000,null)|(InstructionType.DECLARE_ARRAY,h_a,double,n,null,null,null)|(InstructionType.DECLARE,i,int,null,null,0,null)|(InstructionType.DECLARE,temp1,double,null,null,null,null)|(InstructionType.UOP,temp1,i,null,null,null,null,sin)
