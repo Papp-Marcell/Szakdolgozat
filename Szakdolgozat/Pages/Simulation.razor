@@ -6,9 +6,7 @@
 
 <h3>Simulation</h3>
 
-<button @onclick="SetImageAsync">
-    Set Image
-</button>
+
 <div class="row">
     <div class="column">
         <h4>Results</h4>
@@ -20,13 +18,21 @@
     <div class="column">
         <h4>Data</h4>
             <p> Steps : @debugService.stepCount </p>
-            <p> Memory Used : @debugService.memory Bytes (@debugService.memory/1024) megaBytes</p>
+            <p> Memory Used : @debugService.memory Bytes @(debugService.memory/1024) kiloBytes</p>
             <p> Run Time : @debugService.elapsedTime (hh:mm:ss:ms)</p>
     </div>
 </div>
 
 <div class="horizontalImageDiv">
-    <img id="image"/>
+    @if (manualURL is null)
+    {
+        <img id="image"/>
+    }
+    else
+    {
+        <img src="@manualURL"/>
+    }
+
 
 </div>
 
@@ -35,14 +41,21 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await SetImageAsync();
+        SaveSetImage();
     }
     private async Task SetImageAsync()
     {
         var imageStream = new System.IO.MemoryStream();
         debugService.AST.Save(imageStream,System.Drawing.Imaging.ImageFormat.Png);
-        debugService.AST.Save("t12345est.png");
         var dotnetImageStream = new DotNetStreamReference(imageStream);
         await JS.InvokeVoidAsync("setImage", "image", dotnetImageStream);
     }
+
+    private string? manualURL;
+    private void SaveSetImage()
+    {
+        debugService.AST.Save("wwwroot/AST.png");
+        manualURL = "AST.png";
+    }
+
 }

@@ -1,4 +1,8 @@
-﻿.column{
+﻿.row{
+    overflow-x:hidden;
+    
+}
+.column{
     float:left;
     width:50%;
 }
@@ -8,7 +12,10 @@
     clear: both;
 }
 
+
+
 .horizontalImageDiv {
-    overflow-x: auto;
+    max-width:1000px;
+    overflow-x: scroll;
     white-space: nowrap;
 }

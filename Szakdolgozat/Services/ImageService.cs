@@ -43,9 +43,9 @@ namespace Szakdolgozat.Services
         public void DrawStraightArrow(Bitmap bitmap)
         {
             Graphics graphics = Graphics.FromImage(bitmap);
-            graphics.DrawLine(Pens.Black, bitmap.Width - 240, 100, bitmap.Width - 160, 100);
-            graphics.DrawLine(Pens.Black, bitmap.Width - 180, 120, bitmap.Width - 160, 100);
-            graphics.DrawLine(Pens.Black, bitmap.Width - 180, 80, bitmap.Width - 160, 100);
+            graphics.DrawLine(Pens.Black, bitmap.Width - 240, 50, bitmap.Width - 160, 50);
+            graphics.DrawLine(Pens.Black, bitmap.Width - 180, 70, bitmap.Width - 160, 50);
+            graphics.DrawLine(Pens.Black, bitmap.Width - 180, 30, bitmap.Width - 160, 50);
         }
         public Bitmap AddNextInstruction(ref Bitmap bitmap, String text, bool jump)
         {
@@ -67,21 +67,21 @@ namespace Szakdolgozat.Services
         public void ForwardJump(Bitmap bitmap, int from, int to)
         {
             Graphics graphics = Graphics.FromImage(bitmap);
-            graphics.DrawLine(Pens.Green, (from * 200) - 100, 80, (from * 200) - 100, 95);
-            graphics.DrawLine(Pens.Green, (to * 200) - 100, 80, (to * 200) - 100, 95);
-            graphics.DrawLine(Pens.Green, (from * 200) - 100, 95, (to * 200) - 100, 95);
-            graphics.DrawLine(Pens.Green, (to * 200) - 110, 90, (to * 200) - 100, 80);
-            graphics.DrawLine(Pens.Green, (to * 200) - 90, 90, (to * 200) - 100, 80);
+            graphics.DrawLine(Pens.Green, ((from+1) * 200) - 100, 80, ((from + 1) * 200) - 100, 95);
+            graphics.DrawLine(Pens.Green, ((to+2) * 200) - 100, 80, ((to + 2) * 200) - 100, 95);
+            graphics.DrawLine(Pens.Green, ((from + 1) * 200) - 100, 95, ((to + 2) * 200) - 100, 95);
+            graphics.DrawLine(Pens.Green, ((to + 2) * 200) - 110, 90, ((to + 2) * 200) - 100, 80);
+            graphics.DrawLine(Pens.Green, ((to + 2) * 200) - 90, 90, ((to + 2) * 200) - 100, 80);
         }
 
         public void BackwardsJump(Bitmap bitmap, int from, int to)
         {
             Graphics graphics = Graphics.FromImage(bitmap);
-            graphics.DrawLine(Pens.Purple, (from * 200) - 100, 20, (from * 200) - 100, 5);
-            graphics.DrawLine(Pens.Purple, (to * 200) - 100, 20, (to * 200) - 100, 5);
-            graphics.DrawLine(Pens.Purple, (from * 200) - 100, 5, (to * 200) - 100, 5);
-            graphics.DrawLine(Pens.Purple, (from * 200) - 110, 10, (from * 200) - 100, 20);
-            graphics.DrawLine(Pens.Purple, (from * 200) - 90, 10, (from * 200) - 100, 20);
+            graphics.DrawLine(Pens.Purple, ((from + 1) * 200) - 100, 20, ((from + 1) * 200) - 100, 5);
+            graphics.DrawLine(Pens.Purple, ((to + 2) * 200) - 100, 20, ((to + 2) * 200) - 100, 5);
+            graphics.DrawLine(Pens.Purple, ((from+1) * 200) - 100, 5, ((to + 2) * 200) - 100, 5);
+            graphics.DrawLine(Pens.Purple, ((to + 2) * 200) - 110, 10, ((to + 2) * 200) - 100, 20);
+            graphics.DrawLine(Pens.Purple, ((to+2) * 200) - 90, 10, ((to + 2) * 200) - 100, 20);
         }
     }
 }

@@ -115,7 +115,7 @@ namespace Szakdolgozat.Services
                     break;
                 case InstructionType.UOP:
                     imageService.AddNextInstruction(ref bitmap, $"UOP on {instruction.var1}", false);
-                    bitmap.Save("UOP.png");
+                  
                     break;
                 case InstructionType.COPY_TO_ARRAY:
                     imageService.AddNextInstruction(ref bitmap, $"Copy to elemnt of {instruction.var1} array", false);
@@ -140,6 +140,9 @@ namespace Szakdolgozat.Services
                     break;
                 case InstructionType.JUMP:
                     imageService.AddNextInstruction(ref bitmap, $"Jump {instruction.index.Value} instructions", true);
+                    break;
+                case InstructionType.COPY:
+                    imageService.AddNextInstruction(ref bitmap, $"Copy to {instruction.var1}", false);
                     break;
                 case InstructionType.J_IF_EQUAL:
                 case InstructionType.J_IF_GREATER:
