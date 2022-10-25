@@ -1,0 +1,36 @@
+Example : Custom Instructions Example.txt
+
+Format of custom Instruction List : (instruction)|(instruction)|(instruction)...|(instruction)
+
+Format of instruction:(instrucionType,var1,var2,var3,index,value1,value2,op=null,var4=null)
+
+var1/2/3/4 : string
+index: int
+value1/2 : double
+op : +/-/*/ ( / ) (/ sin / cos -- only in UOP)
+
+op and var 4 can be omitted.
+
+var? = var is optional
+(var? || var?) = exclusive or
+
+InstructionTypes:
+COPY,   Copy a value or a variable into a variable		var1:copy_to name  (var2?:copy_from name || value1?:value) rest null
+DECLARE, Declare a variable, 	var1:name var2:type (var3?:value || value1?:value) rest null
+DECLARE_ARRAY, Declare a variable array, 	var1:name var2:type (var3:size -- name of a variable or int) rest null
+DECLARE_LIST, Not supported
+COPY_FROM_ARRAY, Not supported
+COPY_TO_ARRAY, Copies a value from var to array element 	var1:copy_to name  var2:copy_from name (var3?:index name ||index?: int) rest null
+COPY_ARRAY_ARRAY, Copies a value from array element to array element, index must be same	var1:copy_to name  var2:copy_from name (var3?:index name ||index?: int) rest null
+UOP, Unary Operation on variable [var1 op var2/value1]	var1:name 	(var2?:name  ||  value1?:double)	 op:operator	 rest null
+UOP_TO_ARRAY, Unary Operation on array element with variable		[var1 op var2/value1]	var1:name 	(var2?:name  ||  value1?:double)	(var3?:name || index?:int)	 op:operator	 rest null
+UOP_FROM_ARRAY, Unary Operation on variable with array element 	[var1 op var2/value1]	var1:name 	(var2?:name  ||  value1?:double)	(var3?:name || index?:int)	 op:operator	 rest null
+UOP_ARRAY_ARRAY,  Unary Operation on array element with array element,	index must be same 	[var1 op var2/value1]	var1:name 	(var2?:name  ||  value1?:double)	(var3?:name || index?:int)	 op:operator	 rest null
+JUMP, Jumps x instruction 	index:jump distance in number of instructions-1  rest null
+J_IF_EQUAL, Jump if Condition, 		var1:name of comparison variable     var2:name of other comparison variable   index:jump distance in number of instructions-1  rest null
+J_IF_GREATER, Jump if Condition, 	var1:name of comparison variable     var2:name of other comparison variable   index:jump distance in number of instructions-1  rest null	
+J_IF_GREATER_EQUAL, Jump if Condition, 		var1:name of comparison variable     var2:name of other comparison variable   index:jump distance in number of instructions-1  rest null
+J_IF_LESS, Jump if Condition, 		var1:name of comparison variable     var2:name of other comparison variable   index:jump distance in number of instructions-1  rest null
+J_IF_LESS_EQUAL, Jump if Condition, 	var1:name of comparison variable     var2:name of other comparison variable   index:jump distance in number of instructions-1  rest null
+VAR_PRINT, Prints a variable 	var1:name rest null
+ARRAY_PRINT, Prints first 5 elements of array	 var1:name rest null
