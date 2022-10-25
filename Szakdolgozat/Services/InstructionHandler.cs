@@ -1,12 +1,13 @@
 ﻿using Szakdolgozat.Models;
 using System.Reflection;
-using System;
+using System.Drawing;
 using System.Reflection.Emit;
 
 namespace Szakdolgozat.Services
 {
     public class InstructionHandler
     {
+        private ImageService imageService = new ImageService();
 
         public void ExecuteDeclaration(Instruction instruction, TypeBuilder typeBuilder,ref int counter)
         {
@@ -102,8 +103,79 @@ namespace Szakdolgozat.Services
             i++;
         }
 
+        public void DrawInstruction(Instruction instruction,int i,Bitmap bitmap)
+        {
+            switch (instruction.instrucionType)
+            {
+                case InstructionType.DECLARE_ARRAY:
+                    imageService.AddNextInstruction(bitmap, $"Create array {instruction.var1}", false);
+                    break;
+                case InstructionType.DECLARE:
+                    imageService.AddNextInstruction(bitmap, $"Create variable {instruction.var1}", false);
+                    break;
+                case InstructionType.UOP:
+                    imageService.AddNextInstruction(bitmap, $"UOP on {instruction.var1}", false);
+                    break;
+                case InstructionType.COPY_TO_ARRAY:
+                    imageService.AddNextInstruction(bitmap, $"Copy to elemnt of {instruction.var1} array", false);
+                    break;
+                case InstructionType.UOP_TO_ARRAY:
+                    imageService.AddNextInstruction(bitmap, $"UOP on elemnt of {instruction.var1} array", false);
+                    break;
+                case InstructionType.ARRAY_PRINT:
+                    imageService.AddNextInstruction(bitmap, $"Prints Values of first 5 elemtents of {instruction.var1} array", false);
+                    break;
+                case InstructionType.VAR_PRINT:
+                    imageService.AddNextInstruction(bitmap, $"Print Value of {instruction.var1}", false);
+                    break;
+                case InstructionType.COPY_ARRAY_ARRAY:
+                    imageService.AddNextInstruction(bitmap, $"Copy to {instruction.var1} array from {instruction.var2} array", false);
+                    break;
+                case InstructionType.UOP_ARRAY_ARRAY:
+                    imageService.AddNextInstruction(bitmap, $"UOP on elemnt of {instruction.var1} array with element of {instruction.var2} array", false);
+                    break;
+                case InstructionType.UOP_FROM_ARRAY:
+                    imageService.AddNextInstruction(bitmap, $"UOP on {instruction.var1} with element of {instruction.var2} array", false);
+                    break;
+                case InstructionType.JUMP:
+                    imageService.AddNextInstruction(bitmap, $"Jump {instruction.index.Value} instructions", true);
+                    break;
+                case InstructionType.J_IF_EQUAL:
+                case InstructionType.J_IF_GREATER:
+                case InstructionType.J_IF_GREATER_EQUAL:
+                case InstructionType.J_IF_LESS:
+                case InstructionType.J_IF_LESS_EQUAL:
+                    imageService.AddNextInstruction(bitmap, $"Jump {instruction.index.Value} instructions based on condition", true);
+                    break;
 
-        
+
+            }
+
+        }
+
+        public void DrawJumps(Instruction instruction, int i, Bitmap bitmap)
+        {
+            switch (instruction.instrucionType)
+            {
+                case InstructionType.JUMP:
+                case InstructionType.J_IF_EQUAL:
+                case InstructionType.J_IF_GREATER:
+                case InstructionType.J_IF_GREATER_EQUAL:
+                case InstructionType.J_IF_LESS:
+                case InstructionType.J_IF_LESS_EQUAL:
+                    if (instruction.index.Value > 0)
+                    {
+                        imageService.ForwardJump(bitmap, i, i + instruction.index.Value);
+                    }
+                    else
+                    {
+                        imageService.BackwardsJump(bitmap, i, i + instruction.index.Value);
+                    }
+                    break;
+            }
+
+        }
+
 
         private void CreateArrayType(string name,string type,TypeBuilder typeBuilder)
         {

@@ -1,9 +1,14 @@
 ﻿@page "/simulation"
 @inject Models.MyFile myFile
 @inject Services.DebugService debugService;
+@inject Services.ImageService imageService;
+@inject IJSRuntime JS
 
 <h3>Simulation</h3>
 
+<button @onclick="SetImageAsync">
+    Set Image
+</button>
 <div class="row">
     <div class="column">
         <h4>Results</h4>
@@ -15,11 +20,29 @@
     <div class="column">
         <h4>Data</h4>
             <p> Steps : @debugService.stepCount </p>
-            <p> Memory Used : @debugService.memory bytes</p>
+            <p> Memory Used : @debugService.memory Bytes (@debugService.memory/1024) megaBytes</p>
             <p> Run Time : @debugService.elapsedTime (hh:mm:ss:ms)</p>
     </div>
 </div>
 
+<div class="horizontalImageDiv">
+    <img id="image"/>
+
+</div>
+
 @code {
-    
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SetImageAsync();
+    }
+    private async Task SetImageAsync()
+    {
+        var imageStream = new System.IO.MemoryStream();
+        debugService.AST.Save(imageStream,System.Drawing.Imaging.ImageFormat.Png);
+        debugService.AST.Save("t12345est.png");
+        var dotnetImageStream = new DotNetStreamReference(imageStream);
+        await JS.InvokeVoidAsync("setImage", "image", dotnetImageStream);
+    }
 }

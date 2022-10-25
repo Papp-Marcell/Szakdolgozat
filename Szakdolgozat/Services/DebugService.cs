@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using System;
+using System.Drawing;
 using System.Diagnostics;
 using System.Reflection.Emit;
 using Szakdolgozat.Models;
@@ -10,6 +10,7 @@ namespace Szakdolgozat.Services
     {
         private InstructionHandler instructionHandler = new InstructionHandler();
         private AssemblyName assemblyName = new AssemblyName("assembly");
+        private ImageService ImageService = new ImageService();
         private Type? debug;
         private object? debugObject;
         public int stepCount;
@@ -17,6 +18,7 @@ namespace Szakdolgozat.Services
         public int memory = 0;
         private Stopwatch timer = new Stopwatch();
         public string? elapsedTime;
+        public Bitmap? AST;
 
 
 
@@ -41,6 +43,8 @@ namespace Szakdolgozat.Services
 
 
             Simulate(instructions);
+            GetAST(instructions);
+            nothing();
         }
 
         public void Simulate(List<Instruction> instructions)
@@ -55,5 +59,24 @@ namespace Szakdolgozat.Services
             elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
             ts.Hours, ts.Minutes, ts.Seconds,ts.Milliseconds / 10);
         }
+
+        public void GetAST(List<Instruction> instructions)
+        {
+            AST = ImageService.StartBitmap();
+            for (int i = 0; i < instructions.Count;i++)
+            {
+                instructionHandler.DrawInstruction(instructions[i],i,AST);
+            }
+            for (int i = 0; i < instructions.Count;i++)
+            {
+                instructionHandler.DrawJumps(instructions[i], i, AST);
+            }
+
+        }
+        public void nothing()
+        {
+
+        }
+
     }
 }

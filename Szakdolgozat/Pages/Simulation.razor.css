@@ -2,3 +2,13 @@
     float:left;
     width:50%;
 }
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.horizontalImageDiv {
+    overflow-x: auto;
+    white-space: nowrap;
+}
