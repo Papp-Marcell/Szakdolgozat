@@ -33,6 +33,17 @@ A program működése a következő:
 
 A webalkalmazáson át feltöltünk egy forrásfájlt, majd a szerver a fájlt beolvassa soronként. Megvizsgálja hogy a forrásfájl milyen OpenCL eszközöket használ, hány munka elem van benne, stb. A szerver ezután lekéri a számítógép architektúráját. Következő lépésben a webalkalmazás megrajzolja a számítógép ide vonatkozó Hardware elemeit, mint a rendelkezésre álló memória, a processzor adatai, a videókártya adatai, valamint felvázolja hogy az architektúrát milyen módon használná az OpenCL program. A szerver megkeresi a forrásfájlban az OpenCL függvényeket, és szükségszerűen modelleket rendell hozzájuk, vagyis megfelelő objektumokat hoz létre, például a \texttt{clCreateKernel} metódust észlelve létrehozunk egy Kernel objektumot.Ilyenkor azt is megállapítja, hogy az adott elem melyik Compute Unit-hoz tartozik. Ha ez sikeres, a webalkalmazás egy Gantt diagramban vizualizálja a program futtatását az idő függvényében. A webalkalmazás ezzel szinkronban megjeleníti magát a forráskódot is, és bármely Gantt diagrambeli elemre kattintva kiemeli a megfelelő kódot.
 
+A program másik fele az Aritmetikai szimulációval foglalkozik. Ennek szükséglete lenne a forrásfájl "lefordítása" és futtatása, viszont a fordítás teljes folyamata meghaladja a dolgozatot. Kompromisszumos megoldás az első lépések, vagyis a lexikai analízis, szintaktikai analízis, szemantikai analízis, illetve később a kód optimalizálás kihagyása. A szimuláció így "kitalált" elemekkel dolgozik amit vagy a fájlnév alapján hoz létre, vagy mi magunk adhatunk meg. Ezek az elemek a Intermediate Code elemei amiket instrukcióknak nevezünk. Ha ezek megvannak, akkor az alkalmazás szimulálja őket, feljegyzi a instrukció lépés számot, a minimális memória igényt és a futási időt, valamint létrehoz egy szintaktikai fát az instrukciók alapján. A szimuláció ténylegesen elvégzi a lépéseket, létrehoz változókat, műveleteket végez rajtuk, és végül kiírja az eredményeket.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.4]{images/Compiler.jpg}
+\caption{Fordító és módosításai}
+\label{fig:compiler}
+\end{figure}
+
+
+
 °%\Section{Táblázatok}
 
 %Táblázatokhoz a \texttt{table} környezetet ajánlott használni.

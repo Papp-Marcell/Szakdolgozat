@@ -82,6 +82,98 @@ A második konténerben, vagyis az oldal jobb oldalán magát a forráskódot je
 jsRuntime.InvokeAsync<bool>("test","line{" + (i-8) + "}");
 \end{cpp}
 
+\Section{Instrukciók és kezelésük}
+A program az átmeneti kódot instrukció objektumonként kezeli, ami az instrukció típus enumból és különböző adattagokból áll. Az adattagoknak a típusaikon (string,int,double) túl nincs kötött szerepe, hanem az instrukció kezelő szükség szerint használja őket. Az összes adattag nullázható típus, ami szükséges az instrukciók korrekt létrehozásához és működéséhez, viszont bonyolítja kezelésüket.
+
+Az instrukciók 2 féle módon jönnek létre, vagy hamisak és "kitalálja" őket a program a forrásfájl neve alapján, vagy a felhasználó adja meg őket. Az első esetben egy MockInstructionList objektum hozza őket létre, második esetben pedig egy InstructionParser objektum, de egyaránt egy MockInstructionList objektumban lesznek eltárolva egy listában.
+
+\begin{cpp}
+public MockInstructionList ParseInstructons(string textInstructions)
+        {
+            String[] textInstructionArray = textInstructions.Split('|');
+            MockInstructionList list = new MockInstructionList();
+            foreach(String instruction in textInstructionArray)
+            {         
+                list._instructions.Add(ParseInstruction(instruction));
+            }
+            return list;
+        }
+        
+private Instruction ParseInstruction(string textInstruction)
+        {
+            ......
+            return  new Instruction
+                (
+                    parseInstructionType(instructionType[1]),
+                    nullCheck(currentInstructionArray[1]),
+                    nullCheck(currentInstructionArray[2]),
+                    nullCheck(currentInstructionArray[3]), 
+                    nullCheckInt(currentInstructionArray[4]),
+                    nullCheckDouble(currentInstructionArray[5]),
+                    nullCheckDouble(currentInstructionArray[6]),
+                    instructionVar7,
+                    instructionVar8
+                 );
+        }
+\end{cpp}
+
+
+Ezután az instrukciók átkerülnek a DebugService-hez, ahol megtörténik a szimuláció.
+Ennek első lépése a változók és tömbök létrehozása és tárolása. Mivel nem lehet előre tudni a változók neveit, típusait, mennyiségeket, dinamikus megoldásra van szükség. Ilyen lehetett volna változó / tömb listák és hozzájuk tartozó szótárak létrehozása. Változó létrehozásakor hozzáadódna listához, majd bekerülne a szótárba mint egy <változó név,index> elempár és a szótáron át lehetne rá hivatkozni. Működőképes, de komplikált és problémás, mivel a szótár egy extra réteg az adatok és az instrukció kezelő között. Minden adattípushoz külön lista - szótár páros lenne szükséges, tömb listák is bonyolítanák.
+
+A megoldás egyszerre bonyolultabb és egyszerűbb. Futásidőben hozunk létre egy osztályt a szükséges adattagokkal. Ehhez felhasználjuk a Reflection könyvtárat, főleg az AssemblyBuilder-t, ModelBuilder-t, és a TypeBuilder-t. Ezek létrehozzák a az osztályt, majd az instrukciók kezelő létrehozza a megfelelő mezőket, amik lehetnek string vagy double változók, vagy tömbök. Az instrukció kezelő az instrukció típusa alapján hívja meg a korrekt metódust. Ekkor egyiknek sincs értéke.
+
+\begin{cpp}
+AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(...);
+ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(...);
+TypeBuilder typeBuilder = moduleBuilder.DefineType(...);
+foreach (Instruction instruction in instructions)
+{
+        instructionHandler.ExecuteDeclaration(instruction, typeBuilder,...);
+}
+
+
+private void CreateType(string name, string type,TypeBuilder typeBuilder)
+        {
+            switch (type)
+            {
+                case "string":
+                    typeBuilder.DefineField(name,typeof(string),FieldAttributes.Public);
+                    break;
+                default:
+                    typeBuilder.DefineField(name, typeof(double), FieldAttributes.Public);
+                    break;
+            }
+        }
+\end{cpp}
+
+Van lehetőség konstruktorokat is megadni és úgy adni értékeket a változóknak, de problémát okozhat ha egy tömb méretét egy változó szabná meg, és a változónak még nincs értéke. Ezért a deklarációk után befejeződik az osztály készítése, és létrejön egy példánya.
+Az objektum létrehozása után megkezdődik az igazi szimuláció, az összes instrukció feldolgozásra kerül. Ha hivatkozni szeretnénk egy változóra, az objektumon át érjük el reflekció segítségével, az objektum típusának mezőjének értéket tudjuk így egyszerűen elérni.
+
+\begin{cpp}
+private string VarPrint(string name,Object object)
+        {
+            return "Value of {name} : {object.GetType().GetField(name).GetValue(object)}";
+        }
+\end{cpp}
+
+Néhány instrukció paramétere lehet érték vagy változó ami értéket tárol. Ilyen esetben az instrukció kezelő dönt.
+
+\begin{cpp}
+			double opValue;
+            if (doubleValue.HasValue)
+            {
+                opValue = doubleValue.Value;
+            }
+            else
+            {
+                opValue = (double)object.GetType().GetField(value).GetValue(object);
+            }
+\end{cpp}
+
+Érdekesség hogy néha szükséges átváltani az objektum egy double elemét int-é. Ennek módja általában a (int)var -al történik, de az itt hibát okoz a változó ki-be- csomagolása miatt, ezért vagy (int)(double)var -t kell használni, vagy int.convert(var) -t.
+
+       
 
 %\begin{verbatim}
 %$ some commands with arguments
