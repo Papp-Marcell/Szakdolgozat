@@ -3,7 +3,7 @@
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{images/blazor.jpg}
-\caption{Blazor Server. Forrás:https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0}
+\caption{Blazor Server. \\ Forrás:https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0}
 \label{fig:blazor}
 \end{figure}
 
@@ -82,8 +82,8 @@ A második konténerben, vagyis az oldal jobb oldalán magát a forráskódot je
 jsRuntime.InvokeAsync<bool>("test","line{" + (i-8) + "}");
 \end{cpp}
 
-\Section{Instrukciók és kezelésük}
-A program az átmeneti kódot instrukció objektumonként kezeli, ami az instrukció típus enumból és különböző adattagokból áll. Az adattagoknak a típusaikon (string,int,double) túl nincs kötött szerepe, hanem az instrukció kezelő szükség szerint használja őket. Az összes adattag nullázható típus, ami szükséges az instrukciók korrekt létrehozásához és működéséhez, viszont bonyolítja kezelésüket.
+\Section{Instrukciók és szimulálásuk}
+A program az átmeneti kódot instrukció objektumonként kezeli, ami az instrukció típus enumból és különböző adattagokból áll. Az adattagoknak a típusaikon (string, int, double) túl nincs kötött szerepe, hanem az instrukció kezelő szükség szerint használja őket. Az összes adattag nullázható típus, ami szükséges az instrukciók korrekt létrehozásához és működéséhez, viszont bonyolítja kezelésüket.
 
 Az instrukciók 2 féle módon jönnek létre, vagy hamisak és "kitalálja" őket a program a forrásfájl neve alapján, vagy a felhasználó adja meg őket. Az első esetben egy MockInstructionList objektum hozza őket létre, második esetben pedig egy InstructionParser objektum, de egyaránt egy MockInstructionList objektumban lesznek eltárolva egy listában.
 
@@ -124,12 +124,15 @@ Ennek első lépése a változók és tömbök létrehozása és tárolása. Miv
 A megoldás egyszerre bonyolultabb és egyszerűbb. Futásidőben hozunk létre egy osztályt a szükséges adattagokkal. Ehhez felhasználjuk a Reflection könyvtárat, főleg az AssemblyBuilder-t, ModelBuilder-t, és a TypeBuilder-t. Ezek létrehozzák a az osztályt, majd az instrukciók kezelő létrehozza a megfelelő mezőket, amik lehetnek string vagy double változók, vagy tömbök. Az instrukció kezelő az instrukció típusa alapján hívja meg a korrekt metódust. Ekkor egyiknek sincs értéke.
 
 \begin{cpp}
-AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(...);
-ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(...);
+AssemblyBuilder assemblyBuilder = 
+AssemblyBuilder.DefineDynamicAssembly(...);
+ModuleBuilder moduleBuilder = 
+assemblyBuilder.DefineDynamicModule(...);
 TypeBuilder typeBuilder = moduleBuilder.DefineType(...);
 foreach (Instruction instruction in instructions)
 {
-        instructionHandler.ExecuteDeclaration(instruction, typeBuilder,...);
+        instructionHandler.
+        ExecuteDeclaration(instruction, typeBuilder,...);
 }
 
 
@@ -138,10 +141,12 @@ private void CreateType(string name, string type,TypeBuilder typeBuilder)
             switch (type)
             {
                 case "string":
-                    typeBuilder.DefineField(name,typeof(string),FieldAttributes.Public);
+                    typeBuilder.DefineField
+                    (name,typeof(string),FieldAttributes.Public);
                     break;
                 default:
-                    typeBuilder.DefineField(name, typeof(double), FieldAttributes.Public);
+                    typeBuilder.DefineField
+                    (name, typeof(double), FieldAttributes.Public);
                     break;
             }
         }
@@ -153,7 +158,8 @@ Az objektum létrehozása után megkezdődik az igazi szimuláció, az összes i
 \begin{cpp}
 private string VarPrint(string name,Object object)
         {
-            return "Value of {name} : {object.GetType().GetField(name).GetValue(object)}";
+            return "Value of {name} : 
+            {object.GetType().GetField(name).GetValue(object)}";
         }
 \end{cpp}
 
@@ -167,13 +173,44 @@ Néhány instrukció paramétere lehet érték vagy változó ami értéket tár
             }
             else
             {
-                opValue = (double)object.GetType().GetField(value).GetValue(object);
+                opValue = (double)object.GetType().
+                GetField(value).GetValue(object);
             }
 \end{cpp}
 
 Érdekesség hogy néha szükséges átváltani az objektum egy double elemét int-é. Ennek módja általában a (int)var -al történik, de az itt hibát okoz a változó ki-be- csomagolása miatt, ezért vagy (int)(double)var -t kell használni, vagy int.convert(var) -t.
 
-       
+Prédikátumok az átmeneti kódban ugrásokra vannak bontva, ha egy prédikátum teljesül, akkor a szimuláció indexe továbbugrik a megjelölt instrukcióhoz. Elöltesztelő ciklus esetén van egy második ugrás a ciklus végén, ami visszaállítja a szimuláció indexét a ciklushoz tartozó prédikátumhoz.
+
+A futtatás során feljegyzésre kerül a instrukció lépésszám, és a a változók és tömbök által lefoglalt memória igény, ami a program minimum memóriaigényének felel meg, valamint méri a futási időt is. 
+
+A szimuláció végig szekvenciálisan fut, mivel a tényleges futási idő különbség elhanyagolható lenne a C\# Task alapú párhuzamos programozási mechanikái miatt. Minden párhuzamos instrukciónak külön Task-ra lenne szüksége, amiket egyesével egy ciklusban kellene szekvenciálisan létrehozni, így nem hogy gyorsítana a szimuláción, de még hátráltatná is.
+
+A szimuláció után a DebugService az ImageService segítségével létrehoz egy szintaxis fát, amin fel van tüntetve az összes instrukció, és a hozzájuk tartozó nyilak. A kép egy dinamikusan bővülő bitmap-ből készül el, így minimális méretű. Itt két érdekesebb probléma merült fel, az egyikben az alkalmazás lementi a készült képet, majd a böngésző megjeleníti. De ha új képre akarunk váltani, a böngésző a régi képet fogja mutatni, mert eltárolta a gyorsítótárban. Így minden kép sorszámot kap, hogy a böngésző észlelje hogy új képre van szükség, és ne a gyorsítótárból szedje elő. 
+
+A másik érdekes probléma a kép dinamikus bővítése közben történt, a képre rárajzolódott minden rendesen, megtörtént az átméretezés, de a tényleges kép a memóriában nem méreteződött át. Olyan mintha a bitmap objektum egyszerre lenne érték és referencia típus, aminek oka ismeretlen. Szerencsére ha explicit módon referencia típusként kezeljük, akkor ez a hiba és gyorsan megoldódik.
+
+\begin{cpp}
+public Bitmap AddInstruction(ref Bitmap bitmap,String text,bool jump)
+{
+      if (bitmap.Width > 220)
+      {
+           DrawRectangleText(bitmap, text, jump);
+           DrawStraightArrow(bitmap);
+       }
+       else
+       {
+           DrawRectangleText(bitmap, text, jump);
+       }
+       bitmap = ResizeBitmap(bitmap, 200);
+       return bitmap;
+}
+\end{cpp}
+
+Miután elkészül a szintaxis fa, az alkalmazás elkészíti a szimuláció oldalt, ahol az eredmények láthatóak.
+
+\Section{Platform függetlenség}
+2016-ban megjelent a .Net Core 1.0, ami az addigi .Net keretrendszer platform független verziója lett. A dolgozatban használt .Net 6.0 ennek a legújabb hosszútávú támogatású verziója, ami szintén platform független. A Blazor webalkalmazás szintén platformfüggetlen. Viszont néhány használt könyvtár még nincs  frissítve, ezért Linuxon vagy nem (System.Management - nem használjuk Linuxon), vagy korlátozottan (System.Drawing.Common) működik. Az alkalmazás így is platformfüggetlen, de csak Windowson volt tesztelve.
 
 %\begin{verbatim}
 %$ some commands with arguments

@@ -29,15 +29,15 @@
         await jsRuntime.InvokeAsync<string>("test2");        
         currentCanvasContext = await myCanvas.CreateCanvas2DAsync();
 
-        await currentCanvasContext.SetFillStyleAsync("blue");
+        await currentCanvasContext.SetFillStyleAsync("lightblue");
         await currentCanvasContext.FillRectAsync(0, 0, 150, 500);
 
         await currentCanvasContext.SetFontAsync("18px Calibri");
-        await currentCanvasContext.SetFillStyleAsync("red");
+        await currentCanvasContext.SetFillStyleAsync("black");
         await currentCanvasContext.FillTextAsync($"Memory {HWS.RamMemory} GB", 10, 250);
 
-        await drawComputeDevice(200, 0,HWS.CPUname,HWS.CPUthreads.ToString(),"grey");
-        await drawComputeDevice(200, 150,HWS.GPUname,"??","green");
+        await drawComputeDevice(200, 0,HWS.CPUname,HWS.CPUthreads.ToString(),"lightgrey");
+        await drawComputeDevice(200, 150,HWS.GPUname,"??","light    green");
 
 
     }
@@ -50,7 +50,7 @@
     {
         await currentCanvasContext.SetFillStyleAsync(color);
         await currentCanvasContext.FillRectAsync(startX, startY, 800, 100);
-        await currentCanvasContext.SetFillStyleAsync("red");
+        await currentCanvasContext.SetFillStyleAsync("black");
         await currentCanvasContext.FillTextAsync($"Compute Device: {name}", startX+10, startY+20);
         await currentCanvasContext.SetStrokeStyleAsync("black");
         await currentCanvasContext.StrokeRectAsync(startX+5, startY+25, 250, 70);

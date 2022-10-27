@@ -52,14 +52,12 @@ namespace Szakdolgozat.Services
         {
             if (bitmap.Width > 220)
             {
-                
                 DrawRectangleText(bitmap, text, jump);
                 DrawStraightArrow(bitmap);
             }
             else
             {
                 DrawRectangleText(bitmap, text, jump);
-
             }
             bitmap = ResizeBitmap(bitmap, 200);
             return bitmap;

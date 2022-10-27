@@ -4,17 +4,42 @@
 
 \vskip 1cm
 
-Ennek a címe lehet például \textit{A mellékelt CD tartalma} vagy \textit{Adathordozó használati útmutató} is.
-
-Ez jellemzően csak egy fél-egy oldalas leírás.
-Arra szolgál, hogy ha valaki kézhez kapja a szakdolgozathoz tartozó CD-t, akkor tudja, hogy mi hol van rajta.
-Jellemzően elég csak felsorolni, hogy milyen jegyzékek vannak, és azokban mi található.
-Az elkészített programok telepítéséhez, futtatásához tartozó instrukciók kerülhetnek ide.
-
-A CD lemezre mindenképpen rá kell tenni
+A CD tartalma:
 \begin{itemize}
 \item a dolgozatot egy \texttt{dolgozat.pdf} fájl formájában,
-\item a LaTeX forráskódját a dolgozatnak,
-\item az elkészített programot, fontosabb futási eredményeket (például ha kép a kimenet),
-\item egy útmutatót a CD használatához (ami lehet ez a fejezet külön PDF-be vagy MarkDown fájlként kimentve).
+\item a LaTeX forráskódja a dolgozatnak,
+\item az elkészített program forrás projekt,
+\item az elkészített program (exe),
+\item példa OpenCl C nyelvű programok,
+\item egy útmutató saját instrukciók létrehozására.
 \end{itemize}
+
+Ajánlott a program fordítása, ehhez a következő keretrendszerek és könvytárak szükségesek: 
+\begin{itemize}
+\item DotNet 6.0,
+\item Blazor.Extensions.Canvas NuGet csomag,
+\item Newtonsoft.Json NuGet csomag,
+\item System.Drawing.Common NuGet csomag,
+\item System.Management  NuGet csomag.
+\end{itemize}
+
+Nem kötelező, de ajánlott : Visual Studio.
+A fordítás ajánlott módja Windows-on a projekt megnyitása (Szakdolgozat.csproj) Visual Studio-ban, majd a Szakdolgozat gombra kattintva automatikusan lefut a fordítása folyamat és elindul a program, és egy hozzá tartozó webszerver, alaphelyzetben IIS Express, valamint egy böngészőben a kezdőoldal.
+Ha ez nem megoldható, akkor lehet a projekt mappában futtatni a "dotnet build" és a "dotnet run" parancsokat, amik lefordítják, illetve futtatják a programot. Ha nem nyílna meg a böngésző, akkor elérjük a webalkalmazást a parancssorban megjelent localhost címen.
+
+Ha a már elkészített programot szeretnénk futtatni, megtehetjük az executable elindításával, de ekkor nekünk kell webszerverről gondoskodni.
+
+%Ennek a címe lehet például \textit{A mellékelt CD tartalma} vagy \textit{Adathordozó használati útmutató} is.
+%
+%Ez jellemzően csak egy fél-egy oldalas leírás.
+%Arra szolgál, hogy ha valaki kézhez kapja a szakdolgozathoz tartozó CD-t, akkor tudja, hogy mi hol van rajta.
+%Jellemzően elég csak felsorolni, hogy milyen jegyzékek vannak, és azokban mi található.
+%Az elkészített programok telepítéséhez, futtatásához tartozó instrukciók kerülhetnek ide.
+%
+%A CD lemezre mindenképpen rá kell tenni
+%\begin{itemize}
+%\item a dolgozatot egy \texttt{dolgozat.pdf} fájl formájában,
+%\item a LaTeX forráskódját a dolgozatnak,
+%\item az elkészített programot, fontosabb futási eredményeket (például ha kép a kimenet),
+%\item egy útmutatót a CD használatához (ami lehet ez a fejezet külön PDF-be vagy MarkDown fájlként kimentve).
+%\end{itemize}
