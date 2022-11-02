@@ -1,5 +1,6 @@
 ﻿using Szakdolgozat.Models;
 using System.Reflection;
+using System.Collections.Immutable;
 using System.Drawing;
 using System.Reflection.Emit;
 
@@ -9,6 +10,8 @@ namespace Szakdolgozat.Services
     public class InstructionHandler
     {
         private ImageService imageService = new ImageService();
+        private bool parallel = false;
+        private ImmutableList<Instruction> parallelInstructions = ImmutableList<Instruction>.Empty;
 
         public void ExecuteDeclaration(Instruction instruction, TypeBuilder typeBuilder,ref int counter)
         {
@@ -25,8 +28,21 @@ namespace Szakdolgozat.Services
             }
         }
 
-        public void ExecuteInstruction(Instruction instruction,object _object,ref int i,ref int counter,List<string> resultList,ref int memory)
+        public void ExecuteInstruction(Instruction instruction,object _object,ref int i,ref int counter,List<string> resultList,ref int memory,int? parallelIndex=null)
         {
+            if(instruction.instrucionType == InstructionType.PARALLEL_END)
+            {
+                parallel = false;
+                ExecuteParallel(_object, ref counter, ref memory,resultList,GetParallelCount(instruction.var1,instruction.value1,_object));
+                i++;
+                return;
+            }
+            if (parallel)
+            {
+                parallelInstructions=parallelInstructions.Add(instruction);
+                i++;
+                return;
+            }
             string resultString = null;
             switch (instruction.instrucionType)
             {
@@ -75,23 +91,23 @@ namespace Szakdolgozat.Services
                     counter++;
                     break;
                 case InstructionType.COPY_TO_ARRAY:
-                    CopyToArray(instruction.var1, instruction.var2, instruction.var3, instruction.index, _object);
+                    CopyToArray(instruction.var1, instruction.var2, instruction.var3, instruction.index, _object, parallelIndex);
                     counter++;
                     break;
                 case InstructionType.UOP_TO_ARRAY:
-                    UopToArray(instruction.var1, instruction.var2, instruction.var3, instruction.index, instruction.op, _object);
+                    UopToArray(instruction.var1, instruction.var2, instruction.var3, instruction.index, instruction.op, _object, parallelIndex);
                     counter++;
                     break;
                 case InstructionType.COPY_ARRAY_ARRAY:
-                    CopyToArrayFromArray(instruction.var1, instruction.var2, instruction.var3, instruction.index, _object);
+                    CopyToArrayFromArray(instruction.var1, instruction.var2, instruction.var3, instruction.index, _object, parallelIndex);
                     counter++;
                     break;
                 case InstructionType.UOP_ARRAY_ARRAY:
-                    UopToArrayFromArray(instruction.var1,instruction.var2,instruction.var3,instruction.index, instruction.op,_object);
+                    UopToArrayFromArray(instruction.var1,instruction.var2,instruction.var3,instruction.index, instruction.op,_object, parallelIndex);
                     counter++;
                     break;
                 case InstructionType.UOP_FROM_ARRAY:
-                    UopFromArray(instruction.var1, instruction.var2, instruction.var3, instruction.index, instruction.op, _object);
+                    UopFromArray(instruction.var1, instruction.var2, instruction.var3, instruction.index, instruction.op, _object, parallelIndex);
                     counter++;
                     break;
                 case InstructionType.VAR_PRINT:
@@ -99,6 +115,9 @@ namespace Szakdolgozat.Services
                     break;
                 case InstructionType.ARRAY_PRINT:
                     resultList.Add($"At step {counter} : {ArrayPrint(instruction.var1, _object)}");
+                    break;
+                case InstructionType.PARALLEL_START:
+                    ParallelStart();
                     break;
             }
             i++;
@@ -116,7 +135,6 @@ namespace Szakdolgozat.Services
                     break;
                 case InstructionType.UOP:
                     imageService.AddNextInstruction(ref bitmap, $"UOP on {instruction.var1}", false);
-                  
                     break;
                 case InstructionType.COPY_TO_ARRAY:
                     imageService.AddNextInstruction(ref bitmap, $"Copy to elemnt of {instruction.var1} array", false);
@@ -144,6 +162,15 @@ namespace Szakdolgozat.Services
                     break;
                 case InstructionType.COPY:
                     imageService.AddNextInstruction(ref bitmap, $"Copy to {instruction.var1}", false);
+                    break;
+                case InstructionType.PARALLEL_START:
+                    imageService.AddNextInstruction(ref bitmap, "Start Parallel", true);
+                    break;
+                case InstructionType.PARALLEL_END:
+                    imageService.AddNextInstruction(ref bitmap, "End Parallel", true);
+                    break;
+                case InstructionType.BARRIER:
+                    imageService.AddNextInstruction(ref bitmap, "Barrier", true);
                     break;
                 case InstructionType.J_IF_EQUAL:
                 case InstructionType.J_IF_GREATER:
@@ -337,7 +364,7 @@ namespace Szakdolgozat.Services
                 i += (int)index.Value;
             }
         }
-        private void CopyToArray(string arrayName, string name,string indexVar,int? index, object _object)
+        private void CopyToArray(string arrayName, string name,string indexVar,int? index, object _object,int? parallelIndex)
         {
             int arrayIndex;
             if (index.HasValue)
@@ -346,6 +373,11 @@ namespace Szakdolgozat.Services
             }
             else { 
                 arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object)); 
+            }
+
+            if (parallelIndex.HasValue)
+            {
+                arrayIndex = (int)parallelIndex.Value;
             }
             object value = _object.GetType().GetField(name).GetValue(_object);
             if (value.GetType() == typeof(string))
@@ -357,7 +389,7 @@ namespace Szakdolgozat.Services
                 ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] = (double)value;
             }
         }
-        private void UopToArray(string arrayName, string name, string indexVar, int? index, string op, object _object)
+        private void UopToArray(string arrayName, string name, string indexVar, int? index, string op, object _object,int? parallelIndex)
         {
             int arrayIndex;
             if (index.HasValue)
@@ -367,6 +399,11 @@ namespace Szakdolgozat.Services
             else
             {
                 arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
+            }
+
+            if (parallelIndex.HasValue)
+            {
+                arrayIndex = (int)parallelIndex.Value;
             }
             object value = _object.GetType().GetField(name).GetValue(_object);
            
@@ -386,7 +423,7 @@ namespace Szakdolgozat.Services
                     break;
             }
         }
-        private void CopyToArrayFromArray(string arrayTo, string arrayFrom, string indexVar, int? index, object _object)
+        private void CopyToArrayFromArray(string arrayTo, string arrayFrom, string indexVar, int? index, object _object,int? parallelIndex)
         {
             int arrayIndex;
             if (index.HasValue)
@@ -396,6 +433,11 @@ namespace Szakdolgozat.Services
             else
             {
                 arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
+            }
+
+            if (parallelIndex.HasValue)
+            {
+                arrayIndex = (int)parallelIndex.Value;
             }
             object _arrayFrom = _object.GetType().GetField(arrayFrom).GetValue(_object);
             if (_arrayFrom.GetType() == typeof(string[]))
@@ -407,7 +449,7 @@ namespace Szakdolgozat.Services
                 ((IList<double>)_object.GetType().GetField(arrayTo).GetValue(_object))[arrayIndex] = ((IList<double>)_arrayFrom)[arrayIndex];
             }
         }
-        private void UopToArrayFromArray(string arrayTo, string arrayFrom, string indexVar, int? index, string op, object _object)
+        private void UopToArrayFromArray(string arrayTo, string arrayFrom, string indexVar, int? index, string op, object _object,int? parallelIndex)
         {
             int arrayIndex;
             if (index.HasValue)
@@ -418,6 +460,12 @@ namespace Szakdolgozat.Services
             {
                 arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
             }
+
+            if (parallelIndex.HasValue)
+            {
+                arrayIndex = (int)parallelIndex.Value;
+            }
+
             object _arrayFrom = _object.GetType().GetField(arrayFrom).GetValue(_object);
 
             switch (op)
@@ -436,7 +484,7 @@ namespace Szakdolgozat.Services
                     break;
             }
         }
-        private void UopFromArray(string name,string arrayFrom,string indexVar, int? index,string op, object _object)
+        private void UopFromArray(string name,string arrayFrom,string indexVar, int? index,string op, object _object, int? parallelIndex)
         {
             int arrayIndex;
             if (index.HasValue)
@@ -446,6 +494,11 @@ namespace Szakdolgozat.Services
             else
             {
                 arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
+            }
+
+            if (parallelIndex.HasValue)
+            {
+                arrayIndex = (int)parallelIndex.Value;
             }
             object value = ((IList<double>)_object.GetType().GetField(arrayFrom).GetValue(_object))[arrayIndex];
 
@@ -490,5 +543,57 @@ namespace Szakdolgozat.Services
 
             return $"Values of array {name} : {result}";
         }
+        private void ParallelStart()
+        {
+            parallelInstructions=parallelInstructions.Clear();
+            parallel = true;
+        }
+        private int GetParallelCount(string name, double? value,object _object)
+        {
+            if (value.HasValue)
+            {
+                return Convert.ToInt32(value.Value);
+            }
+            else
+            {
+                return Convert.ToInt32(_object.GetType().GetField(name).GetValue(_object));
+            }
+        }
+        private void ExecuteParallel(object _object,ref int counter, ref int memory, List<string> resultList,int parallelCount)
+        {
+            int parallelCounter = 0;
+            int parallelMemory = 0;
+            int b = 0;
+            Barrier barrier;
+            if (parallelCount < 10) { 
+                barrier = new Barrier(parallelCount, null);
+            }
+            else
+            {
+                barrier = new Barrier(10, null);
+            }
+            
+            Parallel.For(0, parallelCount, (i,state) =>
+            {
+                for(int j = 0; j < parallelInstructions.Count;)
+                {
+                    if (parallelInstructions[j].instrucionType == InstructionType.BARRIER && b<10)
+                    {
+                        Interlocked.Increment(ref b);
+                        barrier.SignalAndWait();
+                        j++;
+                    }
+                    else if(parallelInstructions[j].instrucionType == InstructionType.BARRIER) 
+                    {
+                        j++;
+                    }
+                    ExecuteInstruction(parallelInstructions[j], _object, ref j, ref parallelCounter, resultList ,ref parallelMemory,i);
+                }
+            });
+            counter+=parallelCounter;
+            memory+=parallelMemory;
+        }
+
+
     }
 }

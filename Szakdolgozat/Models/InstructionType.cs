@@ -26,5 +26,8 @@
         J_IF_LESS_EQUAL,
         VAR_PRINT,
         ARRAY_PRINT,
+        PARALLEL_START,
+        PARALLEL_END,
+        BARRIER,
     }
 }
