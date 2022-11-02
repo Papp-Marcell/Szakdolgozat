@@ -561,35 +561,33 @@ namespace Szakdolgozat.Services
         }
         private void ExecuteParallel(object _object,ref int counter, ref int memory, List<string> resultList,int parallelCount)
         {
+            int parallelLoop = 0;
             int parallelCounter = 0;
             int parallelMemory = 0;
-            int b = 0;
-            Barrier barrier;
-            if (parallelCount < 10) { 
-                barrier = new Barrier(parallelCount, null);
-            }
-            else
+            int[] start=new int[parallelCount];
+
+            while (parallelLoop!=parallelCount)
             {
-                barrier = new Barrier(10, null);
-            }
-            
-            Parallel.For(0, parallelCount, (i,state) =>
-            {
-                for(int j = 0; j < parallelInstructions.Count;)
+                Parallel.For(0, parallelCount, (i, state) =>
                 {
-                    if (parallelInstructions[j].instrucionType == InstructionType.BARRIER && b<10)
+                    if (start[i] >= parallelInstructions.Count)
                     {
-                        Interlocked.Increment(ref b);
-                        barrier.SignalAndWait();
-                        j++;
-                    }
-                    else if(parallelInstructions[j].instrucionType == InstructionType.BARRIER) 
+                        Interlocked.Increment(ref parallelLoop);
+                        return;
+                    } 
+                    for (int j = start[i]; j < parallelInstructions.Count;)
                     {
-                        j++;
+                        if (parallelInstructions[j].instrucionType == InstructionType.BARRIER)
+                        {
+                            j++;
+                            start[i] = j;
+                            break;
+                        }
+                        ExecuteInstruction(parallelInstructions[j], _object, ref j, ref parallelCounter, resultList, ref parallelMemory, i);
+                        start[i] = j;
                     }
-                    ExecuteInstruction(parallelInstructions[j], _object, ref j, ref parallelCounter, resultList ,ref parallelMemory,i);
-                }
-            });
+                });
+            }
             counter+=parallelCounter;
             memory+=parallelMemory;
         }

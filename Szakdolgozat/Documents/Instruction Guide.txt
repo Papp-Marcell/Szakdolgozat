@@ -34,3 +34,5 @@ J_IF_LESS, Jump if Condition, 		var1:name of comparison variable     var2:name o
 J_IF_LESS_EQUAL, Jump if Condition, 	var1:name of comparison variable     var2:name of other comparison variable   index:jump distance in number of instructions-1  rest null
 VAR_PRINT, Prints a variable 	var1:name rest null
 ARRAY_PRINT, Prints first 5 elements of array	 var1:name rest null
+PARALLEL_START, Marks the start of a parallel block,	all null
+PARALLEL_END, Marks the end of a parallel block,	(var1?:name || value1?:value) - the amount of parallel executions

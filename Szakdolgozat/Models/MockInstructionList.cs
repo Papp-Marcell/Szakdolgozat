@@ -42,8 +42,9 @@
             //_instructions.Add(new Instruction(InstructionType.JUMP, null, null, null, -5, null, null));
 
             _instructions.Add(new Instruction(InstructionType.PARALLEL_START, null, null, null, null, null, null));
-            _instructions.Add(new Instruction(InstructionType.BARRIER, null, null, null, null, null, null));
+            
             _instructions.Add(new Instruction(InstructionType.COPY_ARRAY_ARRAY, "h_c", "h_a", "i", null, null, null));
+            _instructions.Add(new Instruction(InstructionType.BARRIER, null, null, null, null, null, null));
             _instructions.Add(new Instruction(InstructionType.UOP_ARRAY_ARRAY, "h_c", "h_b", "i", null, null, null, "+"));
             _instructions.Add(new Instruction(InstructionType.PARALLEL_END, "n", null, null, null, null, null));
 
