@@ -2,6 +2,7 @@
 @inject Models.MyFile myFile
 @inject Services.DebugService debugService;
 @inject Services.ImageService imageService;
+@inject Services.Analysis analysis;
 @inject Services.InstructionParser instructionParser;
 @inject IJSRuntime JS
 
@@ -24,6 +25,9 @@
             <p> Steps : @debugService.stepCount </p>
             <p> Memory Used : @debugService.memory Bytes @(debugService.memory/1024) kiloBytes</p>
             <p> Run Time : @debugService.elapsedTime (hh:mm:ss:ms)</p>
+            <p> Global Size : @(debugService.GetValue(analysis.enqueue[4]))</p>
+            <p> Local Size : @(debugService.GetValue(analysis.enqueue[5]))</p>
+            <p> Device Used : @analysis.device</p>
     </div>
 </div>
 

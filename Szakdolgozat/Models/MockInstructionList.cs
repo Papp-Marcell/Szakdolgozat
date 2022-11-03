@@ -14,6 +14,13 @@
         public void CreateMockInstructionList()
         {
             _instructions.Add(new Instruction(InstructionType.DECLARE, "n", "int", null, null,10000,null));
+            _instructions.Add(new Instruction(InstructionType.DECLARE, "localSize", "int", null, null, 64, null));
+            _instructions.Add(new Instruction(InstructionType.DECLARE, "globalSize", "int", null, null, null, null));
+           
+            _instructions.Add(new Instruction(InstructionType.COPY, "globalSize", "n", null, null, null, null));
+            _instructions.Add(new Instruction(InstructionType.UOP, "globalSize", "localSize", null, null, null, null,"/"));
+            _instructions.Add(new Instruction(InstructionType.UOP, "globalSize", null, null, null, null, null, "ceil"));
+            _instructions.Add(new Instruction(InstructionType.UOP, "globalSize", "localSize", null, null, null, null, "*"));
             _instructions.Add(new Instruction(InstructionType.DECLARE_ARRAY,"h_a","double","n",null,null,null));
             _instructions.Add(new Instruction(InstructionType.DECLARE_ARRAY, "h_b", "double", "n", null, null,null));
             _instructions.Add(new Instruction(InstructionType.DECLARE_ARRAY, "h_c", "double", "n", null, null, null));

@@ -298,12 +298,12 @@ namespace Szakdolgozat.Services
         }
         private void Uop(string name,string value,double? doubleValue, string op,object _object) 
         {
-            double opValue;
+            double opValue = 0;
             if (doubleValue.HasValue)
             {
                 opValue = doubleValue.Value;
             }
-            else
+            else if(value!=null)
             {
                 opValue = (double)_object.GetType().GetField(value).GetValue(_object);
             }
@@ -326,6 +326,12 @@ namespace Szakdolgozat.Services
                     break;
                 case "cos":
                     _object.GetType().GetField(name).SetValue(_object, Math.Cos(opValue));
+                    break;
+                case "ceil":
+                    _object.GetType().GetField(name).SetValue(_object, Math.Ceiling((double)_object.GetType().GetField(name).GetValue(_object)));
+                    break;
+                case "floor":
+                    _object.GetType().GetField(name).SetValue(_object, Math.Floor((double)_object.GetType().GetField(name).GetValue(_object)));
                     break;
             }
         }

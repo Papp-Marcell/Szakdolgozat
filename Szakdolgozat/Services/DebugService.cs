@@ -13,6 +13,7 @@ namespace Szakdolgozat.Services
         private InstructionHandler instructionHandler = new InstructionHandler();
         private AssemblyName assemblyName = new AssemblyName("assembly");
         private ImageService ImageService = new ImageService();
+        
         private Type? debug;
         private object? debugObject;
         public int stepCount;
@@ -81,6 +82,11 @@ namespace Szakdolgozat.Services
                 instructionHandler.DrawJumps(instructions[i], i, AST);
             }
 
+        }
+
+        public double GetValue(string name)
+        {
+            return (double)debugObject.GetType().GetField(name).GetValue(debugObject);
         }
 
 

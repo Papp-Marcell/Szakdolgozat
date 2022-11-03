@@ -10,7 +10,8 @@ namespace Szakdolgozat.Services
         HardwareService hardwareService=new HardwareService();
         public List<MyElement> myElements= new List<MyElement>();
         public int CUs { get; set; }
-
+        public string[] enqueue;
+        public string device;
         public void Analyze(MyFile file)
         {
             myFile = file;
@@ -18,9 +19,11 @@ namespace Szakdolgozat.Services
             if (Search("CL_DEVICE_TYPE_GPU"))
             {
                 CUs = 4;
+                device = "GPU";
             }
             else
             {
+                device = "CPU";
                 CUs = (int)hardwareService.CPUthreads;
             }
             SearchAdd("cl_mem", "OpenCL Memory Allocation", 0,"clSet");
@@ -38,6 +41,8 @@ namespace Szakdolgozat.Services
             SearchAdd("clFinish", "Waiting for program end", 0);
             SearchAdd("clEnqueueReadBuffer", "Reading results", 0);
             SearchAdd("clRelease", "Releasing Resources", 0);
+
+            enqueue = GetNDRange();
         }
         private void SearchAdd(string search,string name,int computeUnit)
         {
@@ -69,6 +74,27 @@ namespace Szakdolgozat.Services
                 }
             }
             return false;
+        }
+
+        private string[] GetNDRange()
+        {
+            string line=null;
+            foreach (var item in myFile.Lines)
+            {
+                if (item.line.Contains("EnqueueNDRangeKernel"))
+                {
+                    line=item.line;
+                }
+                
+            }
+            line = line.Substring(line.IndexOf("("));
+            line = line.Replace(")", "");
+            line = line.Replace("&", "");
+            line = line.Replace(" ", "");
+            
+
+            return line.Split(",");
+            
         }
     }
 
