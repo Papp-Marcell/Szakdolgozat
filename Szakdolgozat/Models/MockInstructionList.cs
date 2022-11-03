@@ -62,7 +62,7 @@
 
             _instructions.Add(new Instruction(InstructionType.COPY, "i", null, null, null, 0, null));
             _instructions.Add(new Instruction(InstructionType.DECLARE, "sum", "double", null, null, 0, null));
-            _instructions.Add(new Instruction(InstructionType.COPY, "i", null, null, null,0, null));
+            
             _instructions.Add(new Instruction(InstructionType.J_IF_EQUAL, "i", "n", null, 3, null, null));
             _instructions.Add(new Instruction(InstructionType.UOP_FROM_ARRAY, "sum", "h_c", "i", null, null, null, "+","i"));
             _instructions.Add(new Instruction(InstructionType.UOP, "i", null, null, null, 1, null, "+"));

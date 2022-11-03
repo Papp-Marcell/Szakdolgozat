@@ -51,7 +51,7 @@ namespace Szakdolgozat.Services
                     counter++;
                     break;
                 case InstructionType.DECLARE:
-                    resultString = AssignValue(instruction.var1, instruction.var2,instruction.var3,instruction.value1, _object, ref memory);
+                    resultString = AssignValue(instruction.var1, instruction.var2,instruction.var3,instruction.value1, _object, ref memory,i);
                     counter++;
                     if (resultString != null)
                     {
@@ -62,7 +62,7 @@ namespace Szakdolgozat.Services
                     i += instruction.index.Value;
                     break;
                 case InstructionType.COPY:
-                    resultString = Copy(instruction.var1,instruction.var2,instruction.var3,instruction.value1, _object);
+                    resultString = Copy(instruction.var1,instruction.var2,instruction.var3,instruction.value1, _object,i);
                     counter++;
                     resultList.Add($"At step {counter} : {resultString}");
                     break;
@@ -111,10 +111,10 @@ namespace Szakdolgozat.Services
                     counter++;
                     break;
                 case InstructionType.VAR_PRINT:
-                    resultList.Add($"At step {counter} : {VarPrint(instruction.var1, _object)}");
+                    resultList.Add($"At step {counter} : {VarPrint(instruction.var1, _object,i)}");
                     break;
                 case InstructionType.ARRAY_PRINT:
-                    resultList.Add($"At step {counter} : {ArrayPrint(instruction.var1, _object)}");
+                    resultList.Add($"At step {counter} : {ArrayPrint(instruction.var1, _object,i)}");
                     break;
                 case InstructionType.PARALLEL_START:
                     ParallelStart();
@@ -128,56 +128,56 @@ namespace Szakdolgozat.Services
             switch (instruction.instrucionType)
             {
                 case InstructionType.DECLARE_ARRAY:
-                    imageService.AddNextInstruction(ref bitmap, $"Create array {instruction.var1}", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Create array {instruction.var1}", false);
                     break;
                 case InstructionType.DECLARE:
-                    imageService.AddNextInstruction(ref bitmap, $"Create variable {instruction.var1}", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Create variable {instruction.var1}", false);
                     break;
                 case InstructionType.UOP:
-                    imageService.AddNextInstruction(ref bitmap, $"UOP on {instruction.var1}", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} UOP on {instruction.var1}", false);
                     break;
                 case InstructionType.COPY_TO_ARRAY:
-                    imageService.AddNextInstruction(ref bitmap, $"Copy to elemnt of {instruction.var1} array", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Copy to elemnt of {instruction.var1} array", false);
                     break;
                 case InstructionType.UOP_TO_ARRAY:
-                    imageService.AddNextInstruction(ref bitmap, $"UOP on elemnt of {instruction.var1} array", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} UOP on elemnt of {instruction.var1} array", false);
                     break;
                 case InstructionType.ARRAY_PRINT:
-                    imageService.AddNextInstruction(ref bitmap, $"Prints Values of first 5 elemtents of {instruction.var1} array", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Prints Values of first 5 elemtents of {instruction.var1} array", false);
                     break;
                 case InstructionType.VAR_PRINT:
-                    imageService.AddNextInstruction(ref bitmap, $"Print Value of {instruction.var1}", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Print Value of {instruction.var1}", false);
                     break;
                 case InstructionType.COPY_ARRAY_ARRAY:
-                    imageService.AddNextInstruction(ref bitmap, $"Copy to {instruction.var1} array from {instruction.var2} array", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Copy to {instruction.var1} array from {instruction.var2} array", false);
                     break;
                 case InstructionType.UOP_ARRAY_ARRAY:
-                    imageService.AddNextInstruction(ref bitmap, $"UOP on elemnt of {instruction.var1} array with element of {instruction.var2} array", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} UOP on elemnt of {instruction.var1} array with element of {instruction.var2} array", false);
                     break;
                 case InstructionType.UOP_FROM_ARRAY:
-                    imageService.AddNextInstruction(ref bitmap, $"UOP on {instruction.var1} with element of {instruction.var2} array", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} UOP on {instruction.var1} with element of {instruction.var2} array", false);
                     break;
                 case InstructionType.JUMP:
-                    imageService.AddNextInstruction(ref bitmap, $"Jump {instruction.index.Value} instructions", true);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Jump {instruction.index.Value} instructions", true);
                     break;
                 case InstructionType.COPY:
-                    imageService.AddNextInstruction(ref bitmap, $"Copy to {instruction.var1}", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Copy to {instruction.var1}", false);
                     break;
                 case InstructionType.PARALLEL_START:
-                    imageService.AddNextInstruction(ref bitmap, "Start Parallel", true);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Start Parallel", true);
                     break;
                 case InstructionType.PARALLEL_END:
-                    imageService.AddNextInstruction(ref bitmap, "End Parallel", true);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} End Parallel", true);
                     break;
                 case InstructionType.BARRIER:
-                    imageService.AddNextInstruction(ref bitmap, "Barrier", true);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Barrier", true);
                     break;
                 case InstructionType.J_IF_EQUAL:
                 case InstructionType.J_IF_GREATER:
                 case InstructionType.J_IF_GREATER_EQUAL:
                 case InstructionType.J_IF_LESS:
                 case InstructionType.J_IF_LESS_EQUAL:
-                    imageService.AddNextInstruction(ref bitmap, $"Jump {instruction.index.Value} instructions based on condition", true);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Jump {instruction.index.Value} instructions based on condition", true);
                     break;
 
 
@@ -256,7 +256,7 @@ namespace Szakdolgozat.Services
                     break;
             }
         }
-        private string AssignValue(string name, string type, string value,double? doubleValue, object _object,ref int memory)
+        private string AssignValue(string name, string type, string value,double? doubleValue, object _object,ref int memory,int i)
         {
             
             switch (type)
@@ -266,7 +266,7 @@ namespace Szakdolgozat.Services
                     {
                         _object.GetType().GetField(name).SetValue(_object, value);
                         memory += 20;
-                        return $"Value of {name} : {value}";
+                        return $"#{i} Value of {name} : {value}";
                     }
                     break;
                 default:
@@ -274,13 +274,13 @@ namespace Szakdolgozat.Services
                     {
                         _object.GetType().GetField(name).SetValue(_object, doubleValue.Value);
                         memory += 16;
-                        return $"Value of {name} : {doubleValue.Value}";
+                        return $"#{i} Value of {name} : {doubleValue.Value}";
                     }
                     break;
             }
             return null;
         }
-        private string Copy(string name,string var,string value,double? doubleValue,object _object)
+        private string Copy(string name,string var,string value,double? doubleValue,object _object,int i)
         {
             if (var != null)
             {
@@ -294,7 +294,7 @@ namespace Szakdolgozat.Services
             {
                 _object.GetType().GetField(name).SetValue(_object, doubleValue.Value);
             }
-            return $"Value of {name} : {_object.GetType().GetField(name).GetValue(_object)}";
+            return $"#{i} Value of {name} : {_object.GetType().GetField(name).GetValue(_object)}";
         }
         private void Uop(string name,string value,double? doubleValue, string op,object _object) 
         {
@@ -524,13 +524,13 @@ namespace Szakdolgozat.Services
                     break;
             }
         }
-        private string VarPrint(string name,object _object)
+        private string VarPrint(string name,object _object,int i)
         {
-            return $"Value of {name} : {_object.GetType().GetField(name).GetValue(_object)}";
+            return $" #{i} Value of {name} : {_object.GetType().GetField(name).GetValue(_object)}";
         }
-        private string ArrayPrint(string name, object _object)
+        private string ArrayPrint(string name, object _object,int k)
         {
-            string result = "";
+            string result = $"#{k} ";
             object array = _object.GetType().GetField(name).GetValue(_object);
 
             if (array.GetType() == typeof(string[]))

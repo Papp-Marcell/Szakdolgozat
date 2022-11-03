@@ -3,7 +3,9 @@
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{images/blazor.jpg}
-\caption{Blazor Server. \\ Forrás:https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0}
+\caption{Blazor Server.}
+\centering\par
+https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-6.0
 \label{fig:blazor}
 \end{figure}
 
@@ -28,11 +30,37 @@ A Dependency Injection egy szoftverdizájnbeli minta, aminek lényege, hogy megf
 \end{itemize}
 Ez az alkalmazás főleg Singleton-okat használ szolgáltatások biztosítására és közös adatok elérésére. Mivel végig egy felhasználó dolgozik egy munkamenetben, nincs szükség limitálni a függőségek élettartamát és elérhetőségét.
 
+\Section{Fájlok feltöltése}
+Fájl feltöltéséhez nincs külön Service osztály, hanem minden az UploadFile razor komponensben zajlik. A tényleges feltöltést egy beépített InputFile razor komponens végzi. A fájl feltöltése után a fájl sorokra van bontva, majd átkerül a perzisztens objektumhoz, ahonnan más oldalak el tudják érni. Ezután meghívásra kerülnek a különböző elemző, szimuláló és vizualizáló szolgáltatások.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{images/UploadFlow.jpg}
+\caption{Feltöltést követő folyamatok.}
+\label{fig:up}
+\end{figure}
+
 \Section{Hardware Service}
 A .NET Core hivatalosan egy multiplatform alkalmazás, de sajnos még vannak olyan részei amik jelenleg még csak a Windows-t támogatják. A Hardware elemzésére a hivatalosan támogatott módszer a WMI (Windows Management Instrumentation) használata, nevéből adódóan jelenleg csak Windows-on elérhető, ezért más operációs rendszerek esetében az alkalmazás hamis, kitalált adatokkal dolgozik, amíg a Microsoft ki nem terjeszti a támogatását Linuxra és társaira.
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{images/HWS.jpg}
+\caption{Hardware Service.}
+\label{fig:hws}
+\end{figure}
+
+\newpage
+
 \Section{Navigation Menu}
 Az alkalmazásban a navigáció különböző oldalak között az oldalsó navigációs menün keresztül történik. Ennek az az érdekessége, hogy a menüpontok csak akkor jelennek meg, ha tartalmuk készen áll. Itt olyan probléma merült fel, hogy a menü nem frissül magától, ezért be kellett iktatni egy új szolgáltatót, a MenuService-t. A MenuService feladata egy esemény kezelése. Ha a programban olyan változás történik ami hatással van a menüre, a szolgáltatás meghívja az eseményt, amit a menü már észlelni tud és lereagálja. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{images/MenuS.jpg}
+\caption{Frissítési esemény működése.}
+\label{fig:MenuEvent}
+\end{figure}
 
 \Section{Architeture oldal}
 Az Architecture oldal fő és egyetlen eleme egy Canvas, pontosabban egy Blazor Extension Canvas, ami azért előnyös mert könnyen manipulálható C\# kóddal. Ez a komponens miután létrehozza a Canvas-t, megrajzolja a Hardware Service által szolgáltatott adatokat, mint a fizikai memória, CPU, GPU. Az egyszerűség kedvéért fix méretű Canvas-al dolgozik, így pixel pontosan meg tudja rajzolni az entitásokat és a kapcsolatokat. A használt eszközöket zöld színnel jelzi.
@@ -78,10 +106,18 @@ A baloldali konténerben egy dinamikus táblázat foglal helyet ami a már elemz
 
 A második konténerben, vagyis az oldal jobb oldalán magát a forráskódot jelenítjük meg sorokra osztva, az üres sorokat még a feldolgozás közben eltávolítva. Minden sor külön paragrafus elem, id-val ellátva, hogy lehessen rájuk hivatkozni. Itt lesz szerepe a Gannt diagram gombjainak. Egy gomb megnyomásakor a hozzá tartozó elem színe zöldre, a többi pedig fehérre vált. Ez a fent említett SignalR-en keresztül zajlik, majd ugyanitt frissül az oldal és a megfelelő kódsor paragrafusa ténylegesen zöldre vált. Emellett a böngésző a megfelelő helyre is teker, ami JavaScript-et igényel. A program ekkor JavaScript Interop használatával meghív egy JS függvényt ami elvégzi a kérést.
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{images/JSpl.jpg}
+\caption{JavaScript InterOp SignalR-n át.}
+\label{fig:jspl}
+\end{figure}
+
 \begin{cpp}
 jsRuntime.InvokeAsync<bool>("test","line{" + (i-8) + "}");
 \end{cpp}
 
+\newpage
 \Section{Instrukciók és szimulálásuk}
 A program az átmeneti kódot instrukció objektumonként kezeli, ami az instrukció típus enumból és különböző adattagokból áll. Az adattagoknak a típusaikon (string, int, double) túl nincs kötött szerepe, hanem az instrukció kezelő szükség szerint használja őket. Az összes adattag nullázható típus, ami szükséges az instrukciók korrekt létrehozásához és működéséhez, viszont bonyolítja kezelésüket.
 
@@ -120,6 +156,29 @@ private Instruction ParseInstruction(string textInstruction)
 
 Ezután az instrukciók átkerülnek a DebugService-hez, ahol megtörténik a szimuláció.
 Ennek első lépése a változók és tömbök létrehozása és tárolása. Mivel nem lehet előre tudni a változók neveit, típusait, mennyiségeket, dinamikus megoldásra van szükség. Ilyen lehetett volna változó / tömb listák és hozzájuk tartozó szótárak létrehozása. Változó létrehozásakor hozzáadódna listához, majd bekerülne a szótárba mint egy <változó név,index> elempár és a szótáron át lehetne rá hivatkozni. Működőképes, de komplikált és problémás, mivel a szótár egy extra réteg az adatok és az instrukció kezelő között. Minden adattípushoz külön lista - szótár páros lenne szükséges, tömb listák is bonyolítanák.
+
+\begin{table}[h]
+\centering
+\caption{Implementált Instrukciók és hozzájuk tartozó szimuláló metódusok}
+\label{tab:barrier}
+\begin{tabular}{|c|c|}
+\hline
+DECLARE (array) & Create(array)Type(),CreateArray(),AssignValue()  \\
+\hline
+COPY (tömbökkel) & COPY(ToArray)(FromArray)(ToArrayFromArray)() \\
+\hline
+UOP (tömbökkel) & UOP(ToArray)(FromArray)(ToArrayFromArray)() \\
+\hline
+JUMP (feltétellel) & Jump() (feltételekkel)\\
+\hline 
+PRINT (tömb) & Print() (tömb) \\
+\hline
+PARALLEL & Start és End metódusok \\
+\hline
+Barrier & nincs külön kezelő metódus \\
+\hline
+\end{tabular}
+\end{table}
 
 A megoldás egyszerre bonyolultabb és egyszerűbb. Futásidőben hozunk létre egy osztályt a szükséges adattagokkal. Ehhez felhasználjuk a Reflection könyvtárat, főleg az AssemblyBuilder-t, ModelBuilder-t, és a TypeBuilder-t. Ezek létrehozzák a az osztályt, majd az instrukciók kezelő létrehozza a megfelelő mezőket, amik lehetnek string vagy double változók, vagy tömbök. Az instrukció kezelő az instrukció típusa alapján hívja meg a korrekt metódust. Ekkor egyiknek sincs értéke.
 
@@ -182,10 +241,85 @@ Néhány instrukció paramétere lehet érték vagy változó ami értéket tár
 
 Prédikátumok az átmeneti kódban ugrásokra vannak bontva, ha egy prédikátum teljesül, akkor a szimuláció indexe továbbugrik a megjelölt instrukcióhoz. Elöltesztelő ciklus esetén van egy második ugrás a ciklus végén, ami visszaállítja a szimuláció indexét a ciklushoz tartozó prédikátumhoz.
 
-A futtatás során feljegyzésre kerül a instrukció lépésszám, és a a változók és tömbök által lefoglalt memória igény, ami a program minimum memóriaigényének felel meg, valamint méri a futási időt is. 
+A futtatás során feljegyzésre kerül a instrukció lépésszám, és a a változók és tömbök által lefoglalt memória igény, ami a program minimum memóriaigényének felel meg, valamint méri a futási időt is. Az analízis segítségével kimutatásra kerül a local és global Size, illetve a munka csoportok mennyisége is.
 
-A szimuláció végig szekvenciálisan fut, mivel a tényleges futási idő különbség elhanyagolható lenne a C\# Task alapú párhuzamos programozási mechanikái miatt. Minden párhuzamos instrukciónak külön Task-ra lenne szüksége, amiket egyesével egy ciklusban kellene szekvenciálisan létrehozni, így nem hogy gyorsítana a szimuláción, de még hátráltatná is.
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{images/SimpleDebug.jpg}
+\caption{Debug Service egyszerűsített folyamatábrája.}
+\label{fig:debugflow}
+\end{figure}
 
+\Section{Párhuzamosság szimulálása}
+A szimuláció pontosan követi a szimulált program párhuzamosságát. Egy párhuzamos szakaszt két különleges instrukció, a PARALLEL{\_}START és a PARALLEL{\_}END határol körbe. Az instruction handler a PARALLEL{\_}START instrukciót követve a normál működés helyett az azt követő instrukciókat eltárolja egy saját instrukció listában, amíg el nem éri a PARALLEL{\_}END instrukciót. Ezután az instrukcióban megadott szálakon párhuzamosan végrehajtja az eltárolt instrukciókat, majd visszaállítja a rendes működést.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{images/Parallel_Simulation.jpg}
+\caption{Párhuzamos szimuláció}
+\label{fig:parallelSim}
+\end{figure}
+
+
+A párhuzamos szimuláció a Parallel.For() metódussal történik, így pontosan annyi párhuzamos folyamatot tudunk indítani, amennyi szükséges. A ciklusban a végrehajtani kívánt utasításokat egy lambda kifejezésben adjuk meg, amiben egy újabb, a párhuzamos instrukciós listán iteráló ciklus végzi el a szimulációt. Ilyenkor az instrukciók a normális index helyett a hozzájuk tartozó folyamat azonosító számmal dolgoznak, ami a létrehozásuk sorrendjének felel meg. Az instrukciós lista egy Immutable list objektum, azaz módosíthatatlan. Ennek következménye, hogy a lista csak olvasható lesz, ezért az összes párhuzamos folyamat egy időben el tudja érni, ezzel is gyorsítva a szimulációt.
+
+Implementálásra került az akadály párhuzamos vezérlési utasítás is. Az akadály lényege hogy egy olyan pont amit minden párhuzamos szálnak el kell érnie mielőtt bármelyik továbbhaladhat. Ennek C\# megvalósítása a Barrier osztály, ami a célnak megfelelt volna, de túlságosan lassúnak bizonyult.
+
+
+
+\begin{table}[h]
+\centering
+\caption{Akadály implementációk futási ideje}
+\label{tab:barrier}
+\begin{tabular}{|c|c|}
+\hline
+Barrier 20 szálra & 10 sec  \\
+\hline
+Barrier 40 szálra & 26 sec \\
+\hline
+Barrier 80 szálra & 67 sec \\
+\hline 
+Saját akadály 10000 szálra & <1 sec \\
+\hline
+\end{tabular}
+\end{table}
+
+A saját akadály implementáció a Parallel.For() metódus egy sajátosságát használja ki. A metódus nem tér vissza amíg az összes általa indított párhuzamos szál véget nem ér. Így egy primitív akadályként funkcionál, abban az esetben ha az akadály a párhuzamos instrukciók legvégén van. Ezt kihasználva szét kell szedni az instrukciós listát a BARRIER utasítások alapján és külön futtatni őket. De ahelyett hogy ténylegesen szétszednénk több listára, az egész párhuzamos szimulációt egy újabb ciklussal burkoljuk ami addig tart amíg a párhuzamos szakasz a végére nem ért. A szakasz végét úgy észleljük, hogy a instrukció mutató meghaladja az instrukciók mennyiségét. Ezt az instrukció iteráló ciklus indexével mérjük, párhuzamos szálanként külön külön. Akadályhoz érve véget ér az adott szál, az instrukció mutató változó eltárolódik, majd ha az összes szál befejeződik, véget ér az őket indító Parallel.For() metódus. Ezután az akadályt imitálva elindul a következő instrukció szakasz a következő Parallel.For() blokkban az eltárolt instrukció mutatótól kezdve. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.7]{images/Barrier.jpg}
+\caption{Akadály implementáció}
+\label{fig:Barrier}
+\end{figure}
+
+\begin{cpp}
+while (parallelLoop!=parallelCount)
+      {
+           Parallel.For(0, parallelCount, (i, state) =>
+           {
+               if (start[i] >= parallelInstructions.Count)
+               {
+                   Interlocked.Increment(ref parallelLoop);
+                   return;
+               } 
+               for (int j = start[i]; j < parallelInstructions.Count;)
+               {
+                   if (...instrucionType == ...BARRIER)
+                      {
+                          j++;
+                          start[i] = j;
+                          break;
+                      }
+                   ExecuteInstruction(...);
+                   start[i] = j;
+                }
+            });
+      }
+\end{cpp}
+
+\Section{Szintaxis fa}
 A szimuláció után a DebugService az ImageService segítségével létrehoz egy szintaxis fát, amin fel van tüntetve az összes instrukció, és a hozzájuk tartozó nyilak. A kép egy dinamikusan bővülő bitmap-ből készül el, így minimális méretű. Itt két érdekesebb probléma merült fel, az egyikben az alkalmazás lementi a készült képet, majd a böngésző megjeleníti. De ha új képre akarunk váltani, a böngésző a régi képet fogja mutatni, mert eltárolta a gyorsítótárban. Így minden kép sorszámot kap, hogy a böngésző észlelje hogy új képre van szükség, és ne a gyorsítótárból szedje elő. 
 
 A másik érdekes probléma a kép dinamikus bővítése közben történt, a képre rárajzolódott minden rendesen, megtörtént az átméretezés, de a tényleges kép a memóriában nem méreteződött át. Olyan mintha a bitmap objektum egyszerre lenne érték és referencia típus, aminek oka ismeretlen. Szerencsére ha explicit módon referencia típusként kezeljük, akkor ez a hiba és gyorsan megoldódik.
@@ -209,6 +343,14 @@ public Bitmap AddInstruction(ref Bitmap bitmap,String text,bool jump)
 
 Miután elkészül a szintaxis fa, az alkalmazás elkészíti a szimuláció oldalt, ahol az eredmények láthatóak.
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.7]{images/ST.jpg}
+\caption{Elem hozzáadása a szintaxis fa bitmapjéhez.}
+\label{fig:st}
+\end{figure}
+
+\newpage
 \Section{Platform függetlenség}
 2016-ban megjelent a .Net Core 1.0, ami az addigi .Net keretrendszer platform független verziója lett. A dolgozatban használt .Net 6.0 ennek a legújabb hosszútávú támogatású verziója, ami szintén platform független. A Blazor webalkalmazás szintén platformfüggetlen. Viszont néhány használt könyvtár még nincs  frissítve, ezért Linuxon vagy nem (System.Management - nem használjuk Linuxon), vagy korlátozottan (System.Drawing.Common) működik. Az alkalmazás így is platformfüggetlen, de csak Windowson volt tesztelve.
 

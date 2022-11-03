@@ -27,6 +27,7 @@
             <p> Run Time : @debugService.elapsedTime (hh:mm:ss:ms)</p>
             <p> Global Size : @(debugService.GetValue(analysis.enqueue[4]))</p>
             <p> Local Size : @(debugService.GetValue(analysis.enqueue[5]))</p>
+            <p> Work Groups : @(debugService.GetValue(analysis.enqueue[4])/debugService.GetValue(analysis.enqueue[5]))</p>
             <p> Device Used : @analysis.device</p>
     </div>
 </div>

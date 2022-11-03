@@ -37,7 +37,7 @@
         await currentCanvasContext.FillTextAsync($"Memory {HWS.RamMemory} GB", 10, 250);
 
         await drawComputeDevice(200, 0,HWS.CPUname,HWS.CPUthreads.ToString(),"lightgrey");
-        await drawComputeDevice(200, 150,HWS.GPUname,"??","light    green");
+        await drawComputeDevice(200, 150,HWS.GPUname,HWS.GPUram.ToString() + " GB","lightgreen");
 
 
     }
