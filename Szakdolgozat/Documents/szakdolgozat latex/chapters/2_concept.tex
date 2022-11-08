@@ -2,42 +2,36 @@
 
 \Section{Az OpenCL szabvány eredete}
 
-A jelenlegi világban több platform is képes párhuzamosságra, ilyenek például a CPU, GPU, DSP, vagy FPGA processzor, és egyebek, és ezekre mind létezik specifikus párhuzamos programozási módszer, mint az OpenMP, mpi, hibrid módszerek, specifikus könyvtárak, de ezek csak az adott platformon működnek, egy MPI program nem futtatható egy videókártyán. Ezért volt szükség egy heterogén platformra, ami áthidalja a különböző platformokat és egy egységes programozói felületet biztosít. 
+A jelenlegi világban több platform is képes párhuzamosságra, ilyenek például a CPU, GPU, DSP \cite{dsp}, vagy FPGA \cite{fpga} processzor és egyebek, és ezekre mind létezik specifikus párhuzamos programozási módszer, mint az OpenMP \cite{openmp}, MPI \cite{mpi}, hibrid módszerek \cite{hybrid}, specifikus könyvtárak, de ezek csak az adott platformon működnek, egy MPI program nem futtatható egy videókártyán. Ezért volt szükség egy heterogén platformra, ami áthidalja a különböző platformokat és egy egységes programozói felületet biztosít (\ref{fig:openCl} ábra).
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{images/opencl_origin.jpg}
-\caption{Az OpenCL létrejötte.}
-\centering\par
-http://smai.emath.fr/cemracs/cemracs16/images/FDesprez.pdf
+\caption{Az OpenCL létrejötte. \cite{opencl_origin}}
 \label{fig:openCl}
 \end{figure}
 
-A legnagyobb gyártók így összefogtak a közös cél érdekében, többek között az AMD, Nvidia, Intel, arm, IBM, Apple, Samsung, és megálmodtak egy jogdíjmentes,hordozható, nyílt szabványt. Ennek a szabványnak a létrehozása céljából pedig létrehozták a Khronos csoportot, ami azóta sok más nyílt szabványt is létrehozott, mint például a Vulkan, vagy az OpenGL. 2009 október 6.án kiadták az OpenCL 1.0 -át és azóta is folyamatosan fejlesztik, 2020 szeptember 30.adikán az OpenCL 3.0 megérkezett.
+A legnagyobb gyártók így összefogtak, nemcsak az OpenCL, de más, közös célok érdekében létrehozták a Khronos csoportot. A Khronos csoportnak jelenleg több mint 150 tagja van, többek között az AMD, Apple, arm, NVIDIA, Samsung, Google, Intel \cite{khronos_about} \cite{khronos_members}. A csoport alapítása óta sok más nyílt szabványt is létrehozott, mint például a Vulkan \cite{vulkan}, vagy az OpenGL \cite{opengl}. 2008 december 9.én kiadták az OpenCL 1.0 -át és azóta is folyamatosan fejlesztik \cite{opencl1}, 2020 szeptember 30.adikán az OpenCL 3.0 megérkezett \cite{opencl}.
 
-Az új szabvány mögött egy nagy ötlet állt, hogy lecserélik a hagyományos ciklusokat úgynevezett kernelekre, amikből példányokat hozunk létre, munka elemeket, és ezek a munkaelemek egymással párhuzamosan futnak.
+Az új szabvány mögött egy nagy ötlet állt, hogy lecserélik a hagyományos ciklusokat úgynevezett kernelekre, amikből példányokat hozunk létre, munka elemeket, és ezek a munkaelemek egymással párhuzamosan futnak (\ref{fig:loopVsKernel} ábra).
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.4]{images/loopvskernel.jpg}
-\caption{Ciklus <-> Kernel }
-\centering\par
-Forrás: https://www.khronos.org/opencl
+\caption{Ciklus <-> Kernel \cite{opencl}}
 \label{fig:loopVsKernel}
 \end{figure}
 
- A kerneleknek szükségük van egy N dimenziós tartományra ahol a munkájukat végzik, az OpenCL  ezt is specifikálja, ez az NDRange. Egy kernel futtatásakor maximum 3 dimenziót specifikálunk, valamint az adott dimenzió problémáinak, eseteinek számát, méretét, ezt globális méretnek nevezzük. Az adott tartományban minden pontot megfeleltetünk egy munka elemmel, amiket munkacsoportokra osztunk. A munkaelemek egy munkacsoporton belül tudnak egymással kommunikálni, és osztozkodhatnak a lokális memórián. Meg lehet adni hogy hány elem legyen egy munkacsoportban, de ezt akár az OpenCl is meg tudja tenni helyettünk. Miután megvan a probléma tartomány és a  kernel, nincs más tennivaló mint minden elemre lefuttatni a kernel egy példányát.
+A kerneleknek szükségük van egy N dimenziós tartományra ahol a munkájukat végzik, az OpenCL  ezt is specifikálja, ez az NDRange. Egy kernel futtatásakor maximum 3 dimenziót specifikálunk, valamint az adott dimenzió problémáinak, eseteinek számát, méretét, ezt globális méretnek nevezzük. Az adott tartományban minden pontot megfeleltetünk egy munka elemmel, amiket munkacsoportokra osztunk. A munkaelemek egy munkacsoporton belül tudnak egymással kommunikálni, és osztozkodhatnak a lokális memórián. Meg lehet adni hogy hány elem legyen egy munkacsoportban, de ezt akár az OpenCl is meg tudja tenni helyettünk. Miután megvan a probléma tartomány és a  kernel, nincs más tennivaló mint minden elemre lefuttatni a kernel egy példányát \cite{opencl_origin_range}. \aref{fig:kernel} ábrán egy példa kernel, és a globális azonosítójának használata látható.
  
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{images/kernel.jpg}
-\caption{Kernel működése.}
-\centering\par
-http://smai.emath.fr/cemracs/cemracs16/images/FDesprez.pdf
+\caption{Kernel működése. \cite{opencl_origink}}
 \label{fig:kernel}
 \end{figure}
 
-Az OpenCL specifikáció 4 nagy egységre bontja az architektúrát, ezek a következők:
+Az OpenCL specifikáció 4 nagy egységre bontja az architektúrát, ezek a következők \cite{spec_archi}
 \begin{itemize}
 \item \textbf{Platform Modell} A modell leírja, hogy milyen legyen a platform amin fut az OpenCL. 
 \item \textbf{Végrehajtás modell} Ez a modell két elkülönülő egységet definiál, a kerneleket, amik az OpenCL eszközökön hajtódnak végre, és a házigazda programot, ami a házigazdán hajtódik végre. Ezen kívül a modell leírja azt is, hogy a házigazda hogyan irányítja, utasítja az eszközöket a feladataik végrehajtására.
@@ -47,7 +41,9 @@ Az OpenCL specifikáció 4 nagy egységre bontja az architektúrát, ezek a köv
 \end{itemize}
 
 \Section{Platform Modell}
-A platform modell egy házigazdából áll, ami össze van kötve egy vagy több OpenCL eszközhöz. Az OpenCL eszköz több CU-ra, számítási egységre van felosztva, amik még tovább vannak osztva PE-kre, processzelő elemekre. A számítási feladatok ezekben az elemekben valósulnak meg. A házigazda parancsokat küld az eszközöknek amik mindent megtesznek hogy végrehajtsák őket, az adatokat a memórián keresztül kapják meg. 
+A következő sorokban a platform modellt fogjuk bemutatni \cite{spec_platform} :
+
+A platform modell egy házigazdából áll, ami össze van kötve egy vagy több OpenCL eszközhöz. Az OpenCL eszköz több CU-ra (\ref{fig:platform_modell} ábra), számítási egységre van felosztva, amik még tovább vannak osztva PE-kre, processzelő elemekre. A számítási feladatok ezekben az elemekben valósulnak meg. A házigazda parancsokat küld az eszközöknek amik mindent megtesznek hogy végrehajtsák őket, az adatokat a memórián keresztül kapják meg. 
 
 Fejlesztők a belső programokat létrehozhatják C nyelven írt OpenCL forrás stringként, SPIR-V közbülső nyelvi programként, vagy bináris objektumokként, az OpenCL platform biztosít egy fordítót ami lefordítja ezeket futtatható program objektummá. Ez a fordító lehet online, ami a házigazda program futása alatt működik az alapértelmezett API-k használatával, vagy offline, ami a házigazda programon kívül működik platform specifikus módszerekkel.
 
@@ -56,14 +52,14 @@ Az OpenCL 2 féle platform profilt definiál, teljes profilt, és beépített pr
 \begin{figure}[h]
 \centering
 \includegraphics[scale=1.0]{images/platform_modell.jpg}
-\caption{Platform modell.}
-\centering\par
-https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL\_API.html
+\caption{Platform modell. \cite{spec_platform}}
 \label{fig:platform_modell}
 \end{figure}
 
 \Section{Végrehajtás modell}
-A tényleges munkára a kerneleken kerül sor. A kernel egy a házigazda által precízen menedzselt környezetben, kontextusban fut, aminek részei az eszközök, kernel objektumok, program objektumok, és memória objektumok. Az eszközök 1 vagy több OpenCL platform által megvilágított eszköz, kernel objektumok igazából OpenCL metódusok, amik az OpenCL eszközökön futnak, program objektumok, a program forrás és futtatható állomány amik implementálják a kernelt, a memória objektumok pedig az OpenCL eszközök és a házigazda által látható változók, amiken a kernel példányai dolgoznak.
+Ez a rész a végrehajtás modelljét vizsgálja \cite{spec_exec}.
+
+A tényleges párhuzamos munkára a kerneleken kerül sor. A kernel egy a házigazda által precízen menedzselt környezetben, kontextusban fut, aminek részei az eszközök, kernel objektumok, program objektumok, és memória objektumok. Az eszközök 1 vagy több OpenCL platform által megvilágított eszköz, kernel objektumok igazából OpenCL metódusok, amik az OpenCL eszközökön futnak, program objektumok, a program forrás és futtatható állomány amik implementálják a kernelt, a memória objektumok pedig az OpenCL eszközök és a házigazda által látható változók, amiken a kernel példányai dolgoznak.
 
 A házigazda egy eszközzel egy parancs soron keresztül kommunikál, minden eszköznek saját parancs sora van. Egy ilyen parancs 3 kategóriába eshet:
 \begin{itemize}
@@ -82,7 +78,7 @@ Minden parancs 6 állapoton megy át:
 \end{enumerate}
 
 \Section{Memória Modell}
-A memória modellnek pontosan le kell tudnia definiálni hogy a memóriában lévő értékek hogyan működnek, hogy a fejlesztő helyesen tudja megalkotni a programját. A memória modellnek 4 része van, memória területek, memória objektumok, megosztott virtuális memória, és konzisztencia modell.
+A memória modellnek pontosan le kell tudnia definiálni hogy a memóriában lévő értékek hogyan működnek, hogy a fejlesztő helyesen tudja megalkotni a programját. A memória modellnek 4 része van, memória területek, memória objektumok, megosztott virtuális memória, és konzisztencia modell \cite{spec_mem}.
 
 \textbf{A memória terület} az a memória, ami látható a házigazda és az eszközei számára. 2 nagyobb részre van osztva, házigazda memóriára és eszköz memóriára. Az eszköz memória további 4 részre bontható:
 \begin{itemize}
@@ -99,7 +95,7 @@ A memória modellnek pontosan le kell tudnia definiálni hogy a memóriában lé
 \end{itemize}
 
 \Section{OpenCL C nyelvi sajátosságok példák}
-Az OpenCL hoz némi újdonságot a nyelvbe, ezek közül mutatok be néhány fontosabbat:
+Az OpenCL hoz némi újdonságot a nyelvbe, ezek közül mutatok be néhány fontosabbat \cite{opencl_c}
 \begin{itemize}
 \item\textbf{\_\_ kernel} Egy metódust kernelként azonosít, hasonlóan a main() függvényhez. Egy ilyen kernel hozzáfér más kernel oldali funkciókhoz.
 \item\textbf{Memória területek azonosítói} \_\_ global, \_\_ constant, \_\_ local, \_\_ private, a fent említett memóriaterületek azonosítói. Kernel argumentumokhoz szükségesek.
@@ -107,7 +103,7 @@ Az OpenCL hoz némi újdonságot a nyelvbe, ezek közül mutatok be néhány fon
 \end{itemize}
 
 \Section{Egy házigazda program felépítése}
-Egy házigazda program egyszerű lépések sorozatából áll.
+Egy házigazda program egyszerű lépések sorozatából áll \cite{opencl_host}.
 
 \begin{enumerate}
 \item Első lépésként definiálni, szerezni kell egy \textbf{platformot}, amin majd fut az OpenCL program. 
@@ -139,16 +135,14 @@ Egy házigazda program egyszerű lépések sorozatából áll.
 \end{enumerate}
 	
 \Section{Eddigi eredmények: M2S-Visual eszköz}
-Fontos megemlíteni az Multi2Sim-Visual-t. Az M2S egy szimulátor amit abból a célból készítettek, hogy új hardvert lehessen tesztelni prototípus építése nélkül, ez egy heterogén CPU GPU szimulátor, benchmarkokkal kiegészítve. Mivel ekkor egy roppant pontos és kifinomult szimulátorban fut a program, pontosan nyomon lehet követni a program futását. Ehhez készítettek egy Bostoni egyetemen egy vizualizációs keretrendszert az M2S-Visualt. Ez az eszköz képes megmutatni hogy melyik processzor magon milyen kontextus fut, azon belül milyen processzor instrukciók aktívak, vagy hogy a GPU-n hány számítási egység van, azokon belül milyen munka csoportok vannak, vagy akár hogy milyen memória hierarchia áll fenn a gyorsítótárakban.
-Hiányossága az eszköznek, hogy csak a pillanatnyi állapotot mutatja, és igazából azt se teljesen vizuálisan hanem inkább táblázatos formákban.
+Fontos megemlíteni az Multi2Sim-Visual-t \cite{m2s}. Az M2S egy szimulátor amit abból a célból készítettek, hogy új hardvert lehessen tesztelni prototípus építése nélkül, ez egy heterogén CPU GPU szimulátor, benchmarkokkal kiegészítve. Mivel ekkor egy roppant pontos és kifinomult szimulátorban fut a program, pontosan nyomon lehet követni a program futását. Ehhez készítettek egy Bostoni egyetemen egy vizualizációs keretrendszert az M2S-Visualt \cite{m2sv}. Ez az eszköz képes megmutatni hogy melyik processzor magon milyen kontextus fut, azon belül milyen processzor instrukciók aktívak, vagy hogy a GPU-n hány számítási egység van, azokon belül milyen munka csoportok vannak, vagy akár hogy milyen memória hierarchia áll fenn a gyorsítótárakban.
+Hiányossága az eszköznek, hogy csak a pillanatnyi állapotot mutatja, és igazából azt se teljesen vizuálisan hanem inkább táblázatos formákban (\ref{fig:m2svf} ábra).
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{images/m2sv2.jpg}
-\caption{M2S-Visual egy idő diagramja.}
-\centering\par
-https://projects.ncsu.edu/wcae/ISCA2015/papers/p3-zibari.pdf
-\label{fig:m2sv}
+\caption{M2S-Visual egy idő diagramja. \cite{m2sv}}
+\label{fig:m2svf}
 \end{figure}
 
 %\Section{Tartalom és felépítés}
