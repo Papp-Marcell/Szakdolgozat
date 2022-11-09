@@ -48,7 +48,7 @@ A következő sorokban a platform modellt fogjuk bemutatni \cite{spec_platform} 
 
 A platform modell egy házigazdából áll, ami össze van kötve egy vagy több OpenCL eszközzel. Az OpenCL eszköz több Compute Unit-ra (\ref{fig:platform_modell} ábra), számítási egységre van felosztva, amik még tovább vannak osztva Processing Element-ekre. A számítási feladatok ezekben az elemekben valósulnak meg. A házigazda parancsokat küld az eszközöknek amik mindent megtesznek hogy végrehajtsák őket. Az adatokat a memórián keresztül kapják meg. 
 
-A fejlesztők a belső programokat létrehozhatják C nyelven írt OpenCL forrás sztringként, SPIR-V közbülső nyelvi programként, vagy bináris objektumokként. Az OpenCL platform biztosít egy fordítót, ami lefordítja ezeket futtatható program objektummá. Ez a fordító lehet online, ami a házigazda program futása alatt működik az alapértelmezett API-k használatával, vagy offline, ami a házigazda programon kívül működik platform specifikus módszerekkel.
+A fejlesztők a belső programokat létrehozhatják akár C nyelven írt OpenCL forrás sztringként, SPIR-V közbülső nyelvi programként, vagy bináris objektumokként. Az OpenCL platform biztosít egy fordítót, ami lefordítja ezeket futtatható program objektummá. Ez a fordító lehet online, ami a házigazda program futása alatt működik az alapértelmezett API-k használatával, vagy offline, ami a házigazda programon kívül működik platform specifikus módszerekkel.
 
 Az OpenCL 2 féle platform profilt definiál, teljes profilt, és beépített profilt. A teljes profilban lennie kell online fordítónak, a beépített profilban viszont nem kötelező.
 
@@ -66,9 +66,9 @@ A tényleges párhuzamos munkára a kerneleken kerül sor. A kernel egy a hoszt 
 
 A hoszt egy eszközzel egy parancs soron keresztül kommunikál. Minden eszköznek saját parancs sora van. Egy ilyen parancs 3 kategóriába eshet:
 \begin{itemize}
-\item\textbf{Kernel sorba állító parancs} Mint a neve is sugallja, besorol egy kernelt egy eszközhöz végrehajtásra.
-\item\textbf{Memória parancs} Adatátvitel a hoszt és az eszköz memória között, vagy memória hozzárendelés.
-\item\textbf{Szinkronizációs parancs} Explicit szinkronizációs pontok amik meghatároznak egy sorrendiséget.
+\item\textbf{Kernel sorba állító parancs:} Mint a neve is sugallja, besorol egy kernelt egy eszközhöz végrehajtásra.
+\item\textbf{Memória parancs:} Adatátvitel a hoszt és az eszköz memória között, vagy memória hozzárendelés.
+\item\textbf{Szinkronizációs parancs:} Explicit szinkronizációs pontok amik meghatároznak egy sorrendiséget.
 \end{itemize}
 Minden parancs 6 állapoton megy át:
 \begin{enumerate}
@@ -100,8 +100,8 @@ A memória modellnek pontosan tudnia kell definiálni, hogy a memóriában lév�
 \Section{OpenCL C nyelvi sajátosságok példák}
 Az OpenCL hoz némi újdonságot a nyelvbe. Ezek közül mutatok be néhány fontosabbat \cite{opencl_c}.
 \begin{itemize}
-\item\textbf{\_\_ kernel:} Egy metódust kernelként azonosít, hasonlóan a main() függvényhez. Egy ilyen kernel hozzáfér más kernel oldali funkciókhoz.
-\item\textbf{Memória területek azonosítói:} \_\_ global, \_\_ constant, \_\_ local, \_\_ private, a fent említett memóriaterületek azonosítói. Kernel argumentumokhoz szükségesek.
+\item\textbf{\_\_ kernel:} Egy metódust kernelként azonosít, hasonlóan a \textit{main()} függvényhez. Egy ilyen kernel hozzáfér más kernel oldali funkciókhoz.
+\item\textbf{Memória területek azonosítói:}\textit{ \_\_ global, \_\_ constant, \_\_ local, \_\_ private}, a fent említett memóriaterületek azonosítói. Kernel argumentumokhoz szükségesek.
 \item\textbf{Szinkronizációs funkciók:} Gátak, amiket minden munka elemnek el kell érnie, hogy folytathassák a munkájukat, és memória kerítések \cite{fence}, amik sorrendezésre adnak lehetőséget.
 \end{itemize}
 
@@ -121,7 +121,7 @@ Egy hoszt program egyszerű lépések sorozatából áll \cite{opencl_host}.
 \item Negyedik lépés a \textbf{parancssor} létrehozása.
 
 \texttt{clCreateCommandQueue(context, device\_id, 0, \&err)}
-\item Ezután létre kell hozni az \textbf{OpenCL program}ot és felépíteni, lehetőleg egy .cl forrásfájlból.
+\item Ezután létre kell hozni az \textbf{OpenCL program}ot és felépíteni, lehetőleg egy \textit{.cl} forrásfájlból.
 
 \texttt{clCreateProgramWithSource(context, 1,(const char **) \&kernelSource\\ , NULL,\&err)}
 \newline
