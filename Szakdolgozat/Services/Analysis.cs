@@ -14,6 +14,7 @@ namespace Szakdolgozat.Services
         public string device;
         public void Analyze(MyFile file)
         {
+            myElements.Clear();
             myFile = file;
   
             if (Search("CL_DEVICE_TYPE_GPU"))
@@ -86,6 +87,10 @@ namespace Szakdolgozat.Services
                     line=item.line;
                 }
                 
+            }
+            if (line == null) {
+                string[] lines = { "", "", "", "", "", "" };
+                return lines;
             }
             line = line.Substring(line.IndexOf("("));
             line = line.Replace(")", "");

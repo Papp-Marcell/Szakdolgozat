@@ -30,6 +30,7 @@ namespace Szakdolgozat.Services
             timer.Reset();
             memory = 0;
             stepCount = 0;
+            AST = null;
             AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
                     assemblyName,
                     AssemblyBuilderAccess.Run);
@@ -86,7 +87,14 @@ namespace Szakdolgozat.Services
 
         public double GetValue(string name)
         {
-            return (double)debugObject.GetType().GetField(name).GetValue(debugObject);
+            try
+            {
+                return (double)debugObject.GetType().GetField(name).GetValue(debugObject);
+            }
+            catch (NullReferenceException e)
+            {
+                return 1;
+            }
         }
 
 
