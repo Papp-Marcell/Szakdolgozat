@@ -25,7 +25,7 @@ Az új szabvány mögött egy nagy ötlet állt, hogy lecserélik a hagyományos
 \label{fig:loopVsKernel}
 \end{figure}
 
-A kerneleknek szükségük van egy N dimenziós tartományra, ahol a munkájukat végzik, az OpenCL  ezt is specifikálja, ez az NDRange. Egy kernel futtatásakor maximum 3 dimenziót specifikálunk, valamint az adott dimenzió problémáinak, eseteinek számát, méretét. Ezt globális méretnek nevezzük. Az adott tartományban minden pontot megfeleltetünk egy munka elemmel, amiket munkacsoportokra osztunk. A munkaelemek egy munkacsoporton belül tudnak egymással kommunikálni, és osztozkodhatnak a lokális memórián. Meg lehet adni, hogy hány elem legyen egy munkacsoportban, de ezt akár az OpenCL is meg tudja tenni helyettünk. Miután megvan a probléma tartomány és a  kernel, nincs más tennivaló, mint minden elemre lefuttatni a kernel egy példányát \cite{opencl_origin_range}. \aref{fig:kernel} ábrán egy példa kernel, és a globális azonosítójának használata látható.
+A kerneleknek szükségük van egy N dimenziós tartományra, ahol a munkájukat végzik, az OpenCL  ezt is specifikálja, ez az \textit{NDRange}. Egy kernel futtatásakor maximum 3 dimenziót specifikálunk, valamint az adott dimenzió problémáinak, eseteinek számát, méretét. Ezt globális méretnek nevezzük. Az adott tartományban minden pontot megfeleltetünk egy munka elemmel, amiket munkacsoportokra osztunk. A munkaelemek egy munkacsoporton belül tudnak egymással kommunikálni, és osztozkodhatnak a lokális memórián. Meg lehet adni, hogy hány elem legyen egy munkacsoportban, de ezt akár az OpenCL is meg tudja tenni helyettünk. Miután megvan a probléma tartomány és a  kernel, nincs más tennivaló, mint minden elemre lefuttatni a kernel egy példányát \cite{opencl_origin_range}. \aref{fig:kernel} ábrán egy példa kernel, és a globális azonosítójának használata látható.
  
 \begin{figure}[h]
 \centering
@@ -38,7 +38,7 @@ Az OpenCL specifikáció 4 nagy egységre bontja az architektúrát, ezek a köv
 \begin{itemize}
 \item \textbf{Platform modell:} A modell leírja, hogy milyen legyen a platform amin fut az OpenCL. 
 \item \textbf{Végrehajtás modell:} Ez a modell két elkülönülő egységet definiál, a kerneleket, amik az OpenCL eszközökön hajtódnak végre, és a házigazda programot, ami a házigazdán hajtódik végre. Ezen kívül a modell leírja azt is, hogy a házigazda hogyan irányítja, utasítja az eszközöket a feladataik végrehajtására.
-\item \textbf{Memória modell:} Itt definiálnak memória területeket,  memória objektum típusokat, absztrakt memória hierarchiát, megosztott virtuális memóriát. Leírják hogy az OpenCL által használt memória viselkedését, az OpenCL program különböző egységei mely memóriaterületekhez férnek hozzá.
+\item \textbf{Memória modell:} Itt definiálnak memória területeket,  memória objektum típusokat, absztrakt memória hierarchiát, megosztott virtuális memóriát. Leírják az OpenCL által használt memória viselkedését, az OpenCL program különböző egységei mely memóriaterületekhez férnek hozzá.
 \item \textbf{Programozási modell:} Megadja, hogy az egyidejűségi modell hogyan vonatkoztatható a fizikai hardverre.
 
 \end{itemize}
@@ -46,7 +46,7 @@ Az OpenCL specifikáció 4 nagy egységre bontja az architektúrát, ezek a köv
 \Section{Platform Modell}
 A következő sorokban a platform modellt fogjuk bemutatni \cite{spec_platform} :
 
-A platform modell egy házigazdából áll, ami össze van kötve egy vagy több OpenCL eszközzel. Az OpenCL eszköz több Compute Unit-ra (\ref{fig:platform_modell} ábra), számítási egységre van felosztva, amik még tovább vannak osztva Processing Element-ekre. A számítási feladatok ezekben az elemekben valósulnak meg. A házigazda parancsokat küld az eszközöknek amik mindent megtesznek hogy végrehajtsák őket. Az adatokat a memórián keresztül kapják meg. 
+A platform modell egy házigazdából áll, ami össze van kötve egy vagy több OpenCL eszközzel. Az OpenCL eszköz több Compute Unit-ra (\ref{fig:platform_modell} ábra), számítási egységre van felosztva, amik még tovább vannak osztva Processing Element-ekre. A számítási feladatok ezekben az elemekben valósulnak meg. A házigazda parancsokat küld az eszközöknek, amik mindent megtesznek hogy végrehajtsák őket. Az adatokat a memórián keresztül kapják meg. 
 
 A fejlesztők a belső programokat létrehozhatják akár C nyelven írt OpenCL forrás sztringként, SPIR-V közbülső nyelvi programként, vagy bináris objektumokként. Az OpenCL platform biztosít egy fordítót, ami lefordítja ezeket futtatható program objektummá. Ez a fordító lehet online, ami a házigazda program futása alatt működik az alapértelmezett API-k használatával, vagy offline, ami a házigazda programon kívül működik platform specifikus módszerekkel.
 
@@ -72,20 +72,20 @@ A hoszt egy eszközzel egy parancs soron keresztül kommunikál. Minden eszközn
 \end{itemize}
 Minden parancs 6 állapoton megy át:
 \begin{enumerate}
-\item\textbf{Besorolt} A parancs be van sorolva egy parancs sorba.
-\item\textbf{Benyújtott} A parancs el van távolítva a parancs sorból, és be van adva eg eszköznek végrehajtás céljából.
-\item\textbf{Felkészült} A parancs végrehajtásához szükséges összes előfeltétel teljesült, a parancs ütemezve van végrehajtásra.
-\item\textbf{Futó} A parancs végrehajtása elkezdődött.
-\item\textbf{Befejezett} A parancs végrehajtása befejeződött.
-\item\textbf{Elkészült} A parancs és a gyerek parancsai mind befejeződtek, és a velük kapcsolatos esemény objektum állapota .
+\item\textbf{Besorolt:} A parancs be van sorolva egy parancs sorba.
+\item\textbf{Benyújtott:} A parancs el van távolítva a parancs sorból, és be van adva eg eszköznek végrehajtás céljából.
+\item\textbf{Felkészült:} A parancs végrehajtásához szükséges összes előfeltétel teljesült, a parancs ütemezve van végrehajtásra.
+\item\textbf{Futó:} A parancs végrehajtása elkezdődött.
+\item\textbf{Befejezett:} A parancs végrehajtása befejeződött.
+\item\textbf{Elkészült:} A parancs és a gyerek parancsai mind befejeződtek, és a velük kapcsolatos esemény objektum állapota .
 \end{enumerate}
 
 \Section{Memória Modell}
-A memória modellnek pontosan tudnia kell definiálni, hogy a memóriában lévő értékek hogyan működnek, hogy a fejlesztő helyesen tudja megalkotni a programját. A memória modellnek 4 része van:, memória területek, memória objektumok, megosztott virtuális memória, és konzisztencia modell \cite{spec_mem}.
+A memória modellnek pontosan tudnia kell definiálni, hogy a memóriában lévő értékek hogyan működnek, hogy a fejlesztő helyesen tudja megalkotni a programját. A memória modellnek 4 része van: memória területek, memória objektumok, megosztott virtuális memória, és konzisztencia modell \cite{spec_mem}.
 
 \textbf{A memória terület} az a memória, ami látható a hoszt és az eszközei számára. 2 nagyobb részre van osztva, házigazda memóriára és eszköz memóriára. Az eszköz memória további 4 részre bontható:
 \begin{itemize}
-\item\textbf{Globális memória:} Olyan memória terület amit az összes munka csoport szabadon elér.
+\item\textbf{Globális memória:} Olyan memória terület, amit az összes munka csoport szabadon elér.
 \item\textbf{Konstans memória:} Ez a terület nem változik a végrehajtás alatt, a házigazda ide helyez memória objektumokat.
 \item\textbf{Helyi memória:} Munka csoporthoz tartozó lokális memória terület
 \item\textbf{Privát memória:} Munka elemhez tartozó memória terület.
@@ -94,7 +94,7 @@ A memória modellnek pontosan tudnia kell definiálni, hogy a memóriában lév�
 \begin{itemize}
 \item\textbf{Buffer:} Folytonos memória adatok tárolására. Az adatok lehetnek beépített típusok, mint integer vagy double, vagy saját típusok is.
 \item\textbf{Kép:} Olyan memória objektum, ami képek tárolására szolgál, amik lehetnek akár 3 dimenziósak is.
-\item\textbf{Cső:} Ez szinte a bash-ből megismert csővezeték 2 véggel, azzal a tulajdonsággal, hogy egy végponttal egyszerre csak 1 kernel példány használhat.
+\item\textbf{Cső:} Ez szinte a bash-ből megismert csővezeték 2 véggel, azzal a tulajdonsággal, hogy egy végpontot egyszerre csak 1 kernel példány használhat.
 \end{itemize}
 
 \Section{OpenCL C nyelvi sajátosságok példák}

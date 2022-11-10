@@ -15,7 +15,7 @@ A megvalósításra felhasznált technológia végül a \textit{ASP.NET Core Bla
 Jelenleg 2 verziója támogatott, a \textit{Blazor Server}  \cite{blazor_h} ahol egy szerver alkalmazásban fut a kód (\ref{fig:blazor} ábra), és a \textit{Blazor WebAssembly} \cite{blazor_h}, ahol közvetlenül a böngészőben. Ebben a projektben a \textit{Blazor Server}-t választottam a nagyobb támogatottsága miatt.
 
 \Section{Razor komponensek}
-Blazor alkalmazások jelentős részben \textit{Razor} komponensekből épülnek fel \cite{razor}. Egy komponens az UI egy önálló része, ami tartalmazhat feldolgozó logikát, hogy dinamikusan viselkedhessen. Komponenseket lehet többször felhasználni, egymásba ágyazni, vagy Razor oldalakban felhasználni (egy komponens akár önmagában is lehet Razor oldal). Egy Razor komponens tartalmaz HTML elemeket és @ jellel ellátott C\# kifejezéseket, amik lehetnek direktívák, logikák, vagy akár komplexkód részek is.
+Blazor alkalmazások jelentős részben \textit{Razor} komponensekből épülnek fel \cite{razor}. Egy komponens az UI egy önálló része, ami tartalmazhat feldolgozó logikát, hogy dinamikusan viselkedhessen. Komponenseket lehet többször felhasználni, egymásba ágyazni, vagy Razor oldalakban felhasználni (egy komponens akár önmagában is lehet Razor oldal). Egy Razor komponens tartalmaz HTML elemeket és @ jellel ellátott C\# kifejezéseket, amik lehetnek direktívák, logikák, vagy akár komplex kódrészek is.
 
 \Section{Routing, SignalR, és Dependency Injection}
 A routing, azaz útvonal választás az a folyamat, ahogy a szerver a bejövő HTTP kéréseket az alkalmazás végrehajtható végpontjaihoz párosítja. Az ASP.Net ezt szinte automatikusan teszi meg, a megfelelő kérést a megfelelő Razor oldalra irányítja, miután megadjuk neki a kellő navigációs beállítást. Navigációs beállítás lehet például autentikáció.
@@ -110,7 +110,7 @@ Második lépésben összegyűjti az OpenCL elemeket egy listában és megadja a
 \end{figure}
 
 Ez a második megjelenítő felület (\ref{fig:code_plan} ábra). 2 egymás mellett lévő konténerből épül fel.
-A baloldali konténerben egy dinamikus táblázat foglal helyet, ami a már elemzett objektumokat jeleníti meg Gannt diagram formában. A diagram bal oldalán a végrehajtás lépésének indexe, tetején pedig a számítási egységek sorszámai szerepelnek, plusz a 0-s oszlop ami a szekvenciális futást jelzi. A diagram a számítási egységeknek megfelelően az oldal betöltésekor dinamikusan töltődik fel elemekkel. A diagram elemi html gombok, amik tartalmazzák az elemek neveit, valamint a megfelelő funkciókat. Szükséges a ciklusváltozó "elfogása" az ii változó által, ellenkező esetben a függvények mindannyian az alap ciklusváltozó végső értékét fogják használni.
+A baloldali konténerben egy dinamikus táblázat foglal helyet, ami a már elemzett objektumokat jeleníti meg Gannt diagram formában. A diagram bal oldalán a végrehajtás lépésének indexe, tetején pedig a számítási egységek sorszámai szerepelnek, plusz a 0-s oszlop ami a szekvenciális futást jelzi. A diagram a számítási egységeknek megfelelően az oldal betöltésekor dinamikusan töltődik fel elemekkel. A diagram elemi \textit{html} gombok, amik tartalmazzák az elemek neveit, valamint a megfelelő funkciókat. Szükséges a ciklusváltozó "elfogása" az ii változó által, ellenkező esetben a függvények mindannyian az alap ciklusváltozó végső értékét fogják használni.
 
 \begin{cpp}
 @for(int i = 0; i < Analyzer.myElements.Count; i++)
@@ -184,7 +184,7 @@ private Instruction ParseInstruction(string textInstruction)
 \end{cpp}
 
 
-Ezután az instrukciók átkerülnek a \textit{DebugService}-hez, ahol megtörténik a szimuláció. \aref{tab:instru} táblázat bemutat implementált instrukciókat és hozzájuk tartozó kezelő metódusokat. A szimuláció első lépése a változók és tömbök létrehozása és tárolása. Mivel nem lehet előre tudni a változók neveit, típusait, mennyiségeket, dinamikus megoldásra van szükség. Ilyen lehetett volna változó és tömb listák, és a hozzájuk tartozó szótárak létrehozása. Változó létrehozásakor hozzáadódna listához, majd bekerülne a szótárba, mint egy \textit{<változó név,index>} elempár és a szótáron át lehetne rá hivatkozni. Működőképes, de komplikált és problémás, mivel a szótár egy extra réteg az adatok és az instrukció kezelő között. Minden adattípushoz külön \textit{lista - szótár} páros lenne szükséges, tömb listák is bonyolítanák.
+Ezután az instrukciók átkerülnek a \textit{DebugService}-hez, ahol megtörténik a szimuláció. \aref{tab:instru} táblázat bemutat implementált instrukciókat és hozzájuk tartozó kezelő metódusokat. A szimuláció első lépése a változók és tömbök létrehozása és tárolása. Mivel nem lehet előre tudni a változók neveit, típusait, mennyiségeket, dinamikus megoldásra van szükség. Ilyen lehetett volna változó és tömb listák, és a hozzájuk tartozó szótárak létrehozása. Változó létrehozásakor hozzáadódna listához, majd bekerülne a szótárba, mint egy \textit{<változó név,index>} elempár, és a szótáron át lehetne rá hivatkozni. Működőképes, de komplikált és problémás, mivel a szótár egy extra réteg az adatok és az instrukció kezelő között. Minden adattípushoz külön \textit{lista - szótár} páros lenne szükséges, tömb listák is bonyolítanák.
 
 \begin{table}[h]
 \centering
@@ -293,7 +293,7 @@ A szimuláció pontosan követi a szimulált program párhuzamosságát. Egy pá
 
 A párhuzamos szimuláció a \textit{Parallel.For()} \cite{pfor} metódussal történik, így pontosan annyi párhuzamos folyamatot tudunk indítani, amennyi szükséges. A ciklusban a végrehajtani kívánt utasításokat egy lambda kifejezésben adjuk meg, amiben egy újabb, a párhuzamos instrukciós listán iteráló ciklus végzi el a szimulációt. Ilyenkor az instrukciók a normális index helyett a hozzájuk tartozó folyamat azonosító számmal dolgoznak, ami a létrehozásuk sorrendjének felel meg. Az instrukciós lista egy \textit{Immutable list} objektum, azaz módosíthatatlan. Ennek következménye, hogy a lista csak olvasható lesz, ezért az összes párhuzamos folyamat egy időben el tudja érni, ezzel is gyorsítva a szimulációt.
 
-Implementálásra került a barrier, azaz a gát párhuzamos vezérlési utasítás is. Az gát lényege hogy egy olyan pont, amit minden párhuzamos szálnak el kell érnie mielőtt bármelyik továbbhaladhat. Ennek C\# megvalósítása a \textit{Barrier} osztály, ami a célnak megfelelt volna, de túlságosan lassúnak bizonyult, ahogy \aref{tab:barrier} táblázaton látható.
+Implementálásra került a barrier, azaz a gát párhuzamos vezérlési utasítás is. A gát lényege hogy egy olyan pont, amit minden párhuzamos szálnak el kell érnie mielőtt bármelyik továbbhaladhat. Ennek C\# megvalósítása a \textit{Barrier} osztály, ami a célnak megfelelt volna, de túlságosan lassúnak bizonyult, ahogy \aref{tab:barrier} táblázaton látható.
 
 
 
@@ -314,7 +314,7 @@ Saját akadály 10000 szálra & <1 sec \\
 \end{tabular}
 \end{table}
 
-A saját gát implementáció a \textit{Parallel.For()} metódus egy sajátosságát használja ki. A metódus nem tér vissza amíg az összes általa indított párhuzamos szál véget nem ér. Így egy primitív akadályként funkcionál, abban az esetben ha az gát a párhuzamos instrukciók legvégén van. Ezt kihasználva szét kell szedni az instrukciós listát a BARRIER utasítások alapján, és külön futtatni őket. De ahelyett, hogy ténylegesen szétszednénk több listára, az egész párhuzamos szimulációt egy újabb ciklussal burkoljuk, ami addig tart amíg a párhuzamos szakasz a végére nem ért. A szakasz végét úgy észleljük, hogy a instrukció mutató meghaladja az instrukciók mennyiségét. 
+A saját gát implementáció a \textit{Parallel.For()} metódus egy sajátosságát használja ki. A metódus nem tér vissza amíg az összes általa indított párhuzamos szál véget nem ér. Így egy primitív gátként funkcionál, abban az esetben ha az gát a párhuzamos instrukciók legvégén van. Ezt kihasználva szét kell szedni az instrukciós listát a BARRIER utasítások alapján, és külön futtatni őket. De ahelyett, hogy ténylegesen szétszednénk több listára, az egész párhuzamos szimulációt egy újabb ciklussal burkoljuk, ami addig tart amíg a párhuzamos szakasz a végére nem ért. A szakasz végét úgy észleljük, hogy a instrukció mutató meghaladja az instrukciók mennyiségét. 
 
 Ezt az instrukció iteráló ciklus indexével mérjük, párhuzamos szálanként külön-külön. Gáthoz érve véget ér az adott szál, az instrukció mutató változó eltárolódik, majd ha az összes szál befejeződik, véget ér az őket indító \textit{Parallel.For()} metódus. Ezután a gátot imitálva elindul a következő instrukció szakasz a következő \textit{Parallel.For()} blokkban az eltárolt instrukció mutatótól kezdve (\ref{fig:Barrier} ábra). 
 
