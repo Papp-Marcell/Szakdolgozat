@@ -10,7 +10,7 @@ Ebben a fejezetben kerül részletes bemutatásra a program implementációjána
 \end{figure}
 
 \Section{ASP.NET Core Blazor}
-A megvalósításra felhasznált technológia végül a \textit{ASP.NET Core Blazor}  \cite{blazor} lett, ami egy .Net \cite{dotnet} keretrendszer komplex, interaktív webalkalmazások létrehozására. Lényege, hogy a weboldalhoz  JavaScript \cite{js} helyett C\# \cite{csharp} kódot írhassunk. Kicsit pontosabban, szinte minden frontend logikához C\# kód a megoldás HTML \cite{html} elemek elrendezésétől a weboldal navigálásán át fájlok feltöltéséig.
+A megvalósításra felhasznált technológia végül a \textit{ASP.NET Core Blazor}  \cite{blazor} lett, ami egy .Net \cite{dotnet} keretrendszer komplex, interaktív webalkalmazások létrehozására. Lényege, hogy a weboldalhoz  JavaScript \cite{js} helyett C\# \cite{csharp} kódot írhassunk. Kicsit pontosabban, szinte minden frontend logikához C\# kód a megoldás HTML elemek elrendezésétől a weboldal navigálásán át fájlok feltöltéséig.
 
 Jelenleg 2 verziója támogatott, a \textit{Blazor Server}  \cite{blazor_h} ahol egy szerver alkalmazásban fut a kód (\ref{fig:blazor} ábra), és a \textit{Blazor WebAssembly} \cite{blazor_h}, ahol közvetlenül a böngészőben. Ebben a projektben a \textit{Blazor Server}-t választottam a nagyobb támogatottsága miatt.
 
@@ -18,7 +18,7 @@ Jelenleg 2 verziója támogatott, a \textit{Blazor Server}  \cite{blazor_h} ahol
 Blazor alkalmazások jelentős részben \textit{Razor} komponensekből épülnek fel \cite{razor}. Egy komponens az UI egy önálló része, ami tartalmazhat feldolgozó logikát, hogy dinamikusan viselkedhessen. Komponenseket lehet többször felhasználni, egymásba ágyazni, vagy Razor oldalakban felhasználni (egy komponens akár önmagában is lehet Razor oldal). Egy Razor komponens tartalmaz HTML elemeket és @ jellel ellátott C\# kifejezéseket, amik lehetnek direktívák, logikák, vagy akár komplex kódrészek is.
 
 \Section{Routing, SignalR, és Dependency Injection}
-A routing, azaz útvonal választás az a folyamat, ahogy a szerver a bejövő HTTP kéréseket az alkalmazás végrehajtható végpontjaihoz párosítja. Az ASP.Net ezt szinte automatikusan teszi meg, a megfelelő kérést a megfelelő Razor oldalra irányítja, miután megadjuk neki a kellő navigációs beállítást. Navigációs beállítás lehet például autentikáció.
+A routing, azaz útvonal választás, az a folyamat, ahogy a szerver a bejövő HTTP kéréseket az alkalmazás végrehajtható végpontjaihoz párosítja. Az ASP.Net ezt szinte automatikusan teszi meg, a megfelelő kérést a megfelelő Razor oldalra irányítja, miután megadjuk neki a kellő navigációs beállítást. Navigációs beállítás lehet például autentikáció.
 
 Viszont nem minden interakció eredményez HTTP kérést, a legtöbb kommunikáció a weboldal és a szerver között SignalR segítségével történik \cite{signalr}. A SignalR egy nyílt forrású könyvtár, ami lehetővé teszi a valós idejű kommunikációt a szerver és a weboldal között. Ha a UI egy interaktív elemét "megpiszkájuk", a weboldal SignalR-en át átküldi az esemény(eke)t a szervernek, a szerver végrehajtja a kérést, majd szintén SignalR-en keresztül visszaküldi a UI frissítéseket.
 
@@ -51,7 +51,7 @@ Fájl feltöltéséhez nincs külön \textit{Service} osztály, hanem minden az 
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.5]{images/UploadFlow.jpg}
+\includegraphics[scale=0.8]{images/UploadFlow.jpg}
 \caption{Feltöltést követő folyamatok.}
 \label{fig:up}
 \end{figure}
@@ -61,7 +61,7 @@ A .NET Core hivatalosan egy multiplatform alkalmazás, de sajnos még vannak oly
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.5]{images/HWS.jpg}
+\includegraphics[width=\textwidth]{images/HWS.jpg}
 \caption{Hardware Service.}
 \label{fig:hws}
 \end{figure}
@@ -80,7 +80,7 @@ Az alkalmazásban a navigáció különböző oldalak között az oldalsó navig
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.5]{images/MenuS.jpg}
+\includegraphics[scale=0.8]{images/MenuS.jpg}
 \caption{Frissítési esemény működése.}
 \label{fig:MenuEvent}
 \end{figure}
@@ -96,21 +96,16 @@ Első lépésben megvizsgálja, hogy a program CPU-nak vagy GPU-n fut-e, és ez 
 Második lépésben összegyűjti az OpenCL elemeket egy listában és megadja a hozzájuk tartozó számítási egység számát. Ez lehet:
 \begin{itemize}
 \item\textbf{0:}  ami azt jelenti hogy egy szálon fut szekvenciálisan,
-\item\textbf{1, 2, 3, .....:}  ami a hozzá tartozó tényleges számítási egység száma,
+\item\textbf{1, 2, 3, $\ldots$:}  ami a hozzá tartozó tényleges számítási egység száma,
 \item\textbf{-1:}  ami azt jelöli, hogy az összes elérhető számítási egységen párhuzamosan történik.
 \end{itemize}
 
 \Section{Code oldal}
 
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.5]{images/Code_plan.jpg}
-\caption{Code oldal felülete.}
-\label{fig:code_plan}
-\end{figure}
+
 
 Ez a második megjelenítő felület (\ref{fig:code_plan} ábra). 2 egymás mellett lévő konténerből épül fel.
-A baloldali konténerben egy dinamikus táblázat foglal helyet, ami a már elemzett objektumokat jeleníti meg Gannt diagram formában. A diagram bal oldalán a végrehajtás lépésének indexe, tetején pedig a számítási egységek sorszámai szerepelnek, plusz a 0-s oszlop ami a szekvenciális futást jelzi. A diagram a számítási egységeknek megfelelően az oldal betöltésekor dinamikusan töltődik fel elemekkel. A diagram elemi \textit{html} gombok, amik tartalmazzák az elemek neveit, valamint a megfelelő funkciókat. Szükséges a ciklusváltozó "elfogása" az ii változó által, ellenkező esetben a függvények mindannyian az alap ciklusváltozó végső értékét fogják használni.
+A baloldali konténerben egy dinamikus táblázat foglal helyet, ami a már elemzett objektumokat jeleníti meg Gannt diagram formában. A diagram bal oldalán a végrehajtás lépésének indexe, tetején pedig a számítási egységek sorszámai szerepelnek, plusz a 0-s oszlop ami a szekvenciális futást jelzi. A diagram a számítási egységeknek megfelelően az oldal betöltésekor dinamikusan töltődik fel elemekkel. A diagram elemei HTML gombok, amik tartalmazzák az elemek neveit, valamint a megfelelő funkciókat. Szükséges a ciklusváltozó "elfogása" az ii változó által, ellenkező esetben a függvények mindannyian az alap ciklusváltozó végső értékét fogják használni.
 
 \begin{cpp}
 @for(int i = 0; i < Analyzer.myElements.Count; i++)
@@ -134,19 +129,29 @@ A baloldali konténerben egy dinamikus táblázat foglal helyet, ami a már elem
  }
 \end{cpp}
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{images/Code_plan.jpg}
+\caption{Code oldal felülete.}
+\label{fig:code_plan}
+\end{figure}
 
 A második konténerben, vagyis az oldal jobb oldalán, magát a forráskódot jelenítjük meg sorokra osztva, az üres sorokat még a feldolgozás közben eltávolítva. Minden sor külön paragrafus elem, \textit{id}-val ellátva, hogy lehessen rájuk hivatkozni. Itt lesz szerepe a Gannt diagram gombjainak. Egy gomb megnyomásakor a hozzá tartozó elem színe zöldre, a többi pedig fehérre vált. Ez a fent említett \textit{SignalR}-en keresztül zajlik, majd ugyanitt frissül az oldal, és a megfelelő kódsor paragrafusa ténylegesen zöldre vált. Emellett a böngésző a megfelelő helyre is teker, ami JavaScript-et igényel. A program ekkor \textit{JavaScript Interop} használatával meghív egy JS függvényt (\ref{fig:jspl} ábra), ami elvégzi a kérést \cite{js_interop}.
 
+
+
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.5]{images/JSpl.jpg}
+\includegraphics[scale=0.85]{images/JSpl.jpg}
 \caption{\textit{JavaScript InterOp SignalR}-n át.}
 \label{fig:jspl}
 \end{figure}
 
 \begin{cpp}
-jsRuntime.InvokeAsync<bool>("test","line{" + (i-8) + "}");
+jsRuntime.InvokeAsync<bool>("test", "line{" + (i-8) + "}");
 \end{cpp}
+
+\newpage
 
 \Section{Instrukciók és szimulálásuk}
 A program az átmeneti kódot instrukció objektumonként kezeli, ami az instrukció típus \textit{enum}-ból és különböző adattagokból áll. Az adattagoknak a típusaikon (\textit{string, int, double}) túl nincs kötött szerepe, hanem az instrukció kezelő szükség szerint használja őket. Az összes adattag nullázható típus, ami szükséges az instrukciók korrekt létrehozásához és működéséhez, viszont bonyolítja kezelésüket.
@@ -155,36 +160,36 @@ Az instrukciók 2 féle módon jönnek létre, vagy hamisak és "kitalálja" ők
 
 \begin{cpp}
 public MockInstructionList ParseInstructons(string textInstructions)
-    {
-        String[] textInstructionArray = textInstructions.Split('|');
-        MockInstructionList list = new MockInstructionList();
-        foreach(String instruction in textInstructionArray)
-        {         
-            list._instructions.Add(ParseInstruction(instruction));
-        }
-        return list;
+{
+    String[] textInstructionArray = textInstructions.Split('|');
+    MockInstructionList list = new MockInstructionList();
+    foreach(String instruction in textInstructionArray)
+    {         
+        list._instructions.Add(ParseInstruction(instruction));
     }
+    return list;
+}
         
 private Instruction ParseInstruction(string textInstruction)
-        {
-            ......
-            return  new Instruction
-                (
-                    parseInstructionType(instructionType[1]),
-                    nullCheck(currentInstructionArray[1]),
-                    nullCheck(currentInstructionArray[2]),
-                    nullCheck(currentInstructionArray[3]), 
-                    nullCheckInt(currentInstructionArray[4]),
-                    nullCheckDouble(currentInstructionArray[5]),
-                    nullCheckDouble(currentInstructionArray[6]),
-                    instructionVar7,
-                    instructionVar8
-                 );
-        }
+{
+    ......
+    return  new Instruction
+	(
+		parseInstructionType(instructionType[1]),
+        nullCheck(currentInstructionArray[1]),
+        nullCheck(currentInstructionArray[2]),
+        nullCheck(currentInstructionArray[3]), 
+        nullCheckInt(currentInstructionArray[4]),
+        nullCheckDouble(currentInstructionArray[5]),
+        nullCheckDouble(currentInstructionArray[6]),
+        instructionVar7,
+        instructionVar8
+	);
+}
 \end{cpp}
 
 
-Ezután az instrukciók átkerülnek a \textit{DebugService}-hez, ahol megtörténik a szimuláció. \aref{tab:instru} táblázat bemutat implementált instrukciókat és hozzájuk tartozó kezelő metódusokat. A szimuláció első lépése a változók és tömbök létrehozása és tárolása. Mivel nem lehet előre tudni a változók neveit, típusait, mennyiségeket, dinamikus megoldásra van szükség. Ilyen lehetett volna változó és tömb listák, és a hozzájuk tartozó szótárak létrehozása. Változó létrehozásakor hozzáadódna listához, majd bekerülne a szótárba, mint egy \textit{<változó név,index>} elempár, és a szótáron át lehetne rá hivatkozni. Működőképes, de komplikált és problémás, mivel a szótár egy extra réteg az adatok és az instrukció kezelő között. Minden adattípushoz külön \textit{lista - szótár} páros lenne szükséges, tömb listák is bonyolítanák.
+Ezután az instrukciók átkerülnek a \textit{DebugService}-hez, ahol megtörténik a szimuláció. A \ref{tab:instru} táblázat bemutat implementált instrukciókat és hozzájuk tartozó kezelő metódusokat. A szimuláció első lépése a változók és tömbök létrehozása és tárolása. Mivel nem lehet előre tudni a változók neveit, típusait, mennyiségeket, dinamikus megoldásra van szükség. Ilyen lehetett volna változó és tömb listák, és a hozzájuk tartozó szótárak létrehozása. Változó létrehozásakor hozzáadódna listához, majd bekerülne a szótárba, mint egy \textit{<változó név,index>} elempár, és a szótáron át lehetne rá hivatkozni. Működőképes, de komplikált és problémás, mivel a szótár egy extra réteg az adatok és az instrukció kezelő között. Minden adattípushoz külön \textit{lista - szótár} páros lenne szükséges, tömb listák is bonyolítanák.
 
 \begin{table}[h]
 \centering
@@ -225,19 +230,19 @@ foreach (Instruction instruction in instructions)
 
 
 private void CreateType(...)
+{
+	switch (type)
     {
-        switch (type)
-        {
-            case "string":
-                typeBuilder.DefineField
-                (name,typeof(string),FieldAttributes.Public);
-                break;
-            default:
-                typeBuilder.DefineField
-                (name, typeof(double), FieldAttributes.Public);
-                break;
-        }
+    	case "string":
+        	typeBuilder.DefineField
+            (name,typeof(string),FieldAttributes.Public);
+            break;
+		default:
+        	typeBuilder.DefineField
+            (name, typeof(double), FieldAttributes.Public);
+            break;
     }
+}
 \end{cpp}
 
 Van lehetőség konstruktorokat is megadni, és úgy adni értékeket a változóknak, de problémát okozhat ha egy tömb méretét egy változó szabná meg, és a változónak még nincs értéke. Ezért a deklarációk után befejeződik az osztály készítése, és létrejön egy példánya.
@@ -245,13 +250,20 @@ Az objektum létrehozása után megkezdődik az igazi szimuláció, az összes i
 
 \begin{cpp}
 private string VarPrint(string name, Object object)
-    {
-        return "Value of {name} : 
-        {object.GetType().GetField(name).GetValue(object)}";
-    }
+{
+	return "Value of {name} : 
+    {object.GetType().GetField(name).GetValue(object)}";
+}
 \end{cpp}
 
 Néhány instrukció paramétere lehet érték vagy változó ami értéket tárol. Ilyen esetben az instrukció kezelő dönt.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.65]{images/SimpleDebug.jpg}
+\caption{A \textit{Debug Service} egyszerűsített folyamatábrája.}
+\label{fig:debugflow}
+\end{figure}
 
 \begin{cpp}
 double opValue;
@@ -270,14 +282,9 @@ else
 
 Prédikátumok az átmeneti kódban ugrásokra vannak bontva, ha egy prédikátum teljesül, akkor a szimuláció indexe továbbugrik a megjelölt instrukcióhoz. Elöltesztelő ciklus esetén van egy második ugrás a ciklus végén, ami visszaállítja a szimuláció indexét a ciklushoz tartozó prédikátumhoz.
 
-A futtatás során feljegyzésre kerül az instrukció lépésszám, és a a változók és tömbök által lefoglalt memória igény, ami a program minimum memóriaigényének felel meg, valamint méri a futási időt is. Az analízis segítségével kimutatásra kerül a \textit{local} és \textit{global Size}, illetve a munka csoportok mennyisége is. \aref{fig:debugflow} ábra egyszerűsített módon illusztrálja a a szimuláció működését.
+A futtatás során feljegyzésre kerül az instrukció lépésszám, és a a változók és tömbök által lefoglalt memória igény, ami a program minimum memóriaigényének felel meg, valamint méri a futási időt is. Az analízis segítségével kimutatásra kerül a \textit{local} és \textit{global Size}, illetve a munka csoportok mennyisége is. A \ref{fig:debugflow} ábra egyszerűsített módon illusztrálja a a szimuláció működését.
 
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.5]{images/SimpleDebug.jpg}
-\caption{A \textit{Debug Service} egyszerűsített folyamatábrája.}
-\label{fig:debugflow}
-\end{figure}
+
 
 \Section{Párhuzamosság szimulálása}
 A szimuláció pontosan követi a szimulált program párhuzamosságát. Egy párhuzamos szakaszt két különleges instrukció, a PARALLEL{\_}START és a PARALLEL{\_}END határol körbe. Az instruction handler a PARALLEL{\_}START instrukciót követve a normál működés helyett az azt követő instrukciókat eltárolja egy saját instrukció listában, amíg el nem éri a PARALLEL{\_}END instrukciót. Ezután az instrukcióban megadott szálakon párhuzamosan végrehajtja az eltárolt instrukciókat, majd visszaállítja a rendes működést (\ref{fig:parallelSim} ábra).
@@ -285,7 +292,7 @@ A szimuláció pontosan követi a szimulált program párhuzamosságát. Egy pá
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.5]{images/Parallel_Simulation.jpg}
+\includegraphics[width=\textwidth]{images/Parallel_Simulation.jpg}
 \caption{Párhuzamos szimuláció}
 \label{fig:parallelSim}
 \end{figure}
@@ -293,7 +300,7 @@ A szimuláció pontosan követi a szimulált program párhuzamosságát. Egy pá
 
 A párhuzamos szimuláció a \textit{Parallel.For()} \cite{pfor} metódussal történik, így pontosan annyi párhuzamos folyamatot tudunk indítani, amennyi szükséges. A ciklusban a végrehajtani kívánt utasításokat egy lambda kifejezésben adjuk meg, amiben egy újabb, a párhuzamos instrukciós listán iteráló ciklus végzi el a szimulációt. Ilyenkor az instrukciók a normális index helyett a hozzájuk tartozó folyamat azonosító számmal dolgoznak, ami a létrehozásuk sorrendjének felel meg. Az instrukciós lista egy \textit{Immutable list} objektum, azaz módosíthatatlan. Ennek következménye, hogy a lista csak olvasható lesz, ezért az összes párhuzamos folyamat egy időben el tudja érni, ezzel is gyorsítva a szimulációt.
 
-Implementálásra került a barrier, azaz a gát párhuzamos vezérlési utasítás is. A gát lényege hogy egy olyan pont, amit minden párhuzamos szálnak el kell érnie mielőtt bármelyik továbbhaladhat. Ennek C\# megvalósítása a \textit{Barrier} osztály, ami a célnak megfelelt volna, de túlságosan lassúnak bizonyult, ahogy \aref{tab:barrier} táblázaton látható.
+Implementálásra került a barrier, azaz a barrier párhuzamos vezérlési utasítás is. A barrier lényege,  hogy egy olyan pont, amit minden párhuzamos szálnak el kell érnie mielőtt bármelyik továbbhaladhat. Ennek C\# megvalósítása a \textit{Barrier} osztály, ami a célnak megfelelt volna, de túlságosan lassúnak bizonyult, ahogy \aref{tab:barrier} táblázaton látható.
 
 
 
@@ -314,9 +321,9 @@ Saját akadály 10000 szálra & <1 sec \\
 \end{tabular}
 \end{table}
 
-A saját gát implementáció a \textit{Parallel.For()} metódus egy sajátosságát használja ki. A metódus nem tér vissza amíg az összes általa indított párhuzamos szál véget nem ér. Így egy primitív gátként funkcionál, abban az esetben ha az gát a párhuzamos instrukciók legvégén van. Ezt kihasználva szét kell szedni az instrukciós listát a BARRIER utasítások alapján, és külön futtatni őket. De ahelyett, hogy ténylegesen szétszednénk több listára, az egész párhuzamos szimulációt egy újabb ciklussal burkoljuk, ami addig tart amíg a párhuzamos szakasz a végére nem ért. A szakasz végét úgy észleljük, hogy a instrukció mutató meghaladja az instrukciók mennyiségét. 
+A saját barrier implementáció a \textit{Parallel.For()} metódus egy sajátosságát használja ki. A metódus nem tér vissza amíg az összes általa indított párhuzamos szál véget nem ér. Így egy primitív barrier-ként funkcionál, abban az esetben ha az barrier a párhuzamos instrukciók legvégén van. Ezt kihasználva szét kell szedni az instrukciós listát a BARRIER utasítások alapján, és külön futtatni őket. De ahelyett, hogy ténylegesen szétszednénk több listára, az egész párhuzamos szimulációt egy újabb ciklussal burkoljuk, ami addig tart amíg a párhuzamos szakasz a végére nem ért. A szakasz végét úgy észleljük, hogy a instrukció mutató meghaladja az instrukciók mennyiségét. 
 
-Ezt az instrukció iteráló ciklus indexével mérjük, párhuzamos szálanként külön-külön. Gáthoz érve véget ér az adott szál, az instrukció mutató változó eltárolódik, majd ha az összes szál befejeződik, véget ér az őket indító \textit{Parallel.For()} metódus. Ezután a gátot imitálva elindul a következő instrukció szakasz a következő \textit{Parallel.For()} blokkban az eltárolt instrukció mutatótól kezdve (\ref{fig:Barrier} ábra). 
+Ezt az instrukció iteráló ciklus indexével mérjük, párhuzamos szálanként külön-külön. Barrier-hez érve véget ér az adott szál, az instrukció mutató változó eltárolódik, majd ha az összes szál befejeződik, véget ér az őket indító \textit{Parallel.For()} metódus. Ezután a barrier-t imitálva elindul a következő instrukció szakasz a következő \textit{Parallel.For()} blokkban az eltárolt instrukció mutatótól kezdve (\ref{fig:Barrier} ábra). 
 
 
 
@@ -347,7 +354,7 @@ while (parallelLoop!=parallelCount)
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.7]{images/Barrier.jpg}
+\includegraphics[scale=0.9]{images/Barrier.jpg}
 \caption{Akadály implementáció}
 \label{fig:Barrier}
 \end{figure}
@@ -378,12 +385,12 @@ Miután elkészül a szintaxis fa, az alkalmazás elkészíti a szimuláció old
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.7]{images/ST.jpg}
+\includegraphics[scale=0.8]{images/ST.jpg}
 \caption{Elem hozzáadása a szintaxis fa bitmapjéhez.}
 \label{fig:st}
 \end{figure}
 
-\newpage
+
 \Section{Platform függetlenség}
 2016-ban megjelent a .Net Core 1.0, ami az addigi .Net keretrendszer platform független verziója lett. A dolgozatban használt .Net 6.0 ennek a legújabb hosszútávú támogatású verziója, ami szintén platform független. A Blazor webalkalmazás szintén platformfüggetlen. Néhány használt könyvtár viszont még nincs  frissítve, ezért Linux-on vagy nem (System.Management-et nem használjuk Linuxon), vagy korlátozottan (System.Drawing.Common-al \cite{drawing})  működik. Az alkalmazás így is platformfüggetlen, de csak Windowson volt tesztelve.
 

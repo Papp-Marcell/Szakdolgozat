@@ -1,6 +1,6 @@
 \Chapter{Tervezés}
 
-Ebben a fejezetben bemutatásra kerül a program koncepciója, céljai, tervezett működése. Feltérképezünk néhány nagyobb tervezési problémát és megkeressük a megoldásukat. Ennek céljából az OpenCL elemezendő részeinek további vizsgálata is megtörténik.
+Ebben a fejezetben bemutatásra kerül a program koncepciója, céljai, tervezett működése. Feltérképezünk néhány nagyobb tervezési problémát és megkeressük a megoldásukat. Ennek céljából az OpenCL elemzendő részeinek további vizsgálata is megtörténik.
 
 \Section{Koncepció}
 Mint látni lehet a Multi2Sim-nél, a szimuláció lehetséges megoldása a problémának, viszont roppant bonyolult és erőforrásigényes. Ebben a dolgozatban megpróbálunk egy sokkal egyszerűbb, kevésbé pontos megoldást kínálni, ami remélhetőleg sokkal szemléletesebb. 
@@ -17,7 +17,7 @@ Ilyen elem lehet a platform, memóriák felszabadítása, kernel létrehozás, O
 
 
 \Section{Teendők a kernellel}
-Igazából a kernelben található konkrét műveletek elemzési, vizualizációs szempontokból elhanyagolhatók. Ami ott fontos, és ajánlott vele foglalkozni, azok a szinkronizációs függvények, például egy gátat érdemes lehet grafikusan megjeleníteni.
+Igazából a kernelben található konkrét műveletek elemzési, vizualizációs szempontokból elhanyagolhatók. Ami ott fontos, és ajánlott vele foglalkozni, azok a szinkronizációs függvények, például egy barrier-t érdemes lehet grafikusan megjeleníteni.
 
 \Section{Munka elemek}
 Egy fontosabb részlete az elemzésnek a munka elemek számának megállapítása. Ideális esetben meg van határozva a munkacsoport elemeinek száma, és ez kiolvasható a forráskódból. Ha ez nincs meghatározva, meg kell tippelnünk a számukat az OpenCL specifikáció alapján. Ezután rá tudunk jönni a munkacsoportok számára az \textit{NDRange} és a kernel input alapján.
@@ -37,20 +37,20 @@ Az alkalmazás feladatai tehát a következők:
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.4]{images/UML.jpg}
+\includegraphics[scale=0.45]{images/UML.jpg}
 \caption{Részleges UML osztálydiagram}
 \label{fig:uml}
 \end{figure}
 
 A program működése a következő:
 
-A webalkalmazáson át feltöltünk egy forrásfájlt, majd a szerver a fájlt beolvassa soronként. Megvizsgálja, hogy a forrásfájl milyen OpenCL eszközöket használ, hány munka elem van benne, stb. A szerver ezután lekéri a számítógép architektúráját. Következő lépésben a webalkalmazás megrajzolja a számítógép ide vonatkozó Hardware elemeit, mint a rendelkezésre álló memória, a processzor adatai, a videókártya adatai, valamint felvázolja, hogy az architektúrát milyen módon használná az OpenCL program. A szerver megkeresi a forrásfájlban az OpenCL függvényeket, és szükségszerűen modelleket rendel hozzájuk, vagyis megfelelő objektumokat hoz létre. Például a \texttt{clCreateKernel} metódust észlelve létrehozunk egy Kernel objektumot. Ilyenkor azt is megállapítja, hogy az adott elem melyik számítási egységhez tartozik. Ha ez sikeres, a webalkalmazás egy Gantt diagramban vizualizálja a program futtatását az idő függvényében. A webalkalmazás ezzel szinkronban megjeleníti magát a forráskódot is, és bármely Gantt diagrambeli elemre kattintva kiemeli a megfelelő kódot. A program ezen részének UML diagramja \aref{fig:uml} ábrán látható.
+A webalkalmazáson át feltöltünk egy forrásfájlt, majd a szerver a fájlt beolvassa soronként. Megvizsgálja, hogy a forrásfájl milyen OpenCL eszközöket használ, hány munka elem van benne, stb. A szerver ezután lekéri a számítógép architektúráját. Következő lépésben a webalkalmazás megrajzolja a számítógép ide vonatkozó Hardware elemeit, mint a rendelkezésre álló memória, a processzor adatai, a videókártya adatai, valamint felvázolja, hogy az architektúrát milyen módon használná az OpenCL program. A szerver megkeresi a forrásfájlban az OpenCL függvényeket, és szükségszerűen modelleket rendel hozzájuk, vagyis megfelelő objektumokat hoz létre. Például a \texttt{clCreateKernel} metódust észlelve létrehozunk egy Kernel objektumot. Ilyenkor azt is megállapítja, hogy az adott elem melyik számítási egységhez tartozik. Ha ez sikeres, a webalkalmazás egy Gantt diagramban vizualizálja a program futtatását az idő függvényében. A webalkalmazás ezzel szinkronban megjeleníti magát a forráskódot is, és bármely Gantt diagrambeli elemre kattintva kiemeli a megfelelő kódot. A program ezen részének UML diagramja \aref{fig:uml} ábrán látható. Az ábrából hiányoznak típusok és paraméterek, mert ebben a fázisban még nem tudni, hogy mik lesznek.
 
 A program másik fele az Aritmetikai szimulációval foglalkozik. Ennek szükséglete lenne a forrásfájl "lefordítása" és futtatása, viszont a fordítás teljes folyamatának bemutatása, elemzése nem célja a dolgozatnak.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.4]{images/SimUML.jpg}
+\includegraphics[width=\textwidth]{images/SimUML.jpg}
 \caption{Szimulációs részlet UML diagramja}
 \label{fig:simUML}
 \end{figure}
@@ -63,14 +63,14 @@ Kompromisszumos megoldás az első lépések, vagyis a lexikai analízis, szinta
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.4]{images/Compiler.jpg}
+\includegraphics[width=\textwidth]{images/Compiler.jpg}
 \caption{Fordító és módosításai}
 \label{fig:compiler}
 \end{figure}
 
 
 
-°%\Section{Táblázatok}
+%\Section{Táblázatok}
 
 %Táblázatokhoz a \texttt{table} környezetet ajánlott használni.
 %Erre egy minta \aref{tab:minta}. táblázat.

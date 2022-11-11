@@ -2,7 +2,7 @@
 
 A fejezet célja, hogy az OpenCL szabvány története, alapjai, érdekesebb részei, valamint a dolgozat és a készítendő program szempontjából releváns területei bemutatásra kerüljenek.
 
-Az OpenCL egy nyílt, jogdíj mentes szabvány platformfüggetlen, párhuzamos programozási feladatokhoz. Egyik legjobb tulajdonsága a platformfüggetlenség, nincs korlátozva se CPUra, se egy adott gyártó termékeire. Az adott hardverrel való kompatibilitást a gyártók tudják biztosítani. Többek között ezért is használják olyan nagyobb programok, mint az Adobe Photoshop \cite{adobe} és a Sony Vegas Pro \cite{vegas}.
+Az OpenCL egy nyílt, jogdíj mentes szabvány platformfüggetlen, párhuzamos programozási feladatokhoz. Egyik legjobb tulajdonsága a platformfüggetlenség, nincs korlátozva se CPU-ra, se egy adott gyártó termékeire. Az adott hardverrel való kompatibilitást a gyártók tudják biztosítani. Többek között ezért is használják olyan nagyobb programok, mint az Adobe Photoshop \cite{adobe} és a Sony Vegas Pro \cite{vegas}.
 \Section{Az OpenCL szabvány eredete}
 
 A jelenlegi világban több platform is képes párhuzamosságra, ilyenek például a CPU, GPU, DSP \cite{dsp}, vagy FPGA \cite{fpga} processzor. Ezekre mind létezik specifikus párhuzamos programozási módszer, mint az OpenMP \cite{openmp}, MPI \cite{mpi}, hibrid módszerek \cite{hybrid}, specifikus könyvtárak, de ezek csak az adott platformon működnek. Egy MPI program nem futtatható egy videókártyán. Ezért volt szükség egy heterogén platformra, ami áthidalja a különböző platformokat, és egy egységes programozói felületet biztosít (\ref{fig:openCl} ábra).
@@ -14,27 +14,27 @@ A jelenlegi világban több platform is képes párhuzamosságra, ilyenek péld�
 \label{fig:openCl}
 \end{figure}
 
-A legnagyobb gyártók így összefogtak, nemcsak az OpenCL, de más, közös célok érdekében létrehozták a Khronos csoportot. A Khronos csoportnak jelenleg több mint 150 tagja van, többek között az AMD, Apple, arm, NVIDIA, Samsung, Google, Intel \cite{khronos_about} \cite{khronos_members}. A csoport alapítása óta sok más nyílt szabványt is létrehozott, mint például a Vulkan \cite{vulkan}, vagy az OpenGL \cite{opengl}. 2008. december 9-én kiadták az OpenCL 1.0 -át, és azóta is folyamatosan fejlesztik \cite{opencl1}, 2020. szeptember 30-adikán az OpenCL 3.0 megérkezett \cite{opencl}.
+A legnagyobb gyártók így összefogtak, nem csak az OpenCL, de más, közös célok érdekében létrehozták a Khronos csoportot. A Khronos csoportnak jelenleg több mint 150 tagja van, többek között az AMD, Apple, arm, NVIDIA, Samsung, Google, Intel \cite{khronos_about} \cite{khronos_members}. A csoport alapítása óta sok más nyílt szabványt is létrehozott, mint például a Vulkan \cite{vulkan}, vagy az OpenGL \cite{opengl}. 2008. december 9-én kiadták az OpenCL 1.0-át, és azóta is folyamatosan fejlesztik \cite{opencl1}, 2020. szeptember 30-adikán az OpenCL 3.0 megérkezett \cite{opencl}.
 
 Az új szabvány mögött egy nagy ötlet állt, hogy lecserélik a hagyományos ciklusokat úgynevezett kernelekre, amikből példányokat hozunk létre, munka elemeket, és ezek a munkaelemek egymással párhuzamosan futnak (\ref{fig:loopVsKernel} ábra).
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.4]{images/loopvskernel.jpg}
-\caption{Ciklus <-> Kernel \cite{opencl}}
+\caption{Ciklus $\leftrightarrow$ Kernel \cite{opencl}}
 \label{fig:loopVsKernel}
 \end{figure}
 
-A kerneleknek szükségük van egy N dimenziós tartományra, ahol a munkájukat végzik, az OpenCL  ezt is specifikálja, ez az \textit{NDRange}. Egy kernel futtatásakor maximum 3 dimenziót specifikálunk, valamint az adott dimenzió problémáinak, eseteinek számát, méretét. Ezt globális méretnek nevezzük. Az adott tartományban minden pontot megfeleltetünk egy munka elemmel, amiket munkacsoportokra osztunk. A munkaelemek egy munkacsoporton belül tudnak egymással kommunikálni, és osztozkodhatnak a lokális memórián. Meg lehet adni, hogy hány elem legyen egy munkacsoportban, de ezt akár az OpenCL is meg tudja tenni helyettünk. Miután megvan a probléma tartomány és a  kernel, nincs más tennivaló, mint minden elemre lefuttatni a kernel egy példányát \cite{opencl_origin_range}. \aref{fig:kernel} ábrán egy példa kernel, és a globális azonosítójának használata látható.
+A kerneleknek szükségük van egy N dimenziós tartományra, ahol a munkájukat végzik, az OpenCL  ezt is specifikálja, ez az \textit{NDRange}. Egy kernel futtatásakor maximum 3 dimenziót specifikálunk, valamint az adott dimenzió problémáinak, eseteinek számát, méretét. Ezt globális méretnek nevezzük. Az adott tartományban minden pontot megfeleltetünk egy munka elemmel, amiket munkacsoportokra osztunk. A munkaelemek egy munkacsoporton belül tudnak egymással kommunikálni, és osztozkodhatnak a lokális memórián. Meg lehet adni, hogy hány elem legyen egy munkacsoportban, de ezt akár az OpenCL is meg tudja tenni helyettünk. Miután megvan a probléma tartomány és a  kernel, nincs más tennivaló, mint minden elemre lefuttatni a kernel egy példányát \cite{opencl_origin}. A \ref{fig:kernel} ábrán egy példa kernel, és a globális azonosítójának használata látható.
  
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{images/kernel.jpg}
-\caption{Kernel működése. \cite{opencl_origink}}
+\caption{Kernel működése. \cite{opencl_origin}}
 \label{fig:kernel}
 \end{figure}
 
-Az OpenCL specifikáció 4 nagy egységre bontja az architektúrát, ezek a következők \cite{spec_archi}
+Az OpenCL specifikáció 4 nagy egységre bontja az architektúrát, ezek a következők \cite{spec}.
 \begin{itemize}
 \item \textbf{Platform modell:} A modell leírja, hogy milyen legyen a platform amin fut az OpenCL. 
 \item \textbf{Végrehajtás modell:} Ez a modell két elkülönülő egységet definiál, a kerneleket, amik az OpenCL eszközökön hajtódnak végre, és a házigazda programot, ami a házigazdán hajtódik végre. Ezen kívül a modell leírja azt is, hogy a házigazda hogyan irányítja, utasítja az eszközöket a feladataik végrehajtására.
@@ -44,7 +44,7 @@ Az OpenCL specifikáció 4 nagy egységre bontja az architektúrát, ezek a köv
 \end{itemize}
 
 \Section{Platform Modell}
-A következő sorokban a platform modellt fogjuk bemutatni \cite{spec_platform} :
+A következő sorokban a platform modellt fogjuk bemutatni \cite{spec}:
 
 A platform modell egy házigazdából áll, ami össze van kötve egy vagy több OpenCL eszközzel. Az OpenCL eszköz több Compute Unit-ra (\ref{fig:platform_modell} ábra), számítási egységre van felosztva, amik még tovább vannak osztva Processing Element-ekre. A számítási feladatok ezekben az elemekben valósulnak meg. A házigazda parancsokat küld az eszközöknek, amik mindent megtesznek hogy végrehajtsák őket. Az adatokat a memórián keresztül kapják meg. 
 
@@ -55,12 +55,12 @@ Az OpenCL 2 féle platform profilt definiál, teljes profilt, és beépített pr
 \begin{figure}[h]
 \centering
 \includegraphics[scale=1.0]{images/platform_modell.jpg}
-\caption{Platform modell. \cite{spec_platform}}
+\caption{Platform modell. \cite{spec}}
 \label{fig:platform_modell}
 \end{figure}
 
 \Section{Végrehajtás modell}
-Ez a rész a végrehajtás modelljét vizsgálja \cite{spec_exec}.
+Ez a rész a végrehajtás modelljét vizsgálja \cite{spec}.
 
 A tényleges párhuzamos munkára a kerneleken kerül sor. A kernel egy a hoszt által precízen menedzselt környezetben, kontextusban fut, aminek részei az eszközök, kernel objektumok, program objektumok, és memória objektumok. Az eszközök 1 vagy több OpenCL platform által kezelt eszköz, kernel objektumok (igazából OpenCL metódusok), amik az OpenCL eszközökön futnak, program objektumok, a program forrás és futtatható állomány, amik implementálják a kernelt, a memória objektumok pedig az OpenCL eszközök és a hoszt által látható változók, amiken a kernel példányai dolgoznak.
 
@@ -81,7 +81,7 @@ Minden parancs 6 állapoton megy át:
 \end{enumerate}
 
 \Section{Memória Modell}
-A memória modellnek pontosan tudnia kell definiálni, hogy a memóriában lévő értékek hogyan működnek, hogy a fejlesztő helyesen tudja megalkotni a programját. A memória modellnek 4 része van: memória területek, memória objektumok, megosztott virtuális memória, és konzisztencia modell \cite{spec_mem}.
+A memória modellnek pontosan tudnia kell definiálni, hogy a memóriában lévő értékek hogyan működnek, hogy a fejlesztő helyesen tudja megalkotni a programját. A memória modellnek 4 része van: memória területek, memória objektumok, megosztott virtuális memória, és konzisztencia modell \cite{spec}.
 
 \textbf{A memória terület} az a memória, ami látható a hoszt és az eszközei számára. 2 nagyobb részre van osztva, házigazda memóriára és eszköz memóriára. Az eszköz memória további 4 részre bontható:
 \begin{itemize}
@@ -102,39 +102,60 @@ Az OpenCL hoz némi újdonságot a nyelvbe. Ezek közül mutatok be néhány fon
 \begin{itemize}
 \item\textbf{\_\_ kernel:} Egy metódust kernelként azonosít, hasonlóan a \textit{main()} függvényhez. Egy ilyen kernel hozzáfér más kernel oldali funkciókhoz.
 \item\textbf{Memória területek azonosítói:}\textit{ \_\_ global, \_\_ constant, \_\_ local, \_\_ private}, a fent említett memóriaterületek azonosítói. Kernel argumentumokhoz szükségesek.
-\item\textbf{Szinkronizációs funkciók:} Gátak, amiket minden munka elemnek el kell érnie, hogy folytathassák a munkájukat, és memória kerítések \cite{fence}, amik sorrendezésre adnak lehetőséget.
+\item\textbf{Szinkronizációs funkciók:} Barrier-ek, amiket minden munka elemnek el kell érnie, hogy folytathassák a munkájukat, és memória kerítések \cite{fence}, amik sorrendezésre adnak lehetőséget.
 \end{itemize}
 
 \Section{Egy hoszt program felépítése}
-Egy hoszt program egyszerű lépések sorozatából áll \cite{opencl_host}.
+Egy hoszt program egyszerű lépések sorozatából áll \cite{opencl_origin}.
 
 \begin{enumerate}
 \item Első lépésként definiálni, szerezni kell egy \textbf{platformot}, amin majd fut az OpenCL program. 
 
-\texttt{clGetPlatformIDs(1, \&cpPlatform, NULL)}
+\begin{cpp}
+clGetPlatformIDs(1, &cpPlatform, NULL)
+\end{cpp}
 \item Ezután meg kell keresni a platformban fellelhető \textbf{OpenCL eszközök}et, és kiválasztani egy vagy több eszközt.
 
-\texttt{clGetDeviceIDs(cpPlatform, CL\_DEVICE\_TYPE\_GPU,1,\&device\_id, NULL)}
+\begin{cpp}
+clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 1, &device_id, NULL)
+\end{cpp}
 \item Harmadikként létre kell hozni egy \textbf{környezet}et, kontextust az OpenCL program számára.
 
-\texttt{clCreateContext(0, 1, \&device\_id, NULL, NULL, \&err)}
+\begin{cpp}
+clCreateContext(0, 1, &device_id, NULL, NULL, &err)
+\end{cpp}
 \item Negyedik lépés a \textbf{parancssor} létrehozása.
 
-\texttt{clCreateCommandQueue(context, device\_id, 0, \&err)}
+\begin{cpp}
+clCreateCommandQueue(context, device_id, 0, &err)
+\end{cpp}
 \item Ezután létre kell hozni az \textbf{OpenCL program}ot és felépíteni, lehetőleg egy \textit{.cl} forrásfájlból.
 
-\texttt{clCreateProgramWithSource(context, 1,(const char **) \&kernelSource\\ , NULL,\&err)}
-\newline
-\texttt{clBuildProgram(program, 0, NULL, NULL, NULL, NULL)}
+\begin{cpp}
+clCreateProgramWithSource(
+	context,
+	1,
+	(const char **) &kernelSource,
+	NULL,
+	&err)
+
+clBuildProgram(program, 0, NULL, NULL, NULL, NULL)
+\end{cpp}
 \item Létre kell hozni azokat a \textbf{memória objektumok}at, amiket az OpenCL inputként és outputként fog használni.
 
-\texttt{clCreateBuffer(context, CL\_MEM\_READ\_ONLY, bytes, NULL, NULL)}
+\begin{cpp}
+clCreateBuffer(context, CL_MEM_READ_ONLY, bytes, NULL, NULL)
+\end{cpp}
 \item Most már nincs más dolgunk, mint létrehozni a \textbf{kernel}t és lefuttatni.
 
-\texttt{clCreateKernel(program, "vecAdd", \&err)}
-\item A program futásának befejeztével illendő \textbf{felszabadítani a használt memóriákat}.
+\begin{cpp}
+clCreateKernel(program, "vecAdd", &err)
+\end{cpp}
+\item A program futásának befejeztével illendő \textbf{felszabadítani a használt memória területeket}.
 
-\texttt{clReleaseKernel(kernel)}
+\begin{cpp}
+clReleaseKernel(kernel)
+\end{cpp}
 \end{enumerate}
 	
 \Section{Eddigi eredmények: M2S-Visual eszköz}

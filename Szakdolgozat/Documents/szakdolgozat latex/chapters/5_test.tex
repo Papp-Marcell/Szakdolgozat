@@ -10,37 +10,38 @@ A program működését a \textit{sum array} minta programon keresztül kerül t
 
 \begin{figure}[h]
 \centering
-\frame{\includegraphics[scale=0.7]{images/Start.jpg}}
+\frame{\includegraphics[width=\textwidth]{images/Start.jpg}}
 \caption{Webalkalmazás kezdő állapota}
 \label{fig:start}
 \end{figure}
 
-\newpage
-Feltöltést követően a háttérben rögtön lezajlik a fájl elemzése, szimulációk, kimutatások készítése. Amíg ez történik, a felhasználói felület nem válaszol, de az utasításokat eltárolja, tehát ha rögtön rákattintunk az architektúra fülre, minimális késleltetés után betölti a lapot.
-
 \begin{figure}[h]
 \centering
-\frame{\includegraphics[scale=0.4]{images/Architecture.jpg}}
+\frame{\includegraphics[width=\textwidth]{images/Architecture.jpg}}
 \caption{\textit{Architekture} oldal}
 \label{fig:arch}
 \end{figure}
 
+Feltöltést követően a háttérben rögtön lezajlik a fájl elemzése, szimulációk, kimutatások készítése. Amíg ez történik, a felhasználói felület nem válaszol, de az utasításokat eltárolja, tehát ha rögtön rákattintunk az architektúra fülre, minimális késleltetés után betölti a lapot.
 
+
+
+\newpage
 Az \textit{Architektúra} lapon látszódik az elérhető rendszer memória nagysága, a processzor neve, magjainak száma, azaz a számítási egységeinek a száma (\ref{fig:arch} ábra). Megjeleníti még a videokártya nevét, és az elérhető videómemóriát a számítási egységek helyén. Ez a videokártya számítási egységeinek megszámlálhatatlansága miatt történik.
 
 \begin{figure}[h]
 \centering
-\frame{\includegraphics[scale=0.4]{images/Code.jpg}}
+\frame{\includegraphics[width=\textwidth]{images/Code.jpg}}
 \caption{\textit{Code} oldal}
 \label{fig:code}
 \end{figure}
 
-\newpage
+
 A Code menüpontra kattintva a következő oldalra jutunk (\ref{fig:code} ábra). Itt láthatók forrásfájlban található OpenCL utasítások, eljárások, táblázatos formában, attól függően, hogy melyik Számítási egységen futnak. 0 jelöli a processzoron történő szekvenciális futást, a maradék számok pedig párhuzamos résznél jelzik, hogy melyik számítási egységeken fut az OpenCL kernel. Mivel a példában használt OpenCL eszköz a videókártya, ezért a program nem tudja megállapítani a számítási egységek mennyiségét, tehát az alapértelmezett 4 db számítási egységgel számol. Az egeret egy elemre pozicionálva információt kapunk az adott elemről, rákattintva pedig a táblázat mellett lévő kód részletben a megfelelő sorra teker és kiemeli azt.
 
 \begin{figure}[h]
 \centering
-\frame{\includegraphics[scale=0.44]{images/Simulation.jpg}}
+\frame{\includegraphics[width=\textwidth]{images/Simulation.jpg}}
 \caption{\textit{Simulation} oldal}
 \label{fig:sim}
 \end{figure}
