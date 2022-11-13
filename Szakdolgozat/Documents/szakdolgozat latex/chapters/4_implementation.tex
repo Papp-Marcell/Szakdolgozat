@@ -154,7 +154,30 @@ jsRuntime.InvokeAsync<bool>("test", "line{" + (i-8) + "}");
 \newpage
 
 \Section{Instrukciók és szimulálásuk}
-A program az átmeneti kódot instrukció objektumonként kezeli, ami az instrukció típus \textit{enum}-ból és különböző adattagokból áll. Az adattagoknak a típusaikon (\textit{string, int, double}) túl nincs kötött szerepe, hanem az instrukció kezelő szükség szerint használja őket. Az összes adattag nullázható típus, ami szükséges az instrukciók korrekt létrehozásához és működéséhez, viszont bonyolítja kezelésüket.
+A program az átmeneti kódot instrukció objektumonként kezeli, ami az instrukció típus \textit{enum}-ból és különböző adattagokból áll. Az adattagoknak a típusaikon (\textit{string, int, double}) túl nincs kötött szerepe, hanem az instrukció kezelő szükség szerint használja őket. A \ref{tab:instru} táblázat bemutat implementált instrukciókat és hozzájuk tartozó kezelő metódusokat. Az összes adattag nullázható típus, ami szükséges az instrukciók korrekt létrehozásához és működéséhez, viszont bonyolítja kezelésüket.
+
+\begin{table}[h!]
+\centering
+\caption{Implementált Instrukciók és hozzájuk tartozó szimuláló metódusok}
+\label{tab:instru}
+\begin{tabular}{|c|c|}
+\hline
+DECLARE (array) & Create(array)Type(), CreateArray(), AssignValue()  \\
+\hline
+COPY (tömbökkel) & COPY(ToArray)(FromArray)(ToArrayFromArray)() \\
+\hline
+UOP (tömbökkel) & UOP(ToArray)(FromArray)(ToArrayFromArray)() \\
+\hline
+JUMP (feltétellel) & Jump() (feltételekkel)\\
+\hline 
+PRINT (tömb) & Print() (tömb) \\
+\hline
+PARALLEL & Start és End metódusok \\
+\hline
+Barrier & nincs külön kezelő metódus \\
+\hline
+\end{tabular}
+\end{table}
 
 Az instrukciók 2 féle módon jönnek létre, vagy hamisak és "kitalálja" őket a program a forrásfájl neve alapján, vagy a felhasználó adja meg őket. Az első esetben egy \textit{MockInstructionList} objektum hozza őket létre, második esetben pedig egy \textit{InstructionParser} objektum, de egyaránt egy \textit{MockInstructionList} objektumban lesznek eltárolva egy listában.
 
@@ -189,30 +212,20 @@ private Instruction ParseInstruction(string textInstruction)
 \end{cpp}
 
 
-Ezután az instrukciók átkerülnek a \textit{DebugService}-hez, ahol megtörténik a szimuláció. A \ref{tab:instru} táblázat bemutat implementált instrukciókat és hozzájuk tartozó kezelő metódusokat. A szimuláció első lépése a változók és tömbök létrehozása és tárolása. Mivel nem lehet előre tudni a változók neveit, típusait, mennyiségeket, dinamikus megoldásra van szükség. Ilyen lehetett volna változó és tömb listák, és a hozzájuk tartozó szótárak létrehozása. Változó létrehozásakor hozzáadódna listához, majd bekerülne a szótárba, mint egy \textit{<változó név,index>} elempár, és a szótáron át lehetne rá hivatkozni. Működőképes, de komplikált és problémás, mivel a szótár egy extra réteg az adatok és az instrukció kezelő között. Minden adattípushoz külön \textit{lista - szótár} páros lenne szükséges, tömb listák is bonyolítanák.
 
-\begin{table}[h]
+
+
+Ezután az instrukciók átkerülnek a \textit{DebugService}-hez, ahol megtörténik a szimuláció.
+A \ref{fig:debugflow} ábra egyszerűsített módon illusztrálja a a szimuláció működését. A szimuláció első lépése a változók és tömbök létrehozása és tárolása. Mivel nem lehet előre tudni a változók neveit, típusait, mennyiségeket, dinamikus megoldásra van szükség. Ilyen lehetett volna változó és tömb listák, és a hozzájuk tartozó szótárak létrehozása. Változó létrehozásakor hozzáadódna listához, majd bekerülne a szótárba, mint egy \textit{<változó név,index>} elempár, és a szótáron át lehetne rá hivatkozni. Működőképes, de komplikált és problémás, mivel a szótár egy extra réteg az adatok és az instrukció kezelő között. Minden adattípushoz külön \textit{lista - szótár} páros lenne szükséges, tömb listák is bonyolítanák.
+
+\begin{figure}[h]
 \centering
-\caption{Implementált Instrukciók és hozzájuk tartozó szimuláló metódusok}
-\label{tab:instru}
-\begin{tabular}{|c|c|}
-\hline
-DECLARE (array) & Create(array)Type(), CreateArray(), AssignValue()  \\
-\hline
-COPY (tömbökkel) & COPY(ToArray)(FromArray)(ToArrayFromArray)() \\
-\hline
-UOP (tömbökkel) & UOP(ToArray)(FromArray)(ToArrayFromArray)() \\
-\hline
-JUMP (feltétellel) & Jump() (feltételekkel)\\
-\hline 
-PRINT (tömb) & Print() (tömb) \\
-\hline
-PARALLEL & Start és End metódusok \\
-\hline
-Barrier & nincs külön kezelő metódus \\
-\hline
-\end{tabular}
-\end{table}
+\includegraphics[scale=0.65]{images/SimpleDebug.jpg}
+\caption{A \textit{Debug Service} egyszerűsített folyamatábrája.}
+\label{fig:debugflow}
+\end{figure}
+
+
 
 A megoldás egyszerre bonyolultabb és egyszerűbb. Futásidőben hozunk létre egy osztályt a szükséges adattagokkal. Ehhez felhasználjuk a \textit{Reflection} \cite{reflection} könyvtárat, főleg az \textit{AssemblyBuilder}-t, \textit{ModelBuilder}-t, és a \textit{TypeBuilder}-t \cite{assembly_builder}. Ezek létrehozzák az osztályt, majd az instrukciók kezelő létrehozza a megfelelő mezőket, amik lehetnek \textit{string} vagy \textit{double} változók, vagy tömbök. Az instrukció kezelő az instrukció típusa alapján hívja meg a korrekt metódust. Ekkor egyiknek sincs értéke.
 
@@ -258,12 +271,7 @@ private string VarPrint(string name, Object object)
 
 Néhány instrukció paramétere lehet érték vagy változó ami értéket tárol. Ilyen esetben az instrukció kezelő dönt.
 
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.65]{images/SimpleDebug.jpg}
-\caption{A \textit{Debug Service} egyszerűsített folyamatábrája.}
-\label{fig:debugflow}
-\end{figure}
+
 
 \begin{cpp}
 double opValue;
@@ -282,7 +290,7 @@ else
 
 Prédikátumok az átmeneti kódban ugrásokra vannak bontva, ha egy prédikátum teljesül, akkor a szimuláció indexe továbbugrik a megjelölt instrukcióhoz. Elöltesztelő ciklus esetén van egy második ugrás a ciklus végén, ami visszaállítja a szimuláció indexét a ciklushoz tartozó prédikátumhoz.
 
-A futtatás során feljegyzésre kerül az instrukció lépésszám, és a a változók és tömbök által lefoglalt memória igény, ami a program minimum memóriaigényének felel meg, valamint méri a futási időt is. Az analízis segítségével kimutatásra kerül a \textit{local} és \textit{global Size}, illetve a munka csoportok mennyisége is. A \ref{fig:debugflow} ábra egyszerűsített módon illusztrálja a a szimuláció működését.
+A futtatás során feljegyzésre kerül az instrukció lépésszám, és a a változók és tömbök által lefoglalt memória igény, ami a program minimum memóriaigényének felel meg, valamint méri a futási időt is. Az analízis segítségével kimutatásra kerül a \textit{local} és \textit{global Size}, illetve a munka csoportok mennyisége is. 
 
 
 
@@ -300,13 +308,13 @@ A szimuláció pontosan követi a szimulált program párhuzamosságát. Egy pá
 
 A párhuzamos szimuláció a \textit{Parallel.For()} \cite{pfor} metódussal történik, így pontosan annyi párhuzamos folyamatot tudunk indítani, amennyi szükséges. A ciklusban a végrehajtani kívánt utasításokat egy lambda kifejezésben adjuk meg, amiben egy újabb, a párhuzamos instrukciós listán iteráló ciklus végzi el a szimulációt. Ilyenkor az instrukciók a normális index helyett a hozzájuk tartozó folyamat azonosító számmal dolgoznak, ami a létrehozásuk sorrendjének felel meg. Az instrukciós lista egy \textit{Immutable list} objektum, azaz módosíthatatlan. Ennek következménye, hogy a lista csak olvasható lesz, ezért az összes párhuzamos folyamat egy időben el tudja érni, ezzel is gyorsítva a szimulációt.
 
-Implementálásra került a barrier, azaz a barrier párhuzamos vezérlési utasítás is. A barrier lényege,  hogy egy olyan pont, amit minden párhuzamos szálnak el kell érnie mielőtt bármelyik továbbhaladhat. Ennek C\# megvalósítása a \textit{Barrier} osztály, ami a célnak megfelelt volna, de túlságosan lassúnak bizonyult, ahogy \aref{tab:barrier} táblázaton látható.
+Implementálásra került a barrier párhuzamos vezérlési utasítás is. A barrier lényege,  hogy egy olyan pont, amit minden párhuzamos szálnak el kell érnie mielőtt bármelyik továbbhaladhat. Ennek C\# megvalósítása a \textit{Barrier} osztály, ami a célnak megfelelt volna, de túlságosan lassúnak bizonyult, ahogy \aref{tab:barrier} táblázaton látható.
 
 
 
 \begin{table}[h]
 \centering
-\caption{Akadály implementációk futási ideje}
+\caption{Barrier implementációk futási ideje}
 \label{tab:barrier}
 \begin{tabular}{|c|c|}
 \hline
@@ -316,14 +324,14 @@ Barrier 40 szálra & 26 sec \\
 \hline
 Barrier 80 szálra & 67 sec \\
 \hline 
-Saját akadály 10000 szálra & <1 sec \\
+Saját barrier 10000 szálra & <1 sec \\
 \hline
 \end{tabular}
 \end{table}
 
 A saját barrier implementáció a \textit{Parallel.For()} metódus egy sajátosságát használja ki. A metódus nem tér vissza amíg az összes általa indított párhuzamos szál véget nem ér. Így egy primitív barrier-ként funkcionál, abban az esetben ha az barrier a párhuzamos instrukciók legvégén van. Ezt kihasználva szét kell szedni az instrukciós listát a BARRIER utasítások alapján, és külön futtatni őket. De ahelyett, hogy ténylegesen szétszednénk több listára, az egész párhuzamos szimulációt egy újabb ciklussal burkoljuk, ami addig tart amíg a párhuzamos szakasz a végére nem ért. A szakasz végét úgy észleljük, hogy a instrukció mutató meghaladja az instrukciók mennyiségét. 
 
-Ezt az instrukció iteráló ciklus indexével mérjük, párhuzamos szálanként külön-külön. Barrier-hez érve véget ér az adott szál, az instrukció mutató változó eltárolódik, majd ha az összes szál befejeződik, véget ér az őket indító \textit{Parallel.For()} metódus. Ezután a barrier-t imitálva elindul a következő instrukció szakasz a következő \textit{Parallel.For()} blokkban az eltárolt instrukció mutatótól kezdve (\ref{fig:Barrier} ábra). 
+Ezt az instrukció iteráló ciklus indexével mérjük, párhuzamos szálanként külön-külön. Barrier-höz érve véget ér az adott szál, az instrukció mutató változó eltárolódik, majd ha az összes szál befejeződik, véget ér az őket indító \textit{Parallel.For()} metódus. Ezután a barrier-t imitálva elindul a következő instrukció szakasz a következő \textit{Parallel.For()} blokkban az eltárolt instrukció mutatótól kezdve (\ref{fig:Barrier} ábra). 
 
 
 
@@ -355,7 +363,7 @@ while (parallelLoop!=parallelCount)
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.9]{images/Barrier.jpg}
-\caption{Akadály implementáció}
+\caption{Barrier implementáció}
 \label{fig:Barrier}
 \end{figure}
 

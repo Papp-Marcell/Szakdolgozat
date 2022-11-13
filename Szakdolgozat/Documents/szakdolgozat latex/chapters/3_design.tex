@@ -35,18 +35,31 @@ Az alkalmazás feladatai tehát a következők:
 
 \Section{Program felépítése}
 
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.45]{images/UML.jpg}
-\caption{Részleges UML osztálydiagram}
-\label{fig:uml}
-\end{figure}
+
 
 A program működése a következő:
 
 A webalkalmazáson át feltöltünk egy forrásfájlt, majd a szerver a fájlt beolvassa soronként. Megvizsgálja, hogy a forrásfájl milyen OpenCL eszközöket használ, hány munka elem van benne, stb. A szerver ezután lekéri a számítógép architektúráját. Következő lépésben a webalkalmazás megrajzolja a számítógép ide vonatkozó Hardware elemeit, mint a rendelkezésre álló memória, a processzor adatai, a videókártya adatai, valamint felvázolja, hogy az architektúrát milyen módon használná az OpenCL program. A szerver megkeresi a forrásfájlban az OpenCL függvényeket, és szükségszerűen modelleket rendel hozzájuk, vagyis megfelelő objektumokat hoz létre. Például a \texttt{clCreateKernel} metódust észlelve létrehozunk egy Kernel objektumot. Ilyenkor azt is megállapítja, hogy az adott elem melyik számítási egységhez tartozik. Ha ez sikeres, a webalkalmazás egy Gantt diagramban vizualizálja a program futtatását az idő függvényében. A webalkalmazás ezzel szinkronban megjeleníti magát a forráskódot is, és bármely Gantt diagrambeli elemre kattintva kiemeli a megfelelő kódot. A program ezen részének UML diagramja \aref{fig:uml} ábrán látható. Az ábrából hiányoznak típusok és paraméterek, mert ebben a fázisban még nem tudni, hogy mik lesznek.
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{images/UML.jpg}
+\caption{Részleges UML osztálydiagram}
+\label{fig:uml}
+\end{figure}
+
 A program másik fele az Aritmetikai szimulációval foglalkozik. Ennek szükséglete lenne a forrásfájl "lefordítása" és futtatása, viszont a fordítás teljes folyamatának bemutatása, elemzése nem célja a dolgozatnak.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{images/Compiler.jpg}
+\caption{Fordító és módosításai}
+\label{fig:compiler}
+\end{figure}
+
+Egyik lehetőség az elemzésre a parzolás volt, amire az ANTLR parser generátorral generált parzer tűnt alkalmasnak \cite{antlr}, mert elérhető hozzá nagyon sok nyelvtan, többek között C nyelvtan is. Az ANTLR nemrég bővítette célnyelveit C{\#}-al, tehát ebből a szempontból is megfelelő lett volna. Az ANTLER az adott nyelvtannak megfelelően generál Token-eket, Lexer-t és Parser-t. Ezután egy input-ra fel tudunk építeni egy parse fát, ha meg tudjuk mondani, hogy az input milyen nyelvtani elem. Ezután a fát tudjuk böngészni saját Listener-el vagy Visitor-al, és adatokat kinyerni belőle. Ez az irány akkor ért zsákutcába, amikor kiderült, hogy nem létezik olyan nyelvtani elem hogy “teljes C fájl”, és így nem lehet egy forrásfájlból parse fát létrehozni. Ha mégis e mellett döntöttem volna, akkor szükséges lett volna saját nyelvtan létrehozása.
+
+Kompromisszumos megoldás az első lépések, vagyis a lexikai analízis, szintaktikai analízis, szemantikai analízis, illetve később a kód optimalizálás kihagyása (\ref{fig:compiler} ábra). A szimuláció így "kitalált" elemekkel dolgozik, amit vagy a fájlnév alapján hoz létre, vagy mi magunk adhatunk meg. Ezek az elemek az intermediate code, azaz átmeneti kód elemei, amiket instrukcióknak nevezünk. Ha ezek megvannak, akkor az alkalmazás szimulálja őket, feljegyzi a instrukció lépés számot, a minimális memória igényt, és a futási időt, valamint létrehoz egy szintaktikai fát az instrukciók alapján. A szimuláció ténylegesen elvégzi a lépéseket, létrehoz változókat, műveleteket végez rajtuk, és végül kiírja az eredményeket. A szimulációhoz tartozó UML diagram \aref{fig:simUML} ábrán látható.
 
 \begin{figure}[h]
 \centering
@@ -55,18 +68,8 @@ A program másik fele az Aritmetikai szimulációval foglalkozik. Ennek szüksé
 \label{fig:simUML}
 \end{figure}
 
-Egyik lehetőség az elemzésre a parzolás volt, amire az ANTLR parser generátorral generált parzer tűnt alkalmasnak \cite{antlr}, mert elérhető hozzá nagyon sok nyelvtan, többek között C nyelvtan is. Az ANTLR nemrég bővítette célnyelveit C{\#}-al, tehát ebből a szempontból is megfelelő lett volna. Az ANTLER az adott nyelvtannak megfelelően generál Token-eket, Lexer-t és Parser-t. Ezután egy input-ra fel tudunk építeni egy parse fát, ha meg tudjuk mondani, hogy az input milyen nyelvtani elem. Ezután a fát tudjuk böngészni saját Listener-el vagy Visitor-al, és adatokat kinyerni belőle. Ez az irány akkor ért zsákutcába, amikor kiderült, hogy nem létezik olyan nyelvtani elem hogy “teljes C fájl”, és így nem lehet egy forrásfájlból parse fát létrehozni. Ha mégis e mellett döntöttem volna, akkor szükséges lett volna saját nyelvtan létrehozása.
-
-Kompromisszumos megoldás az első lépések, vagyis a lexikai analízis, szintaktikai analízis, szemantikai analízis, illetve később a kód optimalizálás kihagyása (\ref{fig:compiler} ábra). A szimuláció így "kitalált" elemekkel dolgozik, amit vagy a fájlnév alapján hoz létre, vagy mi magunk adhatunk meg. Ezek az elemek az intermediate code, azaz átmeneti kód elemei, amiket instrukcióknak nevezünk. Ha ezek megvannak, akkor az alkalmazás szimulálja őket, feljegyzi a instrukció lépés számot, a minimális memória igényt, és a futási időt, valamint létrehoz egy szintaktikai fát az instrukciók alapján. A szimuláció ténylegesen elvégzi a lépéseket, létrehoz változókat, műveleteket végez rajtuk, és végül kiírja az eredményeket. A szimulációhoz tartozó UML diagram \aref{fig:simUML} ábrán látható.
 
 
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=\textwidth]{images/Compiler.jpg}
-\caption{Fordító és módosításai}
-\label{fig:compiler}
-\end{figure}
 
 
 
