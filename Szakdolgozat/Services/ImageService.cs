@@ -63,24 +63,24 @@ namespace Szakdolgozat.Services
             return bitmap;
         }
 
-        public void ForwardJump(Bitmap bitmap, int from, int to)
+        public void ForwardJump(Bitmap bitmap, int from, int to,int i)
         {
             Graphics graphics = Graphics.FromImage(bitmap);
-            graphics.DrawLine(Pens.Green, ((from+1) * 200) - 100, 80, ((from + 1) * 200) - 100, 95);
-            graphics.DrawLine(Pens.Green, ((to+2) * 200) - 100, 80, ((to + 2) * 200) - 100, 95);
-            graphics.DrawLine(Pens.Green, ((from + 1) * 200) - 100, 95, ((to + 2) * 200) - 100, 95);
-            graphics.DrawLine(Pens.Green, ((to + 2) * 200) - 110, 90, ((to + 2) * 200) - 100, 80);
-            graphics.DrawLine(Pens.Green, ((to + 2) * 200) - 90, 90, ((to + 2) * 200) - 100, 80);
+            graphics.DrawLine(Pens.Green, ((from+1) * 200) - 100, 80, ((from + 1) * 200) - 100, 90+i);
+            graphics.DrawLine(Pens.Green, ((to+2) * 200) - 100, 80, ((to + 2) * 200) - 100, 90+i);
+            graphics.DrawLine(Pens.Green, ((from + 1) * 200) - 100, 90+i, ((to + 2) * 200) - 100, 90+i);
+            graphics.DrawLine(Pens.Green, ((to + 2) * 200) - 110, 88, ((to + 2) * 200) - 100, 80);
+            graphics.DrawLine(Pens.Green, ((to + 2) * 200) - 90, 88, ((to + 2) * 200) - 100, 80);
         }
 
-        public void BackwardsJump(Bitmap bitmap, int from, int to)
+        public void BackwardsJump(Bitmap bitmap, int from, int to,int i)
         {
             Graphics graphics = Graphics.FromImage(bitmap);
-            graphics.DrawLine(Pens.Purple, ((from + 1) * 200) - 100, 20, ((from + 1) * 200) - 100, 5);
-            graphics.DrawLine(Pens.Purple, ((to + 2) * 200) - 100, 20, ((to + 2) * 200) - 100, 5);
-            graphics.DrawLine(Pens.Purple, ((from+1) * 200) - 100, 5, ((to + 2) * 200) - 100, 5);
-            graphics.DrawLine(Pens.Purple, ((to + 2) * 200) - 110, 10, ((to + 2) * 200) - 100, 20);
-            graphics.DrawLine(Pens.Purple, ((to+2) * 200) - 90, 10, ((to + 2) * 200) - 100, 20);
+            graphics.DrawLine(Pens.Purple, ((from + 1) * 200) - 100, 20, ((from + 1) * 200) - 100, 10-i);
+            graphics.DrawLine(Pens.Purple, ((to + 2) * 200) - 100, 20, ((to + 2) * 200) - 100, 10-i);
+            graphics.DrawLine(Pens.Purple, ((from+1) * 200) - 100, 10-i, ((to + 2) * 200) - 100, 10-i);
+            graphics.DrawLine(Pens.Purple, ((to + 2) * 200) - 110, 12, ((to + 2) * 200) - 100, 20);
+            graphics.DrawLine(Pens.Purple, ((to+2) * 200) - 90, 12, ((to + 2) * 200) - 100, 20);
         }
     }
 }

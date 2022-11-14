@@ -29,5 +29,6 @@
         PARALLEL_START,
         PARALLEL_END,
         BARRIER,
+        RANDOM,
     }
 }

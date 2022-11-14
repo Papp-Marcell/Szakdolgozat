@@ -78,9 +78,14 @@ namespace Szakdolgozat.Services
                 //AST needs to be explicitly reference or resize wont work
                 instructionHandler.DrawInstruction(instructions[i],i,ref AST);
             }
+            int j = 0;
             for (int i = 0; i < instructions.Count;i++)
             {
-                instructionHandler.DrawJumps(instructions[i], i, AST);
+                instructionHandler.DrawJumps(instructions[i], i, AST,ref j);
+                if (j >= 9)
+                {
+                    j = 0;
+                }
             }
 
         }

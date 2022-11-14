@@ -35,7 +35,7 @@ namespace Szakdolgozat.Services
 
         public MockInstructionList ParseInstructons(string textInstructions)
         {
-            String[] textInstructionArray = textInstructions.Split('|');
+            String[] textInstructionArray = textInstructions.Split(") (");
             MockInstructionList list = new MockInstructionList();
             
             foreach(String instruction in textInstructionArray)

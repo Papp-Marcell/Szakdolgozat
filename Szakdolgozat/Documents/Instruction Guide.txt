@@ -1,6 +1,14 @@
 Example : Custom Instructions Example.txt
 
-Format of custom Instruction List : (instruction)|(instruction)|(instruction)...|(instruction)
+Format of custom Instruction List : (instruction)
+				    (instruction)
+				    (instruction)
+				    .
+				    .
+				    .
+ 			    	    (instruction
+
+After copying into the input box, separataros should be ") (" .
 
 Format of instruction:(instrucionType,var1,var2,var3,index,value1,value2,op=null,var4=null)
 

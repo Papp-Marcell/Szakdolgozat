@@ -71,23 +71,23 @@ namespace Szakdolgozat.Services
                     counter++;
                     break;
                 case InstructionType.J_IF_EQUAL:
-                    JumpIfEqual(instruction.var1, instruction.var2, instruction.index, _object, ref i);
+                    JumpIfEqual(instruction.var1, instruction.var2, instruction.index, _object, ref i, parallelIndex);
                     counter++;
                     break;
                 case InstructionType.J_IF_GREATER:
-                    JumpIfGreater(instruction.var1, instruction.var2, instruction.index, _object, ref i);
+                    JumpIfGreater(instruction.var1, instruction.var2, instruction.index, _object, ref i, parallelIndex);
                     counter++;
                     break;
                 case InstructionType.J_IF_GREATER_EQUAL:
-                    JumpIfGreaterEqual(instruction.var1, instruction.var2, instruction.index, _object, ref i);
+                    JumpIfGreaterEqual(instruction.var1, instruction.var2, instruction.index, _object, ref i, parallelIndex);
                     counter++;
                     break;
                 case InstructionType.J_IF_LESS:
-                    JumpIfLess(instruction.var1, instruction.var2, instruction.index, _object, ref i);
+                    JumpIfLess(instruction.var1, instruction.var2, instruction.index, _object, ref i, parallelIndex);
                     counter++;
                     break;
                 case InstructionType.J_IF_LESS_EQUAL:
-                    JumpIfLessEqual(instruction.var1, instruction.var2, instruction.index, _object, ref i);
+                    JumpIfLessEqual(instruction.var1, instruction.var2, instruction.index, _object, ref i, parallelIndex);
                     counter++;
                     break;
                 case InstructionType.COPY_TO_ARRAY:
@@ -118,6 +118,9 @@ namespace Szakdolgozat.Services
                     break;
                 case InstructionType.PARALLEL_START:
                     ParallelStart();
+                    break;
+                case InstructionType.RANDOM:
+                    SetRandom(instruction.var1, instruction.index, instruction.value1, instruction.value2, _object,parallelIndex);
                     break;
             }
             i++;
@@ -185,7 +188,7 @@ namespace Szakdolgozat.Services
 
         }
 
-        public void DrawJumps(Instruction instruction, int i, Bitmap bitmap)
+        public void DrawJumps(Instruction instruction, int i, Bitmap bitmap, ref int j)
         {
             switch (instruction.instrucionType)
             {
@@ -197,11 +200,13 @@ namespace Szakdolgozat.Services
                 case InstructionType.J_IF_LESS_EQUAL:
                     if (instruction.index.Value > 0)
                     {
-                        imageService.ForwardJump(bitmap, i, i + instruction.index.Value);
+                        imageService.ForwardJump(bitmap, i, i + instruction.index.Value,j);
+                        j += 2;
                     }
                     else
                     {
-                        imageService.BackwardsJump(bitmap, i, i + instruction.index.Value);
+                        imageService.BackwardsJump(bitmap, i, i + instruction.index.Value,j);
+                        j += 2;
                     }
                     break;
             }
@@ -335,39 +340,90 @@ namespace Szakdolgozat.Services
                     break;
             }
         }
-        private void JumpIfEqual(string name,string name2,int? index,object _object,ref int i)
+        private void JumpIfEqual(string name,string name2,int? index,object _object,ref int i, int? parallelIndex)
         {
-            if((double)_object.GetType().GetField(name).GetValue(_object) == (double)_object.GetType().GetField(name2).GetValue(_object))
+            if (parallelIndex == null)
             {
-                i += (int)index.Value;
+                if ((double)_object.GetType().GetField(name).GetValue(_object) == (double)_object.GetType().GetField(name2).GetValue(_object))
+                {
+                    i += (int)index.Value;
+                }
+            }
+            else
+            {
+                if (((IList<double>)_object.GetType().GetField(name).GetValue(_object))[parallelIndex.Value] == ((IList<double>)_object.GetType().GetField(name2).GetValue(_object))[parallelIndex.Value])
+                {
+                    i += (int)index.Value;
+                }
+            }
+            
+        }
+        private void JumpIfGreater(string name, string name2, int? index, object _object, ref int i, int? parallelIndex)
+        {
+            if (parallelIndex == null)
+            {
+                if ((double)_object.GetType().GetField(name).GetValue(_object) > (double)_object.GetType().GetField(name2).GetValue(_object))
+                {
+                    i += (int)index.Value;
+                }
+            }
+            else
+            {
+                if (((IList<double>)_object.GetType().GetField(name).GetValue(_object))[parallelIndex.Value] > ((IList<double>)_object.GetType().GetField(name2).GetValue(_object))[parallelIndex.Value])
+                {
+                    i += (int)index.Value;
+                }
             }
         }
-        private void JumpIfGreater(string name, string name2, int? index, object _object, ref int i)
+        private void JumpIfGreaterEqual(string name, string name2, int? index, object _object, ref int i, int? parallelIndex)
         {
-            if ((double)_object.GetType().GetField(name).GetValue(_object) > (double)_object.GetType().GetField(name2).GetValue(_object))
+            if (parallelIndex == null)
             {
-                i += (int)index.Value;
+                if ((double)_object.GetType().GetField(name).GetValue(_object) >= (double)_object.GetType().GetField(name2).GetValue(_object))
+                {
+                    i += (int)index.Value;
+                }
+            }
+            else
+            {
+                if (((IList<double>)_object.GetType().GetField(name).GetValue(_object))[parallelIndex.Value] >= ((IList<double>)_object.GetType().GetField(name2).GetValue(_object))[parallelIndex.Value])
+                {
+                    i += (int)index.Value;
+                }
             }
         }
-        private void JumpIfGreaterEqual(string name, string name2, int? index, object _object, ref int i)
+        private void JumpIfLess(string name, string name2, int? index, object _object, ref int i, int? parallelIndex)
         {
-            if ((double)_object.GetType().GetField(name).GetValue(_object) >= (double)_object.GetType().GetField(name2).GetValue(_object))
+            if (parallelIndex == null)
             {
-                i += (int)index.Value;
+                if ((double)_object.GetType().GetField(name).GetValue(_object) < (double)_object.GetType().GetField(name2).GetValue(_object))
+                {
+                    i += (int)index.Value;
+                }
+            }
+            else
+            {
+                if (((IList<double>)_object.GetType().GetField(name).GetValue(_object))[parallelIndex.Value] < ((IList<double>)_object.GetType().GetField(name2).GetValue(_object))[parallelIndex.Value])
+                {
+                    i += (int)index.Value;
+                }
             }
         }
-        private void JumpIfLess(string name, string name2, int? index, object _object, ref int i)
+        private void JumpIfLessEqual(string name, string name2, int? index, object _object, ref int i, int? parallelIndex)
         {
-            if ((double)_object.GetType().GetField(name).GetValue(_object) < (double)_object.GetType().GetField(name2).GetValue(_object))
+            if (parallelIndex == null)
             {
-                i += (int)index.Value;
+                if ((double)_object.GetType().GetField(name).GetValue(_object) <= (double)_object.GetType().GetField(name2).GetValue(_object))
+                {
+                    i += (int)index.Value;
+                }
             }
-        }
-        private void JumpIfLessEqual(string name, string name2, int? index, object _object, ref int i)
-        {
-            if ((double)_object.GetType().GetField(name).GetValue(_object) <= (double)_object.GetType().GetField(name2).GetValue(_object))
+            else
             {
-                i += (int)index.Value;
+                if (((IList<double>)_object.GetType().GetField(name).GetValue(_object))[parallelIndex.Value] <= ((IList<double>)_object.GetType().GetField(name2).GetValue(_object))[parallelIndex.Value])
+                {
+                    i += (int)index.Value;
+                }
             }
         }
         private void CopyToArray(string arrayName, string name,string indexVar,int? index, object _object,int? parallelIndex)
@@ -597,7 +653,23 @@ namespace Szakdolgozat.Services
             counter+=parallelCounter;
             memory+=parallelMemory;
         }
+        private void SetRandom(string name, int? index,double? min,double? max, object _object, int? parallelIndex)
+        {
+            var rand = new Random();
+            if (parallelIndex.HasValue)
+            {
+                ((IList<double>)_object.GetType().GetField(name).GetValue(_object))[parallelIndex.Value] = min.Value + (rand.NextDouble() * max.Value);
+                return;
+            }
+            if (index.HasValue)
+            {
+                ((IList<double>)_object.GetType().GetField(name).GetValue(_object))[index.Value] = min.Value + (rand.NextDouble() * max.Value);
+                return;
+            }
+            _object.GetType().GetField(name).SetValue(_object, min.Value + (rand.NextDouble() * max.Value));
+            
 
+        }
 
     }
 }
