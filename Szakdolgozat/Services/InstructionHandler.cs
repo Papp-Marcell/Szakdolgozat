@@ -64,7 +64,7 @@ namespace Szakdolgozat.Services
                 case InstructionType.COPY:
                     resultString = Copy(instruction.var1,instruction.var2,instruction.var3,instruction.value1, _object,i);
                     counter++;
-                    resultList.Add($"At step {counter} : {resultString}");
+                    //resultList.Add($"At step {counter} : {resultString}");
                     break;
                 case InstructionType.UOP:
                     Uop(instruction.var1,instruction.var2,instruction.value1,instruction.op,_object);
@@ -94,8 +94,12 @@ namespace Szakdolgozat.Services
                     CopyToArray(instruction.var1, instruction.var2, instruction.var3, instruction.index, _object, parallelIndex);
                     counter++;
                     break;
+                case InstructionType.COPY_FROM_ARRAY:
+                    CopyFromArray(instruction.var1, instruction.var2, instruction.var3, instruction.index, _object, parallelIndex);
+                    counter++;
+                    break;
                 case InstructionType.UOP_TO_ARRAY:
-                    UopToArray(instruction.var1, instruction.var2, instruction.var3, instruction.index, instruction.op, _object, parallelIndex);
+                    UopToArray(instruction.var1, instruction.var2, instruction.var3, instruction.index, instruction.op, _object, parallelIndex,instruction.value1);
                     counter++;
                     break;
                 case InstructionType.COPY_ARRAY_ARRAY:
@@ -140,10 +144,13 @@ namespace Szakdolgozat.Services
                     imageService.AddNextInstruction(ref bitmap, $"#{i} UOP on {instruction.var1}", false);
                     break;
                 case InstructionType.COPY_TO_ARRAY:
-                    imageService.AddNextInstruction(ref bitmap, $"#{i} Copy to elemnt of {instruction.var1} array", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Copy to element of {instruction.var1} array", false);
+                    break;
+                case InstructionType.COPY_FROM_ARRAY:
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Copy to {instruction.var1} from array", false);
                     break;
                 case InstructionType.UOP_TO_ARRAY:
-                    imageService.AddNextInstruction(ref bitmap, $"#{i} UOP on elemnt of {instruction.var1} array", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} UOP on element of {instruction.var1} array", false);
                     break;
                 case InstructionType.ARRAY_PRINT:
                     imageService.AddNextInstruction(ref bitmap, $"#{i} Prints Values of first 5 elemtents of {instruction.var1} array", false);
@@ -155,7 +162,7 @@ namespace Szakdolgozat.Services
                     imageService.AddNextInstruction(ref bitmap, $"#{i} Copy to {instruction.var1} array from {instruction.var2} array", false);
                     break;
                 case InstructionType.UOP_ARRAY_ARRAY:
-                    imageService.AddNextInstruction(ref bitmap, $"#{i} UOP on elemnt of {instruction.var1} array with element of {instruction.var2} array", false);
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} UOP on element of {instruction.var1} array with element of {instruction.var2} array", false);
                     break;
                 case InstructionType.UOP_FROM_ARRAY:
                     imageService.AddNextInstruction(ref bitmap, $"#{i} UOP on {instruction.var1} with element of {instruction.var2} array", false);
@@ -171,6 +178,9 @@ namespace Szakdolgozat.Services
                     break;
                 case InstructionType.PARALLEL_END:
                     imageService.AddNextInstruction(ref bitmap, $"#{i} End Parallel", true);
+                    break;
+                case InstructionType.RANDOM:
+                    imageService.AddNextInstruction(ref bitmap, $"#{i} Set {instruction.var1} to a random number", false);
                     break;
                 case InstructionType.BARRIER:
                     imageService.AddNextInstruction(ref bitmap, $"#{i} Barrier", true);
@@ -433,14 +443,15 @@ namespace Szakdolgozat.Services
             {
                 arrayIndex = (int)index.Value;
             }
+            else if (parallelIndex.HasValue)
+            {
+                arrayIndex = (int)parallelIndex.Value;
+            }
             else { 
                 arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object)); 
             }
 
-            if (parallelIndex.HasValue)
-            {
-                arrayIndex = (int)parallelIndex.Value;
-            }
+            
             object value = _object.GetType().GetField(name).GetValue(_object);
             if (value.GetType() == typeof(string))
             {
@@ -451,37 +462,77 @@ namespace Szakdolgozat.Services
                 ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] = (double)value;
             }
         }
-        private void UopToArray(string arrayName, string name, string indexVar, int? index, string op, object _object,int? parallelIndex)
+        private void CopyFromArray(string name, string arrayName, string indexVar, int? index, object _object, int? parallelIndex)
         {
             int arrayIndex;
             if (index.HasValue)
             {
                 arrayIndex = (int)index.Value;
             }
+            else if (parallelIndex.HasValue)
+            {
+                arrayIndex = (int)parallelIndex.Value;
+            }
             else
             {
                 arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
             }
 
-            if (parallelIndex.HasValue)
+
+
+            object _arrayFrom = _object.GetType().GetField(arrayName).GetValue(_object);
+            if (_arrayFrom.GetType() == typeof(string[]))
+            {
+                _object.GetType().GetField(name).SetValue(_object, ((IList<string>)_arrayFrom)[arrayIndex]);
+                
+            }
+            else
+            {
+                _object.GetType().GetField(name).SetValue(_object, ((IList<double>)_arrayFrom)[arrayIndex]);
+            }
+        }
+        private void UopToArray(string arrayName, string name, string indexVar, int? index, string op, object _object,int? parallelIndex,double? value1)
+        {
+            int arrayIndex;
+            if (index.HasValue)
+            {
+                arrayIndex = (int)index.Value;
+            }
+            else if (parallelIndex.HasValue)
             {
                 arrayIndex = (int)parallelIndex.Value;
             }
-            object value = _object.GetType().GetField(name).GetValue(_object);
-           
+            else
+            {
+                arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
+            }
+
+            
+            double value=0;
+            if (value1.HasValue)
+            {
+                value = value1.Value;
+            }
+            else if(name!=null)
+            {
+                value = (double)_object.GetType().GetField(name).GetValue(_object);
+            }
             switch (op)
             {
                 case "+":
-                    ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] += (double)value;
+                    ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] += value;
                     break;
                 case "-":
-                    ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] -= (double)value;
+                    ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] -= value;
                     break;
                 case "*":
-                    ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] *= (double)value;
+                    ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] *= value;
                     break;
                 case "/":
-                    ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] /= (double)value;
+                    ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] /= value;
+                    break;
+                case "sqrt":
+                    ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] = Math.Sqrt(((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex]);
                     break;
             }
         }
@@ -492,15 +543,16 @@ namespace Szakdolgozat.Services
             {
                 arrayIndex = (int)index.Value;
             }
+            else if (parallelIndex.HasValue)
+            {
+                arrayIndex = (int)parallelIndex.Value;
+            }
             else
             {
                 arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
             }
 
-            if (parallelIndex.HasValue)
-            {
-                arrayIndex = (int)parallelIndex.Value;
-            }
+            
             object _arrayFrom = _object.GetType().GetField(arrayFrom).GetValue(_object);
             if (_arrayFrom.GetType() == typeof(string[]))
             {
@@ -518,15 +570,16 @@ namespace Szakdolgozat.Services
             {
                 arrayIndex = (int)index.Value;
             }
+            else if (parallelIndex.HasValue)
+            {
+                arrayIndex = (int)parallelIndex.Value;
+            }
             else
             {
                 arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
             }
 
-            if (parallelIndex.HasValue)
-            {
-                arrayIndex = (int)parallelIndex.Value;
-            }
+            
 
             object _arrayFrom = _object.GetType().GetField(arrayFrom).GetValue(_object);
 
@@ -553,15 +606,16 @@ namespace Szakdolgozat.Services
             {
                 arrayIndex = (int)index.Value;
             }
+            else if (parallelIndex.HasValue)
+            {
+                arrayIndex = (int)parallelIndex.Value;
+            }
             else
             {
                 arrayIndex = Convert.ToInt32(_object.GetType().GetField(indexVar).GetValue(_object));
             }
 
-            if (parallelIndex.HasValue)
-            {
-                arrayIndex = (int)parallelIndex.Value;
-            }
+            
             object value = ((IList<double>)_object.GetType().GetField(arrayFrom).GetValue(_object))[arrayIndex];
 
             switch (op)

@@ -31,6 +31,7 @@ namespace Szakdolgozat.Services
             memory = 0;
             stepCount = 0;
             AST = null;
+            resultList.Clear();
             AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
                     assemblyName,
                     AssemblyBuilderAccess.Run);

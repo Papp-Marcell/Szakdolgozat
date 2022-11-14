@@ -1,4 +1,5 @@
 ﻿using Szakdolgozat.Models;
+using System.Globalization;
 
 namespace Szakdolgozat.Services
 {
@@ -7,16 +8,17 @@ namespace Szakdolgozat.Services
         private Instruction ParseInstruction(string textInstruction)
         {
             
-            string currentInstruction = textInstruction.Trim(new char[] { '(', ')' });
+            string currentInstruction = textInstruction.Trim(new char[] { '(', ')',' ' });
+            currentInstruction = currentInstruction.Replace(" ", "");
             string[] currentInstructionArray = currentInstruction.Split(',');
             string[] instructionType = currentInstructionArray[0].Split('.');
             string? instructionVar7 = null;
             string? instructionVar8 = null;
-            if (instructionType.Length > 7)
+            if (currentInstructionArray.Length > 7)
             {
                 instructionVar7 = nullCheck(currentInstructionArray[7]);
             }
-            if (instructionType.Length > 8)
+            if (currentInstructionArray.Length > 8)
             {
                 instructionVar8 = nullCheck(currentInstructionArray[8]);
             }
@@ -76,7 +78,7 @@ namespace Szakdolgozat.Services
             {
                 return null;
             }
-            return double.Parse(text);
+            return double.Parse(text,CultureInfo.InvariantCulture);
         }
     }
 }
