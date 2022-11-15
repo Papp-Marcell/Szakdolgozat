@@ -87,7 +87,7 @@ A memória modellnek pontosan tudnia kell definiálni, hogy a memóriában lév�
 \begin{itemize}
 \item\textbf{Globális memória:} Olyan memória terület, amit az összes munka csoport szabadon elér.
 \item\textbf{Konstans memória:} Ez a terület nem változik a végrehajtás alatt, a házigazda ide helyez memória objektumokat.
-\item\textbf{Helyi memória:} Munka csoporthoz tartozó lokális memória terület
+\item\textbf{Helyi memória:} Munka csoporthoz tartozó lokális memória terület.
 \item\textbf{Privát memória:} Munka elemhez tartozó memória terület.
 \end{itemize}
 \textbf{Memória Objektumok:} a globális memória tartalma. 3 fajtájuk van:
@@ -159,7 +159,7 @@ clReleaseKernel(kernel)
 \end{enumerate}
 	
 \Section{Eddigi eredmények: M2S-Visual eszköz}
-Fontos megemlíteni az Multi2Sim-Visual-t \cite{m2s}. Az M2S egy szimulátor, amit abból a célból készítettek, hogy új hardvert lehessen tesztelni prototípus építése nélkül. Ez egy heterogén CPU GPU szimulátor, benchmarkok-kal kiegészítve. Mivel ekkor egy roppant pontos és kifinomult szimulátorban fut a program, pontosan nyomon lehet követni a program futását. Ehhez készítettek a Bostoni egyetemen egy vizualizációs keretrendszert, az M2S-Visualt \cite{m2sv}. Ez az eszköz képes megmutatni, hogy melyik processzor magon milyen kontextus fut, azon belül milyen processzor instrukciók aktívak, vagy hogy a GPU-n hány számítási egység van, azokon belül milyen munka csoportok vannak, vagy akár hogy milyen memória hierarchia áll fenn a gyorsítótárakban.
+Fontos megemlíteni a Multi2Sim-Visual-t \cite{m2s}. A Multi2Sim egy szimulátor, amit abból a célból készítettek, hogy új hardvert lehessen tesztelni prototípus építése nélkül. Ez egy heterogén CPU GPU szimulátor, benchmarkokkal kiegészítve. Mivel ekkor egy roppant pontos és kifinomult szimulátorban fut a program, pontosan nyomon lehet követni a program futását. Ehhez készítettek a Bostoni egyetemen egy vizualizációs keretrendszert, az M2S-Visualt \cite{m2sv}. Ez az eszköz képes megmutatni, hogy melyik processzor magon milyen kontextus fut, azon belül milyen processzor instrukciók aktívak, vagy hogy a GPU-n hány számítási egység van, azokon belül milyen munka csoportok vannak, vagy akár hogy milyen memória hierarchia áll fenn a gyorsítótárakban.
 Hiányossága az eszköznek, hogy csak a pillanatnyi állapotot mutatja, és igazából azt se teljesen vizuálisan, hanem inkább táblázatos formákban (\ref{fig:m2svf} ábra).
 
 \begin{figure}[h]

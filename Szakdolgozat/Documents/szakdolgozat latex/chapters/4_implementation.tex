@@ -109,24 +109,24 @@ A baloldali konténerben egy dinamikus táblázat foglal helyet, ami a már elem
 
 \begin{cpp}
 @for(int i = 0; i < Analyzer.myElements.Count; i++)
- {
-   int ii = i;
-   <tr>
-      <td>@(i+1)</td>
-      @for(int j = 0; j < Analyzer.CUs + 1; j++)
-        {
-          <td style="min-width:50px">
-          @if (j == Analyzer.myElements[ii].ComputeUnit | (j != 0 &
-               -1 == Analyzer.myElements[ii].ComputeUnit))
-             {
-                <button title=@Analyzer.myElements[ii].Name @onclick="()
-                =>{ChangeColor(Analyzer.myElements[ii].Index);ScrollTo
-                Analyzer.myElements[ii].Index);}">@(i+1)</button>
-             }
-          </td>
-        }
-   </tr>
- }
+{
+    int ii = i;
+    <tr>
+       <td>@(i+1)</td>
+       @for(int j = 0; j < Analyzer.CUs + 1; j++)
+       {
+           <td style="min-width:50px">
+           @if (j == Analyzer.myElements[ii].ComputeUnit || (j != 0 &&
+              -1 == Analyzer.myElements[ii].ComputeUnit))
+           {
+              <button title=@Analyzer.myElements[ii].Name @onclick="()
+              =>{ChangeColor(Analyzer.myElements[ii].Index);ScrollTo
+              Analyzer.myElements[ii].Index);}">@(i+1)</button>
+           }
+           </td>
+       }
+    </tr>
+}
 \end{cpp}
 
 \begin{figure}[h]
@@ -198,7 +198,7 @@ private Instruction ParseInstruction(string textInstruction)
     ......
     return  new Instruction
 	(
-		parseInstructionType(instructionType[1]),
+        parseInstructionType(instructionType[1]),
         nullCheck(currentInstructionArray[1]),
         nullCheck(currentInstructionArray[2]),
         nullCheck(currentInstructionArray[3]), 
@@ -244,14 +244,14 @@ foreach (Instruction instruction in instructions)
 
 private void CreateType(...)
 {
-	switch (type)
+    switch (type)
     {
     	case "string":
-        	typeBuilder.DefineField
+            typeBuilder.DefineField
             (name,typeof(string),FieldAttributes.Public);
             break;
-		default:
-        	typeBuilder.DefineField
+        default:
+            typeBuilder.DefineField
             (name, typeof(double), FieldAttributes.Public);
             break;
     }
@@ -264,7 +264,7 @@ Az objektum létrehozása után megkezdődik az igazi szimuláció, az összes i
 \begin{cpp}
 private string VarPrint(string name, Object object)
 {
-	return "Value of {name} : 
+    return "Value of {name} : 
     {object.GetType().GetField(name).GetValue(object)}";
 }
 \end{cpp}
@@ -336,28 +336,28 @@ Ezt az instrukció iteráló ciklus indexével mérjük, párhuzamos szálankén
 
 
 \begin{cpp}
-while (parallelLoop!=parallelCount)
+while (parallelLoop != parallelCount)
+{
+    Parallel.For(0, parallelCount, (i, state) =>
     {
-        Parallel.For(0, parallelCount, (i, state) =>
+        if (start[i] >= parallelInstructions.Count)
         {
-            if (start[i] >= parallelInstructions.Count)
+            Interlocked.Increment(ref parallelLoop);
+            return;
+        } 
+        for (int j = start[i]; j < parallelInstructions.Count;)
+        {
+            if (...instrucionType == ...BARRIER)
             {
-                Interlocked.Increment(ref parallelLoop);
-                return;
-            } 
-            for (int j = start[i]; j < parallelInstructions.Count;)
-            {
-                if (...instrucionType == ...BARRIER)
-                   {
-                       j++;
-                       start[i] = j;
-                       break;
-                   }
-                ExecuteInstruction(...);
+                j++;
                 start[i] = j;
+                break;
             }
-        });
-    }
+            ExecuteInstruction(...);
+            start[i] = j;
+        }
+    });
+}
 \end{cpp}
 
 \begin{figure}[h]

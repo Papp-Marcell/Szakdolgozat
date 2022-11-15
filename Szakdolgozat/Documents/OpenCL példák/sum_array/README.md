@@ -5,3 +5,4 @@ This sample shows an OpenCL vector addition code. Consider this a OpenCL ‘Hell
 
 Downloaded from the [OLCF](https://www.olcf.ornl.gov/tutorials/opencl-vector-addition/). Please visit their [GitHub page](https://github.com/olcf/vector_addition_tutorials). Please direct any questions or comments to `help@nccs.gov`.
 
+(This sample is actually downloaded from https://github.com/rsnemmen/OpenCL-examples , credits and licenses apply.)
