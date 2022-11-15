@@ -14,6 +14,7 @@ namespace Szakdolgozat.Services
         public string device;
         public void Analyze(MyFile file)
         {
+            hardwareService.Initialize();
             myElements.Clear();
             myFile = file;
   

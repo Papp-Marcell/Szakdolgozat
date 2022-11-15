@@ -40,7 +40,7 @@ namespace Szakdolgozat.Services
                 this.GPUram = (UInt32)GPU["AdapterRam"];
                 this.GPUram = this.GPUram / 1000000000;
 
-                this.CPUthreads= (uint)CPU["NumberOfLogicalProcessors"];
+                this.CPUthreads= (UInt32)(CPU["NumberOfLogicalProcessors"]);
 
             }
             else

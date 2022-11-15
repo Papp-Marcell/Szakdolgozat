@@ -65,7 +65,7 @@ int main( int argc, char* argv[] )
     err = clGetPlatformIDs(1, &cpPlatform, NULL);
  
     // Get ID for the device
-    err = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 1, &device_id, NULL);
+    err = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_CPU, 1, &device_id, NULL);
  
     // Create a context  
     context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
