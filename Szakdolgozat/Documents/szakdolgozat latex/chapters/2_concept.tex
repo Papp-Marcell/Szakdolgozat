@@ -44,7 +44,7 @@ Az OpenCL specifikáció 4 nagy egységre bontja az architektúrát, ezek a köv
 \end{itemize}
 
 \Section{Platform Modell}
-A következő sorokban a platform modellt fogjuk bemutatni \cite{spec}:
+A következő sorokban a platform modellt fogjuk bemutatni \cite{spec}.
 
 A platform modell egy házigazdából áll, ami össze van kötve egy vagy több OpenCL eszközzel. Az OpenCL eszköz több Compute Unit-ra (\ref{fig:platform_modell} ábra), számítási egységre van felosztva, amik még tovább vannak osztva Processing Element-ekre. A számítási feladatok ezekben az elemekben valósulnak meg. A házigazda parancsokat küld az eszközöknek, amik mindent megtesznek hogy végrehajtsák őket. Az adatokat a memórián keresztül kapják meg. 
 
@@ -62,7 +62,7 @@ Az OpenCL 2 féle platform profilt definiál, teljes profilt, és beépített pr
 \Section{Végrehajtás modell}
 Ez a rész a végrehajtás modelljét vizsgálja \cite{spec}.
 
-A tényleges párhuzamos munkára a kerneleken kerül sor. A kernel egy a hoszt által precízen menedzselt környezetben, kontextusban fut, aminek részei az eszközök, kernel objektumok, program objektumok, és memória objektumok. Az eszközök 1 vagy több OpenCL platform által kezelt eszköz, kernel objektumok (igazából OpenCL metódusok), amik az OpenCL eszközökön futnak, program objektumok, a program forrás és futtatható állomány, amik implementálják a kernelt, a memória objektumok pedig az OpenCL eszközök és a hoszt által látható változók, amiken a kernel példányai dolgoznak.
+A tényleges párhuzamos munkára a kerneleken kerül sor. A kernel egy,	 a hoszt által precízen menedzselt környezetben, kontextusban fut, aminek részei az eszközök, kernel objektumok, program objektumok, és memória objektumok. Az eszközök 1 vagy több OpenCL platform által kezelt eszköz, kernel objektumok (igazából OpenCL metódusok), amik az OpenCL eszközökön futnak, program objektumok, a program forrás és futtatható állomány, amik implementálják a kernelt, a memória objektumok pedig az OpenCL eszközök és a hoszt által látható változók, amiken a kernel példányai dolgoznak.
 
 A hoszt egy eszközzel egy parancs soron keresztül kommunikál. Minden eszköznek saját parancs sora van. Egy ilyen parancs 3 kategóriába eshet:
 \begin{itemize}
@@ -98,7 +98,7 @@ A memória modellnek pontosan tudnia kell definiálni, hogy a memóriában lév�
 \end{itemize}
 
 \Section{OpenCL C nyelvi sajátosságok példák}
-Az OpenCL hoz némi újdonságot a nyelvbe. Ezek közül mutatok be néhány fontosabbat \cite{opencl_c}.
+Az OpenCL hoz némi újdonságot a nyelvbe. Ezek közül mutatok be néhány fontosabbat \cite{opencl_origin}.
 \begin{itemize}
 \item\textbf{\_\_ kernel:} Egy metódust kernelként azonosít, hasonlóan a \textit{main()} függvényhez. Egy ilyen kernel hozzáfér más kernel oldali funkciókhoz.
 \item\textbf{Memória területek azonosítói:}\textit{ \_\_ global, \_\_ constant, \_\_ local, \_\_ private}, a fent említett memóriaterületek azonosítói. Kernel argumentumokhoz szükségesek.

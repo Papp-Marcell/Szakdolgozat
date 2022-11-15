@@ -88,7 +88,7 @@ Az alkalmazásban a navigáció különböző oldalak között az oldalsó navig
 \Section{Architeture oldal}
 Az Architecture oldal fő és egyetlen eleme egy \textit{Canvas}, pontosabban egy \textit{Blazor Extension Canvas}, ami azért előnyös, mert könnyen manipulálható C\# kóddal. Ez a komponens miután létrehozza a \textit{Canvas}-t, megrajzolja a \textit{Hardware Service} által szolgáltatott adatokat, mint a fizikai memória, CPU, GPU. Az egyszerűség kedvéért fix méretű \textit{Canvas}-al dolgozik, így pixel pontosan meg tudja rajzolni az entitásokat és a kapcsolatokat.
 
-\Section{Analysis}
+\Section{Analysis oldal}
 Ez az egyik fő alkotóeleme a programnak. Itt megvizsgáljuk a beolvasott fájlt, és sorról sorra végigmegyünk rajta OpenCL elemeket kutatva. 
 
 Első lépésben megvizsgálja, hogy a program CPU-nak vagy GPU-n fut-e, és ez alapján megállapítja a megfelelő \textit{Compute Unit} mennyiséget, ami processzor esetén a logikai szálakkal egyenértékű. Viszont videokártya esetén ez egy sokkal összetettebb probléma, nem lehet ilyen egyszerűen megmondani a számítási egységek mennyiségét. Például egy NVIDIA GeForce GTX 1080 videókártyában 2560 CUDA mag, 160 texture mapping unit, és 64 ROP egység található \cite{1080}. Ez egyrészt nem látható a WMI számára \cite{wmi}, másrészt ebből kikövetkezthetetlen a tényleges OpenCL számítási egységek száma. Ettől csak bonyolultabb esetek vannak. Lehetnek Tensor \cite{tensor} magok is, lehet integrált videókártya ami bizonyos erőforrásokon a processzorral osztozik, más gyártású, például AMD videókártyák pedig teljesen más felépítésűek is lehetnek. Ha sikerülne is megállapítani a számítási egységek számát, 3000+ számítási szálat nem lehet jól vizualizálni, ezért videókártya esetén az ábrázolás céljából a program egy kitalált 4 számítási egységgel fog dolgozni.
@@ -216,7 +216,7 @@ private Instruction ParseInstruction(string textInstruction)
 
 
 Ezután az instrukciók átkerülnek a \textit{DebugService}-hez, ahol megtörténik a szimuláció.
-A \ref{fig:debugflow} ábra egyszerűsített módon illusztrálja a a szimuláció működését. A szimuláció első lépése a változók és tömbök létrehozása és tárolása. Mivel nem lehet előre tudni a változók neveit, típusait, mennyiségeket, dinamikus megoldásra van szükség. Ilyen lehetett volna változó és tömb listák, és a hozzájuk tartozó szótárak létrehozása. Változó létrehozásakor hozzáadódna listához, majd bekerülne a szótárba, mint egy \textit{<változó név,index>} elempár, és a szótáron át lehetne rá hivatkozni. Működőképes, de komplikált és problémás, mivel a szótár egy extra réteg az adatok és az instrukció kezelő között. Minden adattípushoz külön \textit{lista - szótár} páros lenne szükséges, tömb listák is bonyolítanák.
+A \ref{fig:debugflow}\enskip ábra egyszerűsített módon illusztrálja a szimuláció működését. A szimuláció első lépése a változók és tömbök létrehozása és tárolása. Mivel nem lehet előre tudni a változók neveit, típusait, mennyiségeket, dinamikus megoldásra van szükség. Ilyen lehetett volna változó és tömb listák, és a hozzájuk tartozó szótárak létrehozása. Változó létrehozásakor hozzáadódna listához, majd bekerülne a szótárba, mint egy \textit{<változó név,index>} elempár, és a szótáron át lehetne rá hivatkozni. Működőképes, de komplikált és problémás, mivel a szótár egy extra réteg az adatok és az instrukció kezelő között. Minden adattípushoz külön \textit{lista - szótár} páros lenne szükséges, tömb listák is bonyolítanák.
 
 \begin{figure}[h]
 \centering
@@ -368,24 +368,24 @@ while (parallelLoop!=parallelCount)
 \end{figure}
 
 \Section{Szintaxis fa}
-A szimuláció után a \textit{DebugService} az \textit{ImageService} segítségével létrehoz egy szintaxis fát, amin fel van tüntetve az összes instrukció, és a hozzájuk tartozó nyilak. A kép egy dinamikusan bővülő \textit{bitmap}-ből készül el, így minimális méretű. Itt két érdekesebb probléma merült fel, az egyikben az alkalmazás lementi a készült képet, majd a böngésző megjeleníti. A kép bővülésének módja \aref{fig:st} ábrán látható. De ha új képre akarunk váltani, a böngésző a régi képet fogja mutatni, mert eltárolta a gyorsítótárban. Így minden kép sorszámot kap, hogy a böngésző észlelje hogy új képre van szükség, és ne a gyorsítótárból szedje elő. 
+A szimuláció után a \textit{DebugService} az \textit{ImageService} segítségével létrehoz egy szintaxis fát, amin fel van tüntetve az összes instrukció, és a hozzájuk tartozó nyilak. A kép egy dinamikusan bővülő \textit{bitmap}-ből készül el, így minimális méretű. A kép bővülésének módja \aref{fig:st} ábrán látható. A fejlesztés során két érdekesebb probléma merült fel. Ezek nem a bonyolultságuk miatt voltak érdekesek, hanem hogy mindkét probléma oka az alkalmazáson kívülről eredő. Az első problémában az alkalmazás lementi a készült képet, majd a böngésző megjeleníti. De ha új képre akarunk váltani, a böngésző a régi képet fogja mutatni, mert eltárolta a gyorsítótárban. Így minden kép sorszámot kap, hogy a böngésző észlelje, hogy új képre van szükség, és ne a gyorsítótárból szedje elő. 
 
 A másik érdekes probléma a kép dinamikus bővítése közben történt. A képre rárajzolódott minden rendesen, megtörtént az átméretezés, de a tényleges kép a memóriában nem méreteződött át. Olyan, mintha a \textit{bitmap} objektum egyszerre lenne érték és referencia típus, aminek oka ismeretlen. Szerencsére ha explicit módon referencia típusként kezeljük, akkor ez a hiba gyorsan megoldódik.
 
 \begin{cpp}
 public Bitmap AddInstruction(ref Bitmap bitmap,String text,bool jump)
 {
-      if (bitmap.Width > 220)
-      {
-           DrawRectangleText(bitmap, text, jump);
-           DrawStraightArrow(bitmap);
-       }
-       else
-       {
-           DrawRectangleText(bitmap, text, jump);
-       }
-       bitmap = ResizeBitmap(bitmap, 200);
-       return bitmap;
+	if (bitmap.Width > 220)
+    {
+		DrawRectangleText(bitmap, text, jump);
+        DrawStraightArrow(bitmap);
+    }
+    else
+    {
+		DrawRectangleText(bitmap, text, jump);
+    }
+    bitmap = ResizeBitmap(bitmap, 200);
+    return bitmap;
 }
 \end{cpp}
 

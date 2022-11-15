@@ -37,7 +37,7 @@ Az alkalmazás feladatai tehát a következők:
 
 
 
-A program működése a következő:
+A program működése a következő lépésekben történik.
 
 A webalkalmazáson át feltöltünk egy forrásfájlt, majd a szerver a fájlt beolvassa soronként. Megvizsgálja, hogy a forrásfájl milyen OpenCL eszközöket használ, hány munka elem van benne, stb. A szerver ezután lekéri a számítógép architektúráját. Következő lépésben a webalkalmazás megrajzolja a számítógép ide vonatkozó Hardware elemeit, mint a rendelkezésre álló memória, a processzor adatai, a videókártya adatai, valamint felvázolja, hogy az architektúrát milyen módon használná az OpenCL program. A szerver megkeresi a forrásfájlban az OpenCL függvényeket, és szükségszerűen modelleket rendel hozzájuk, vagyis megfelelő objektumokat hoz létre. Például a \texttt{clCreateKernel} metódust észlelve létrehozunk egy Kernel objektumot. Ilyenkor azt is megállapítja, hogy az adott elem melyik számítási egységhez tartozik. Ha ez sikeres, a webalkalmazás egy Gantt diagramban vizualizálja a program futtatását az idő függvényében. A webalkalmazás ezzel szinkronban megjeleníti magát a forráskódot is, és bármely Gantt diagrambeli elemre kattintva kiemeli a megfelelő kódot. A program ezen részének UML diagramja \aref{fig:uml} ábrán látható. Az ábrából hiányoznak típusok és paraméterek, mert ebben a fázisban még nem tudni, hogy mik lesznek.
 
