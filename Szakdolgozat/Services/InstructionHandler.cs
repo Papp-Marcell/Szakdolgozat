@@ -74,6 +74,10 @@ namespace Szakdolgozat.Services
                     JumpIfEqual(instruction.var1, instruction.var2, instruction.index, _object, ref i, parallelIndex);
                     counter++;
                     break;
+                case InstructionType.J_IF_NOT_EQUAL:
+                    JumpIfNotEqual(instruction.var1, instruction.var2, instruction.index, _object, ref i, parallelIndex);
+                    counter++;
+                    break;
                 case InstructionType.J_IF_GREATER:
                     JumpIfGreater(instruction.var1, instruction.var2, instruction.index, _object, ref i, parallelIndex);
                     counter++;
@@ -124,7 +128,7 @@ namespace Szakdolgozat.Services
                     ParallelStart();
                     break;
                 case InstructionType.RANDOM:
-                    SetRandom(instruction.var1, instruction.index, instruction.value1, instruction.value2, _object,parallelIndex);
+                    SetRandom(instruction.var1, instruction.var2, instruction.index, instruction.value1, instruction.value2, _object,parallelIndex);
                     break;
             }
             i++;
@@ -186,6 +190,7 @@ namespace Szakdolgozat.Services
                     imageService.AddNextInstruction(ref bitmap, $"#{i} Barrier", true);
                     break;
                 case InstructionType.J_IF_EQUAL:
+                case InstructionType.J_IF_NOT_EQUAL:
                 case InstructionType.J_IF_GREATER:
                 case InstructionType.J_IF_GREATER_EQUAL:
                 case InstructionType.J_IF_LESS:
@@ -204,6 +209,7 @@ namespace Szakdolgozat.Services
             {
                 case InstructionType.JUMP:
                 case InstructionType.J_IF_EQUAL:
+                case InstructionType.J_IF_NOT_EQUAL:
                 case InstructionType.J_IF_GREATER:
                 case InstructionType.J_IF_GREATER_EQUAL:
                 case InstructionType.J_IF_LESS:
@@ -367,6 +373,24 @@ namespace Szakdolgozat.Services
                 }
             }
             
+        }
+        private void JumpIfNotEqual(string name, string name2, int? index, object _object, ref int i, int? parallelIndex)
+        {
+            if (parallelIndex == null)
+            {
+                if ((double)_object.GetType().GetField(name).GetValue(_object) != (double)_object.GetType().GetField(name2).GetValue(_object))
+                {
+                    i += (int)index.Value;
+                }
+            }
+            else
+            {
+                if (((IList<double>)_object.GetType().GetField(name).GetValue(_object))[parallelIndex.Value] != ((IList<double>)_object.GetType().GetField(name2).GetValue(_object))[parallelIndex.Value])
+                {
+                    i += (int)index.Value;
+                }
+            }
+
         }
         private void JumpIfGreater(string name, string name2, int? index, object _object, ref int i, int? parallelIndex)
         {
@@ -533,6 +557,9 @@ namespace Szakdolgozat.Services
                     break;
                 case "sqrt":
                     ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] = Math.Sqrt(((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex]);
+                    break;
+                case "floor":
+                    ((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex] = Math.Floor(((IList<double>)_object.GetType().GetField(arrayName).GetValue(_object))[arrayIndex]);
                     break;
             }
         }
@@ -707,7 +734,7 @@ namespace Szakdolgozat.Services
             counter+=parallelCounter;
             memory+=parallelMemory;
         }
-        private void SetRandom(string name, int? index,double? min,double? max, object _object, int? parallelIndex)
+        private void SetRandom(string name, string stringIndex, int? index,double? min,double? max, object _object, int? parallelIndex)
         {
             var rand = new Random();
             if (parallelIndex.HasValue)
@@ -718,6 +745,11 @@ namespace Szakdolgozat.Services
             if (index.HasValue)
             {
                 ((IList<double>)_object.GetType().GetField(name).GetValue(_object))[index.Value] = min.Value + (rand.NextDouble() * max.Value);
+                return;
+            }
+            if (stringIndex!=null)
+            {
+                ((IList<double>)_object.GetType().GetField(name).GetValue(_object))[Int32.Parse(stringIndex)] = min.Value + (rand.NextDouble() * max.Value);
                 return;
             }
             _object.GetType().GetField(name).SetValue(_object, min.Value + (rand.NextDouble() * max.Value));

@@ -20,6 +20,7 @@
         BIOP_ARRAY_ARRAY,
         JUMP,
         J_IF_EQUAL,
+        J_IF_NOT_EQUAL,
         J_IF_GREATER,
         J_IF_GREATER_EQUAL,
         J_IF_LESS,

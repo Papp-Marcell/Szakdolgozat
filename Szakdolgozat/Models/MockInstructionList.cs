@@ -21,6 +21,10 @@
                 case "vecAdd.cl":
                     Sum_Vector();
                     break;
+                case "monty.c":
+                case "monty.cl":
+                    Monty_Sim();
+                    break;
             }
         }
 
@@ -82,6 +86,73 @@
             _instructions.Add(new Instruction(InstructionType.UOP, "i", null, null, null, 1, null, "+"));
             _instructions.Add(new Instruction(InstructionType.JUMP, null, null, null, -4, null, null));
             _instructions.Add(new Instruction(InstructionType.VAR_PRINT, "sum", null, null, null, null, null));
+
+
+        }
+
+        private void Monty_Sim()
+        {
+            _instructions.Add(new Instruction(InstructionType.DECLARE, "n", "int", null, null, 10000, null));
+            _instructions.Add(new Instruction(InstructionType.DECLARE, "localSize", "int", null, null, 64, null));
+            _instructions.Add(new Instruction(InstructionType.DECLARE, "globalSize", "int", null, null, null, null));
+
+            _instructions.Add(new Instruction(InstructionType.COPY, "globalSize", "n", null, null, null, null));
+            _instructions.Add(new Instruction(InstructionType.UOP, "globalSize", "localSize", null, null, null, null, "/"));
+            _instructions.Add(new Instruction(InstructionType.UOP, "globalSize", null, null, null, null, null, "ceil"));
+            _instructions.Add(new Instruction(InstructionType.UOP, "globalSize", "localSize", null, null, null, null, "*"));
+            _instructions.Add(new Instruction(InstructionType.DECLARE_ARRAY, "car", "double", "n", null, null, null));
+            _instructions.Add(new Instruction(InstructionType.DECLARE_ARRAY, "pick", "double", "n", null, null, null));
+            _instructions.Add(new Instruction(InstructionType.DECLARE_ARRAY, "shown", "double", "n", null, null, null));
+            _instructions.Add(new Instruction(InstructionType.DECLARE_ARRAY, "stayed", "double", "n", null, null, null));
+            _instructions.Add(new Instruction(InstructionType.DECLARE_ARRAY, "changed", "double", "n", null, null, null));
+
+            
+            
+
+            
+            _instructions.Add(new Instruction(InstructionType.PARALLEL_START, null, null, null, null, null, null));
+
+            _instructions.Add(new Instruction(InstructionType.RANDOM, "car", null, null, null, 0, 3));
+            _instructions.Add(new Instruction(InstructionType.RANDOM, "pick", null, null, null, 0, 3));
+            _instructions.Add(new Instruction(InstructionType.UOP_TO_ARRAY, "car", null, null, null, null, null, "floor"));
+            _instructions.Add(new Instruction(InstructionType.UOP_TO_ARRAY, "pick", null, null, null, null, null, "floor"));
+
+            _instructions.Add(new Instruction(InstructionType.RANDOM, "shown", null, null, null, 0, 3));
+            _instructions.Add(new Instruction(InstructionType.UOP_TO_ARRAY, "shown", null, null, null, null, null, "floor"));
+            _instructions.Add(new Instruction(InstructionType.J_IF_EQUAL, "shown", "car", null, -3, null, null));
+            _instructions.Add(new Instruction(InstructionType.J_IF_EQUAL, "shown", "pick", null, -4, null, null));
+            _instructions.Add(new Instruction(InstructionType.J_IF_NOT_EQUAL, "pick", "car", null, 1, null, null));
+            _instructions.Add(new Instruction(InstructionType.UOP_TO_ARRAY, "stayed", null, null, null, 1, null, "+"));
+
+            _instructions.Add(new Instruction(InstructionType.UOP_TO_ARRAY, "pick", null, null, null, -1, null, "*"));
+            _instructions.Add(new Instruction(InstructionType.UOP_ARRAY_ARRAY, "pick", "shown", null, null, null, null, "-"));
+            _instructions.Add(new Instruction(InstructionType.UOP_TO_ARRAY, "pick", null, null, null, 3, null, "+"));
+
+            _instructions.Add(new Instruction(InstructionType.J_IF_NOT_EQUAL, "pick", "car", null, 1, null, null));
+            _instructions.Add(new Instruction(InstructionType.UOP_TO_ARRAY, "changed", null, null, null, 1, null, "+"));
+            
+
+            _instructions.Add(new Instruction(InstructionType.PARALLEL_END, "n", null, null, null, null, null));
+
+
+
+            
+
+
+
+            _instructions.Add(new Instruction(InstructionType.DECLARE, "i", "int", null, null, 0, null));
+
+            _instructions.Add(new Instruction(InstructionType.DECLARE, "changed_sum", "double", null, null, 0, null));
+            _instructions.Add(new Instruction(InstructionType.DECLARE, "stayed_sum", "double", null, null, 0, null));
+
+            _instructions.Add(new Instruction(InstructionType.J_IF_EQUAL, "i", "n", null, 4, null, null));
+            _instructions.Add(new Instruction(InstructionType.UOP_FROM_ARRAY, "changed_sum", "changed", "i", null, null, null, "+", "i"));
+            _instructions.Add(new Instruction(InstructionType.UOP_FROM_ARRAY, "stayed_sum", "stayed", "i", null, null, null, "+", "i"));
+            _instructions.Add(new Instruction(InstructionType.UOP, "i", null, null, null, 1, null, "+"));
+            _instructions.Add(new Instruction(InstructionType.JUMP, null, null, null, -5, null, null));
+
+            _instructions.Add(new Instruction(InstructionType.VAR_PRINT, "changed_sum", null, null, null, null, null));
+            _instructions.Add(new Instruction(InstructionType.VAR_PRINT, "stayed_sum", null, null, null, null, null));
 
 
         }

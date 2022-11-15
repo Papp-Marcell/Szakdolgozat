@@ -96,9 +96,9 @@ int main( int argc, char* argv[] )
     err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_a);
     err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_b);
     err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &d_c);
-	err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &d_d);
-	err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &d_e);
-    err |= clSetKernelArg(kernel, 3, sizeof(unsigned int), &n);
+	err |= clSetKernelArg(kernel, 3, sizeof(cl_mem), &d_d);
+	err |= clSetKernelArg(kernel, 4, sizeof(cl_mem), &d_e);
+    err |= clSetKernelArg(kernel, 5, sizeof(unsigned int), &n);
  
     // Execute the kernel over the entire range of the data set  
     err = clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &globalSize, &localSize,
@@ -114,19 +114,35 @@ int main( int argc, char* argv[] )
     clEnqueueReadBuffer(queue, d_e, CL_TRUE, 0,
                                 bytes, changed, 0, NULL, NULL );
  
+	int i;
+	int changed_sum;
+	int stayed_sum;
+	for(i=0;i<n;i++)
+	{
+		stayed_sum+=stayed[i];
+		changed_sum+=changed[i];
+	}
+	
+	printf("Stayed win out of 10000: %d\n", stayed_sum);
+	printf("Changed win out of 10000: %d\n", changed_sum);
+	
     // release OpenCL resources
     clReleaseMemObject(d_a);
     clReleaseMemObject(d_b);
     clReleaseMemObject(d_c);
+	clReleaseMemObject(d_d);
+	clReleaseMemObject(d_e);
     clReleaseProgram(program);
     clReleaseKernel(kernel);
     clReleaseCommandQueue(queue);
     clReleaseContext(context);
  
     //release host memory
-    free(h_a);
-    free(h_b);
-    free(h_c);
+    free(car);
+    free(changed);
+    free(shown);
+	free(pick);
+	free(stayed);
  
     return 0;
 }
